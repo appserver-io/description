@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session xmlns="http://www.appserver.io/appserver">
+    <session-type>Stateless</session-type>
+    <epb-name>SchemaProcessor</epb-name>
+    <epb-class>AppserverIo\Apps\Example\Services\SchemaProcessor</epb-class>
+    <post-construct>
+        <lifecycle-callback-method>initialize</lifecycle-callback-method>
+    </post-construct>
+</session>

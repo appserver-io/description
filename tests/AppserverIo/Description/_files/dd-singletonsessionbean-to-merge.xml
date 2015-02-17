@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session xmlns="http://www.appserver.io/appserver">
+    <session-type>Singleton</session-type>
+    <epb-name>ASingletonProcessor</epb-name>
+    <epb-class>AppserverIo\Apps\Example\Services\ASingletonProcessor</epb-class>
+    <init-on-startup>false</init-on-startup>
+    <post-construct>
+        <lifecycle-callback-method>initialize</lifecycle-callback-method>
+    </post-construct>
+</session>

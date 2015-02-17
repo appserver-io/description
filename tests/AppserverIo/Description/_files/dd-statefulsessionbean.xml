@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session xmlns="http://www.appserver.io/appserver">
+    <session-type>Stateful</session-type>
+    <epb-name>UserProcessor</epb-name>
+    <epb-class>AppserverIo\Apps\Example\Services\UserProcessor</epb-class>
+    <pre-destroy>
+        <lifecycle-callback-method>destroy</lifecycle-callback-method>
+    </pre-destroy>
+</session>

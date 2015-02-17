@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<message-driven xmlns="http://www.appserver.io/appserver">
+    <epb-name>ImportReceiver</epb-name>
+    <epb-class>AppserverIo\Apps\Example\MessageBeans\ImportReceiver</epb-class>
+</message-driven>

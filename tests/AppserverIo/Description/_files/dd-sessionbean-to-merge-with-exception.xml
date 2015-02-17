@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session xmlns="http://www.appserver.io/appserver">
+    <session-type>Stateless</session-type>
+    <epb-name>SampleProcessor</epb-name>
+    <epb-class>AppserverIo\Apps\Example\Services\OtherSampleProcessor</epb-class>
+</session>
