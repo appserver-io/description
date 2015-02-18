@@ -8,8 +8,8 @@
 	},
 	"require-dev" : {
 		"appserver-io/build" : "~1.0",
-		"appserver-io-psr/epb" : "dev-master",
-		"appserver-io-psr/servlet" : "dev-master",
+		"appserver-io-psr/epb" : "~1.0",
+		"appserver-io-psr/servlet" : "~1.0",
 		"appserver-io-psr/deployment" : "~1.0"
 	},
 	"autoload" : {
@@ -39,15 +39,5 @@
 	},
 	"keywords" : [
 		"deployment descriptor implementation"
-	],
-	"repositories" : [{
-			"type" : "git",
-			"url" : "file:///Users/wagnert/Workspace/appserver.io/epb",
-			"name" : "appserver-io-psr/epb"
-		}, {
-			"type" : "git",
-			"url" : "file:///Users/wagnert/Workspace/appserver.io/servlet",
-			"name" : "appserver-io-psr/servlet"
-		}
 	]
 }
