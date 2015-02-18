@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<epb-ref xmlns="http://www.appserver.io/appserver">
+    <description>Another Description</description>
+    <epb-ref-name>MyUserProcessor</epb-ref-name>
+    <lookup-name>php:global/example/MyUserProcessor</lookup-name>
+    <local>MyUserProcessorLocal</local>
+    <epb-link>MyUserProcessor</epb-link>
+    <injection-target>
+        <injection-target-class>AppserverIo\Apps\Example\Services\ASampleProcessor</injection-target-class>
+        <injection-target-property>aSampleProcessor</injection-target-property>
+    </injection-target>
+</epb-ref>

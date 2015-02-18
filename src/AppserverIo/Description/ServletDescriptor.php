@@ -485,7 +485,7 @@ class ServletDescriptor implements ServletDescriptorInterface, DescriptorInterfa
 
         // query for the display name and set it
         if ($displayName = (string) $node->{'display-name'}) {
-            $this->setDescription($displayName);
+            $this->setDisplayName($displayName);
         }
 
         // append the init params to the servlet configuration
@@ -539,6 +539,16 @@ class ServletDescriptor implements ServletDescriptorInterface, DescriptorInterfa
         // merge the servlet display name
         if ($displayName = $servletDescriptor->getDisplayName()) {
             $this->setDisplayName($displayName);
+        }
+
+        // merge the URL patterns
+        foreach ($servletDescriptor->getUrlPatterns() as $urlPattern) {
+            $this->addUrlPattern($urlPattern);
+        }
+
+        // merge the initialization parameters
+        foreach ($servletDescriptor->getInitParams() as $paramKey => $paramValue) {
+            $this->addInitParam($paramKey, $paramValue);
         }
 
         // merge the EPB references

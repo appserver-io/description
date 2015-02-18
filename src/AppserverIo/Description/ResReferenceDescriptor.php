@@ -335,9 +335,15 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface, Descrip
     public function fromDeploymentDescriptor(\SimpleXmlElement $node)
     {
 
+        // query if we've a <res-ref> descriptor node
+        if ($node->getName() !== 'res-ref') {
+            // if not, do nothing
+            return;
+        }
+
         // query for the reference name
         if ($name = (string) $node->{'res-ref-name'}) {
-            $this->setName($name);
+            $this->setName(sprintf('%s/%s', ResReferenceDescriptor::REF_DIRECTORY, $name));
         }
 
         // query for the reference type
@@ -351,7 +357,7 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface, Descrip
         }
 
         // query for the lookup name and set it
-        if ($lookup = (string) $node->{'lookup'}) {
+        if ($lookup = (string) $node->{'lookup-name'}) {
             $this->setLookup($lookup);
         }
 
@@ -377,7 +383,7 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface, Descrip
 
         // merge the reference name
         if ($name = $resReferenceDescriptor->getName()) {
-            $this->setName(sprintf('%s/%s', ResReferenceDescriptor::REF_DIRECTORY, $name));
+            $this->setName($name);
         }
 
         // merge the reference type
