@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<res-ref xmlns="http://www.appserver.io/appserver">
+    <description>Another reference to a timer service</description>
+    <res-ref-name>MyTimerServiceContextInterface</res-ref-name>
+    <res-ref-type>AppserverIo\Psr\Timer\MyTimerServiceContextInterface</res-ref-type>
+    <lookup-name>php:global/example/MyTimerServiceContextInterface</lookup-name>
+    <injection-target>
+        <injection-target-class>AppserverIo\Apps\Example\Services\MySampleProcessor</injection-target-class>
+        <injection-target-method>injectTimerService</injection-target-method>
+    </injection-target>
+</res-ref>
