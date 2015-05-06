@@ -1,30 +1,21 @@
 # appserver.io Deployment Descriptors
 
-[![Latest Stable Version](https://poser.pugx.org/appserver-io/description/v/stable.png)](https://packagist.org/packages/appserver-io/description) [![Total Downloads](https://poser.pugx.org/appserver-io/description/downloads.png)](https://packagist.org/packages/appserver-io/description) [![Latest Unstable Version](https://poser.pugx.org/appserver-io/description/v/unstable.png)](https://packagist.org/packages/appserver-io/description) [![License](https://poser.pugx.org/appserver-io/description/license.png)](https://packagist.org/packages/appserver-io/description) [![Build Status](https://travis-ci.org/appserver-io/description.png)](https://travis-ci.org/appserver-io/description)[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/appserver-io/description/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/appserver-io/description/?branch=master)[![Code Coverage](https://scrutinizer-ci.com/g/appserver-io/description/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/appserver-io/description/?branch=master)
+[![Latest Stable Version](https://img.shields.io/packagist/v/appserver-io/description.svg?style=flat-square)](https://packagist.org/packages/appserver-io/description) 
+ [![Total Downloads](https://img.shields.io/packagist/dt/appserver-io/description.svg?style=flat-square)](https://packagist.org/packages/appserver-io/description)
+ [![License](https://img.shields.io/packagist/l/appserver-io/description.svg?style=flat-square)](https://packagist.org/packages/appserver-io/description)
+ [![Build Status](https://img.shields.io/travis/appserver-io/description/master.svg?style=flat-square)](http://travis-ci.org/appserver-io/description)
 
 ## Introduction
 
 This package provides implementation of basic PHP datatypes.
 
-## Installation
+## Issues
 
-If you want to use the library with your application you can install it by adding
+In order to bundle our efforts we would like to collect all issues regarding this package in [the main project repository's issue tracker](https://github.com/appserver-io/appserver/issues).
+Please reference the originating repository as the first element of the issue title e.g.:
+`[appserver-io/<ORIGINATING_REPO>] A issue I am having`
 
-```sh
-{
-    "require": {
-        "appserver-io/description": "dev-master"
-    },
-}
-```
-
-to your `composer.json` and invoke `composer update` in your project.
-
-## Usage
-
-Comming Soon!
-
-# External Links
+## External Links
 
 * Documentation at [appserver.io](http://docs.appserver.io)
 * Documentation on [GitHub](https://github.com/techdivision/TechDivision_AppserverDocumentation)
