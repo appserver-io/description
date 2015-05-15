@@ -1,3 +1,13 @@
+# Version 1.1.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Implement post-detach and pre-attach lifecycle callback annotation and deployment descriptor parsing
+
 # Version 1.0.0
 
 ## Bugfixes
