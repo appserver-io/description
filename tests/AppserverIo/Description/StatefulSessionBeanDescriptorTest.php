@@ -22,6 +22,8 @@ namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateful;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\PreAttach;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\PostDetach;
 
 /**
  * Test implementation for the StatefulSessionBeanDescriptor class implementation.
@@ -89,6 +91,8 @@ class StatefulSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(0, $this->descriptor->getEpbReferences());
         $this->assertCount(0, $this->descriptor->getResReferences());
         $this->assertCount(0, $this->descriptor->getReferences());
+        $this->assertCount(1, $this->descriptor->getPreAttachCallbacks());
+        $this->assertCount(1, $this->descriptor->getPostDetachCallbacks());
     }
 
     /**
@@ -128,6 +132,10 @@ class StatefulSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->descriptor, $this->descriptor->fromDeploymentDescriptor($node));
         $this->assertSame('UserProcessor', $this->descriptor->getName());
         $this->assertSame('AppserverIo\Apps\Example\Services\UserProcessor', $this->descriptor->getClassName());
+
+        // check for initialized lifecycle callbacks
+        $this->assertContains('detach', $this->descriptor->getPostDetachCallbacks());
+        $this->assertContains('attach', $this->descriptor->getPreAttachCallbacks());
     }
 
     /**
@@ -159,5 +167,81 @@ class StatefulSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
 
         // check that the descriptor has not been initialized
         $this->assertNull($this->descriptor->fromDeploymentDescriptor($node));
+    }
+
+    /**
+     * Tests if the merge method works successfully.
+     *
+     * @return void
+     */
+    public function testMergeSuccessful()
+    {
+
+        // load the deployment descriptor node
+        $node = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-statefulsessionbean.xml'));
+
+        // initialize the descriptor from the nodes data
+        $this->descriptor->fromDeploymentDescriptor($node);
+
+        // initialize the descriptor to merge
+        $descriptorToMerge = $this->getMockForAbstractClass('AppserverIo\Description\StatefulSessionBeanDescriptor');
+        $nodeToMerge = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-statefulsessionbean-to-merge.xml'));
+        $descriptorToMerge->fromDeploymentDescriptor($nodeToMerge);
+
+        // merge the descriptors
+        $this->descriptor->merge($descriptorToMerge);
+
+        // check that the descriptor has been initialized
+        $this->assertSame('UserProcessor', $this->descriptor->getName());
+        $this->assertSame('AppserverIo\Apps\Example\Services\UserProcessor', $this->descriptor->getClassName());
+        $this->assertSame('Stateful', $this->descriptor->getSessionType());
+
+        // check for initialized lifecycle callbacks
+        $this->assertContains('newDetach', $this->descriptor->getPostDetachCallbacks());
+        $this->assertContains('newAttach', $this->descriptor->getPreAttachCallbacks());
+    }
+
+    /**
+     * Tests the setter/getter for the post-detach lifecycle callbacks.
+     *
+     * @return void
+     */
+    public function testSetGetPostConstructCallbacks()
+    {
+        $this->descriptor->setPostDetachCallbacks($postDetachCallbacks = array('detach'));
+        $this->assertSame($postDetachCallbacks, $this->descriptor->getPostDetachCallbacks());
+    }
+
+    /**
+     * Tests the setter/getter for the pre-attach lifecycle callbacks.
+     *
+     * @return void
+     */
+    public function testSetGetPreAttachCallbacks()
+    {
+        $this->descriptor->setPreAttachCallbacks($preAttachCallbacks = array('attach'));
+        $this->assertSame($preAttachCallbacks, $this->descriptor->getPreAttachCallbacks());
+    }
+
+    /**
+     * A dummy implemenatation for pre-attach method.
+     *
+     * @return void
+     * @PreAttach
+     */
+    public function attach()
+    {
+        // dummy implementation
+    }
+
+    /**
+     * A dummy implemenatation for post-detach method.
+     *
+     * @return void
+     * @PostDetach
+     */
+    public function detach()
+    {
+        // dummy implementation
     }
 }

@@ -24,6 +24,7 @@ use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateful;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PreAttach;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PostDetach;
+use AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\StatefulSessionBeanDescriptorInterface;
 
 /**
@@ -97,9 +98,9 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
      *
      * @return void
      */
-    public function addPreDestroyCallback($preAttachCallback)
+    public function addPreAttachCallback($preAttachCallback)
     {
-        $this->preAttachCallback[] = $preAttachCallback;
+        $this->preAttachCallbacks[] = $preAttachCallback;
     }
 
     /**
@@ -139,7 +140,7 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
     /**
      * Sets the array with the post detach callback method names.
      *
-     * @param array $preAttachCallbacks The post detach callback method names
+     * @param array $postDetachCallbacks The post detach callback method names
      *
      * @return void
      */
@@ -219,6 +220,9 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
             return;
         }
 
+        // initialize the descriptor instance
+        parent::fromDeploymentDescriptor($node);
+
         // initialize the post detach callback methods
         foreach ($node->xpath('a:post-detach/a:lifecycle-callback-method') as $postDetachCallback) {
             $this->addPostDetachCallback(DescriptorUtil::trim((string) $postDetachCallback));
@@ -228,9 +232,6 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
         foreach ($node->xpath('a:pre-attach/a:lifecycle-callback-method') as $preAttachCallback) {
             $this->addPreAttachCallback(DescriptorUtil::trim((string) $preAttachCallback));
         }
-
-        // initialize the descriptor instance
-        parent::fromDeploymentDescriptor($node);
 
         // return the instance
         return $this;

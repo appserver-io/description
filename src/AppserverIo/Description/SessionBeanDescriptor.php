@@ -262,6 +262,8 @@ abstract class SessionBeanDescriptor extends BeanDescriptor implements SessionBe
      */
     public function fromDeploymentDescriptor(\SimpleXmlElement $node)
     {
+
+        // register the appserver namespace
         $node->registerXPathNamespace('a', 'http://www.appserver.io/appserver');
 
         // initialize the bean descriptor

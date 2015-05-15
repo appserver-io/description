@@ -3,13 +3,10 @@
     <session-type>Stateful</session-type>
     <epb-name>UserProcessor</epb-name>
     <epb-class>AppserverIo\Apps\Example\Services\UserProcessor</epb-class>
-    <pre-destroy>
-        <lifecycle-callback-method>destroy</lifecycle-callback-method>
-    </pre-destroy>
     <pre-attach>
-        <lifecycle-callback-method>attach</lifecycle-callback-method>
+        <lifecycle-callback-method>newAttach</lifecycle-callback-method>
     </pre-attach>
     <post-detach>
-        <lifecycle-callback-method>detach</lifecycle-callback-method>
+        <lifecycle-callback-method>newDetach</lifecycle-callback-method>
     </post-detach>
 </session>
