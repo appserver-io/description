@@ -22,6 +22,8 @@ namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateful;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\PreAttach;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\PostDetach;
 use AppserverIo\Psr\EnterpriseBeans\Description\StatefulSessionBeanDescriptorInterface;
 
 /**
@@ -42,6 +44,20 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
      * @var string
      */
     const SESSION_TYPE = 'Stateful';
+
+    /**
+     * The array with the pre attach callback method names.
+     *
+     * @var array
+     */
+    protected $preAttachCallbacks = array();
+
+    /**
+     * The array with the post detach callback method names.
+     *
+     * @var array
+     */
+    protected $postDetachCallbacks = array();
 
     /**
      * Initialize the session bean descriptor with the session type.
@@ -75,6 +91,74 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
     }
 
     /**
+     * Adds a pre attach callback method name.
+     *
+     * @param string $preAttachCallback The pre attach callback method name
+     *
+     * @return void
+     */
+    public function addPreDestroyCallback($preAttachCallback)
+    {
+        $this->preAttachCallback[] = $preAttachCallback;
+    }
+
+    /**
+     * Sets the array with the pre attach callback method names.
+     *
+     * @param array $preAttachCallbacks The pre attach callback method names
+     *
+     * @return void
+     */
+    public function setPreAttachCallbacks(array $preAttachCallbacks)
+    {
+        $this->preAttachCallbacks = $preAttachCallbacks;
+    }
+
+    /**
+     * The array with the pre attach callback method names.
+     *
+     * @return array The pre attach callback method names
+     */
+    public function getPreAttachCallbacks()
+    {
+        return $this->preAttachCallbacks;
+    }
+
+    /**
+     * Adds a post detach callback method name.
+     *
+     * @param string $postDetachCallback The post detach callback method name
+     *
+     * @return void
+     */
+    public function addPostDetachCallback($postDetachCallback)
+    {
+        $this->postDetachCallbacks[] = $postDetachCallback;
+    }
+
+    /**
+     * Sets the array with the post detach callback method names.
+     *
+     * @param array $preAttachCallbacks The post detach callback method names
+     *
+     * @return void
+     */
+    public function setPostDetachCallbacks(array $postDetachCallbacks)
+    {
+        $this->postDetachCallbacks = $postDetachCallbacks;
+    }
+
+    /**
+     * The array with the post detach callback method names.
+     *
+     * @return array The post detach callback method names
+     */
+    public function getPostDetachCallbacks()
+    {
+        return $this->postDetachCallbacks;
+    }
+
+    /**
      * Initializes the bean descriptor instance from the passed reflection class instance.
      *
      * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the bean configuration
@@ -92,6 +176,19 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
 
         // set the session type
         $this->setSessionType(StatefulSessionBeanDescriptor::SESSION_TYPE);
+
+        // we've to check for a @PostDetach or @PreAttach annotation
+        foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
+            // if we found a @PostDetach annotation, invoke the method
+            if ($reflectionMethod->hasAnnotation(PostDetach::ANNOTATION)) {
+                $this->addPostDetachCallback(DescriptorUtil::trim($reflectionMethod->getMethodName()));
+            }
+
+            // if we found a @PreAttach annotation, invoke the method
+            if ($reflectionMethod->hasAnnotation(PreAttach::ANNOTATION)) {
+                $this->addPreAttachCallback(DescriptorUtil::trim($reflectionMethod->getMethodName()));
+            }
+        }
 
         // initialize the descriptor instance
         parent::fromReflectionClass($reflectionClass);
@@ -122,10 +219,49 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
             return;
         }
 
+        // initialize the post detach callback methods
+        foreach ($node->xpath('a:post-detach/a:lifecycle-callback-method') as $postDetachCallback) {
+            $this->addPostDetachCallback(DescriptorUtil::trim((string) $postDetachCallback));
+        }
+
+        // initialize the pre attach callback methods
+        foreach ($node->xpath('a:pre-attach/a:lifecycle-callback-method') as $preAttachCallback) {
+            $this->addPreAttachCallback(DescriptorUtil::trim((string) $preAttachCallback));
+        }
+
         // initialize the descriptor instance
         parent::fromDeploymentDescriptor($node);
 
         // return the instance
         return $this;
+    }
+
+    /**
+     * Merges the passed configuration into this one. Configuration values
+     * of the passed configuration will overwrite the this one.
+     *
+     * @param \AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface $beanDescriptor The configuration to merge
+     *
+     * @return void
+     */
+    public function merge(BeanDescriptorInterface $beanDescriptor)
+    {
+
+        // merge the default bean members by invoking the parent method
+        parent::merge($beanDescriptor);
+
+        // merge the post detach callback method names
+        foreach ($beanDescriptor->getPostDetachCallbacks() as $postDetachCallback) {
+            if (in_array($postDetachCallback, $this->postDetachCallbacks) === false) {
+                $this->addPostDetachCallback($postDetachCallback);
+            }
+        }
+
+        // merge the pre attach callback method names
+        foreach ($beanDescriptor->getPreAttachCallbacks() as $preAttachCallback) {
+            if (in_array($preAttachCallback, $this->preAttachCallbacks) === false) {
+                $this->addPreAttachCallback($preAttachCallback);
+            }
+        }
     }
 }
