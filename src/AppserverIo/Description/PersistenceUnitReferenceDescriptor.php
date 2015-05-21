@@ -230,7 +230,7 @@ class PersistenceUnitReferenceDescriptor implements PersistenceUnitReferenceDesc
 
         // load the resource type defined as @PersistenceUnit(unitName=****)
         if ($unitName = $annotationInstance->getUnitName()) {
-            $this->setType($unitName);
+            $this->setUnitName($unitName);
         } else {
             // use the name of the first parameter unit name
             foreach ($reflectionMethod->getParameters() as $reflectionParameter) {

@@ -21,9 +21,10 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ReflectionClass;
+use AppserverIo\Psr\Servlet\Annotations\Route;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
-use AppserverIo\Psr\Servlet\Annotations\Route;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
 use AppserverIo\Lang\Reflection\ReflectionProperty;
 use AppserverIo\Lang\Reflection\ReflectionMethod;
 
@@ -59,6 +60,13 @@ class ServletDescriptorTest extends \PHPUnit_Framework_TestCase
      * @Resource(name="Application")
      */
     protected $dummyResource;
+
+    /**
+     * Dummy persistence unit reference.
+     *
+     * @PersistenceUnit(name="PersistenceUnit")
+     */
+    protected $dummyPersistenceUnit;
 
     /**
      * Initializes the method we wan to test.
@@ -98,6 +106,19 @@ class ServletDescriptorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Injects the dummy persistence unit instance.
+     *
+     * @param mixed $dummyPersistenceUnit The dummy persistence unit
+     *
+     * @return void
+     * @PersistenceUnit(name="PersistenceUnit")
+     */
+    public function injectDummyPersistenceUnit($dummyPersistenceUnit)
+    {
+        $this->dummyPersistenceUnit = $dummyPersistenceUnit;
+    }
+
+    /**
      * Tests the static newDescriptorInstance() method.
      *
      * @return void
@@ -130,6 +151,17 @@ class ServletDescriptorTest extends \PHPUnit_Framework_TestCase
     {
         $this->descriptor->setResReferences($resReferences = array(new \stdClass()));
         $this->assertSame($resReferences, $this->descriptor->getResReferences());
+    }
+
+    /**
+     * Tests the setter/getter for the persistence unit references.
+     *
+     * @return void
+     */
+    public function testSetGetPersistenceUnitReferences()
+    {
+        $this->descriptor->setPersistenceUnitReferences($persistenceUnitReferences = array(new \stdClass()));
+        $this->assertSame($persistenceUnitReferences, $this->descriptor->getPersistenceUnitReferences());
     }
 
     /**
@@ -201,7 +233,8 @@ class ServletDescriptorTest extends \PHPUnit_Framework_TestCase
         $aliases = array(
             Route::ANNOTATION => Route::__getClass(),
             Resource::ANNOTATION => Resource::__getClass(),
-            EnterpriseBean::ANNOTATION => EnterpriseBean::__getClass()
+            EnterpriseBean::ANNOTATION => EnterpriseBean::__getClass(),
+            PersistenceUnit::ANNOTATION => PersistenceUnit::__getClass()
         );
 
         // create a servlet instance
@@ -248,13 +281,15 @@ class ServletDescriptorTest extends \PHPUnit_Framework_TestCase
         // initialize the mock ReflectionProperty instances
         $properties = array(
             new ReflectionProperty(__CLASS__, 'dummyResource', array(), $aliases),
-            new ReflectionProperty(__CLASS__, 'dummyEnterpriseBean', array(), $aliases)
+            new ReflectionProperty(__CLASS__, 'dummyEnterpriseBean', array(), $aliases),
+            new ReflectionProperty(__CLASS__, 'dummyPersistenceUnit', array(), $aliases)
         );
 
         // initialize the mock ReflectionMethod instances
         $methods = array(
             new ReflectionMethod(__CLASS__, 'injectDummyResource', array(), $aliases),
-            new ReflectionMethod(__CLASS__, 'injectDummyEnterpriseBean', array(), $aliases)
+            new ReflectionMethod(__CLASS__, 'injectDummyEnterpriseBean', array(), $aliases),
+            new ReflectionMethod(__CLASS__, 'injectDummyPersistenceUnit', array(), $aliases)
         );
 
         // mock the methods
@@ -302,7 +337,8 @@ class ServletDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('Test Servlet', $this->descriptor->getDisplayName());
         $this->assertCount(1, $this->descriptor->getEpbReferences());
         $this->assertCount(1, $this->descriptor->getResReferences());
-        $this->assertCount(2, $this->descriptor->getReferences());
+        $this->assertCount(1, $this->descriptor->getPersistenceUnitReferences());
+        $this->assertCount(3, $this->descriptor->getReferences());
     }
 
     /**
@@ -440,7 +476,8 @@ class ServletDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(0, $this->descriptor->getInitParams());
         $this->assertCount(1, $this->descriptor->getEpbReferences());
         $this->assertCount(1, $this->descriptor->getResReferences());
-        $this->assertCount(2, $this->descriptor->getReferences());
+        $this->assertCount(1, $this->descriptor->getPersistenceUnitReferences());
+        $this->assertCount(3, $this->descriptor->getReferences());
     }
 
     /**
@@ -492,7 +529,8 @@ class ServletDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(1, $this->descriptor->getInitParams());
         $this->assertCount(2, $this->descriptor->getEpbReferences());
         $this->assertCount(1, $this->descriptor->getResReferences());
-        $this->assertCount(3, $this->descriptor->getReferences());
+        $this->assertCount(2, $this->descriptor->getPersistenceUnitReferences());
+        $this->assertCount(5, $this->descriptor->getReferences());
     }
 
     /**

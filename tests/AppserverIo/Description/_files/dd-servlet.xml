@@ -25,4 +25,12 @@
             </injection-target-method>
         </injection-target>
     </res-ref>
+    <persistence-unit-ref>
+        <persistence-unit-ref-name>ReferenceToMyPersistenceUnit</persistence-unit-ref-name>
+        <persistence-unit-name>MyPersistenceUnit</persistence-unit-name>
+        <injection-target>
+            <injection-target-class>AppserverIo\Apps\Example\Services\SampleProcessor</injection-target-class>
+            <injection-target-method>injectPersistenceUnit</injection-target-method>
+        </injection-target>
+    </persistence-unit-ref>
 </servlet>
