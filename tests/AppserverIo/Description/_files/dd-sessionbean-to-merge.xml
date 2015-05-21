@@ -32,4 +32,12 @@
             </injection-target-method>
         </injection-target>
     </res-ref>
+    <persistence-unit-ref>
+        <persistence-unit-ref-name>ReferenceToMyNewPersistenceUnit</persistence-unit-ref-name>
+        <persistence-unit-name>MyNewPersistenceUnit</persistence-unit-name>
+        <injection-target>
+            <injection-target-class>AppserverIo\Apps\Example\Services\NewSampleProcessor</injection-target-class>
+            <injection-target-method>injectNewPersistenceUnit</injection-target-method>
+        </injection-target>
+    </persistence-unit-ref>
 </session>

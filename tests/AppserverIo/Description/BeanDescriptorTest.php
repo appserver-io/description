@@ -23,6 +23,7 @@ namespace AppserverIo\Description;
 use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
 
 /**
  * Test implementation for the BeanDescriptor class implementation.
@@ -56,6 +57,13 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
      * @Resource(name="Application")
      */
     protected $dummyResource;
+
+    /**
+     * Dummy resource reference.
+     *
+     * @PersistenceUnit(name="PersistenceUnit")
+     */
+    protected $dummyPersistenceUnit;
 
     /**
      * Initializes the method we wan to test.
@@ -95,6 +103,19 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Injects the dummy persistence unit instance.
+     *
+     * @param mixed $dummyPersistenceUnit The dummy persistence unit
+     *
+     * @return void
+     * @PersistenceUnit(name="PersistenceUnit")
+     */
+    public function injectDummyPersistenceUnit($dummyPersistenceUnit)
+    {
+        $this->dummyPersistenceUnit = $dummyPersistenceUnit;
+    }
+
+    /**
      * Tests the setter/getter for the EPB references.
      *
      * @return void
@@ -114,6 +135,17 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
     {
         $this->descriptor->setResReferences($resReferences = array(new \stdClass()));
         $this->assertSame($resReferences, $this->descriptor->getResReferences());
+    }
+
+    /**
+     * Tests the setter/getter for the persistence unit references.
+     *
+     * @return void
+     */
+    public function testSetGetPersistenceUnitReferences()
+    {
+        $this->descriptor->setPersistenceUnitReferences($persistenceUnitReferences = array(new \stdClass()));
+        $this->assertSame($persistenceUnitReferences, $this->descriptor->getPersistenceUnitReferences());
     }
 
     /**
@@ -156,7 +188,8 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
         // initialize the annotation aliases
         $aliases = array(
             Resource::ANNOTATION => Resource::__getClass(),
-            EnterpriseBean::ANNOTATION => EnterpriseBean::__getClass()
+            EnterpriseBean::ANNOTATION => EnterpriseBean::__getClass(),
+            PersistenceUnit::ANNOTATION => PersistenceUnit::__getClass()
         );
 
         // create a reflection class
@@ -177,7 +210,8 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('BeanDescriptorTest', $this->descriptor->getName());
         $this->assertCount(1, $this->descriptor->getEpbReferences());
         $this->assertCount(1, $this->descriptor->getResReferences());
-        $this->assertCount(2, $this->descriptor->getReferences());
+        $this->assertCount(1, $this->descriptor->getPersistenceUnitReferences());
+        $this->assertCount(3, $this->descriptor->getReferences());
     }
 
     /**
@@ -220,7 +254,8 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
         // initialize the annotation aliases
         $aliases = array(
             Resource::ANNOTATION => Resource::__getClass(),
-            EnterpriseBean::ANNOTATION => EnterpriseBean::__getClass()
+            EnterpriseBean::ANNOTATION => EnterpriseBean::__getClass(),
+            PersistenceUnit::ANNOTATION => PersistenceUnit::__getClass()
         );
 
         // create a reflection class
@@ -241,7 +276,8 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('BeanDescriptorTest', $this->descriptor->getName());
         $this->assertCount(1, $this->descriptor->getEpbReferences());
         $this->assertCount(1, $this->descriptor->getResReferences());
-        $this->assertCount(2, $this->descriptor->getReferences());
+        $this->assertCount(1, $this->descriptor->getPersistenceUnitReferences());
+        $this->assertCount(3, $this->descriptor->getReferences());
     }
 
     /**
@@ -264,7 +300,8 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('AppserverIo\Apps\Example\Services\SampleProcessor', $this->descriptor->getClassName());
         $this->assertCount(2, $this->descriptor->getEpbReferences());
         $this->assertCount(2, $this->descriptor->getResReferences());
-        $this->assertCount(4, $this->descriptor->getReferences());
+        $this->assertCount(1, $this->descriptor->getPersistenceUnitReferences());
+        $this->assertCount(5, $this->descriptor->getReferences());
     }
 
     /**
@@ -294,7 +331,8 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('AppserverIo\Apps\Example\Services\SampleProcessor', $this->descriptor->getClassName());
         $this->assertCount(2, $this->descriptor->getEpbReferences());
         $this->assertCount(3, $this->descriptor->getResReferences());
-        $this->assertCount(5, $this->descriptor->getReferences());
+        $this->assertCount(2, $this->descriptor->getPersistenceUnitReferences());
+        $this->assertCount(7, $this->descriptor->getReferences());
     }
 
     /**

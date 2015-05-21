@@ -363,7 +363,8 @@ class SessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('Stateless', $this->descriptor->getSessionType());
         $this->assertCount(1, $this->descriptor->getEpbReferences());
         $this->assertCount(1, $this->descriptor->getResReferences());
-        $this->assertCount(2, $this->descriptor->getReferences());
+        $this->assertCount(1, $this->descriptor->getPersistenceUnitReferences());
+        $this->assertCount(3, $this->descriptor->getReferences());
 
         // check for local/remote business interface has been initialized
         $this->assertSame('SampleProcessorLocalInterface', $this->descriptor->getLocal());
@@ -402,7 +403,8 @@ class SessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('Stateless', $this->descriptor->getSessionType());
         $this->assertCount(2, $this->descriptor->getEpbReferences());
         $this->assertCount(3, $this->descriptor->getResReferences());
-        $this->assertCount(5, $this->descriptor->getReferences());
+        $this->assertCount(2, $this->descriptor->getPersistenceUnitReferences());
+        $this->assertCount(7, $this->descriptor->getReferences());
 
         // check for initialized lifecycle callbacks
         $this->assertContains('initialize', $this->descriptor->getPostConstructCallbacks());

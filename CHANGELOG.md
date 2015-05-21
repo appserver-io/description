@@ -1,3 +1,13 @@
+# Version 1.2.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add persistence unit descriptor functionality for Doctrine integration
+
 # Version 1.1.0
 
 ## Bugfixes
