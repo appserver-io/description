@@ -41,6 +41,13 @@ abstract class BeanDescriptor implements BeanDescriptorInterface, DescriptorInte
 {
 
     /**
+     * Trait with functionality to handle bean, resource and persistence unit references.
+     *
+     * @var AppserverIo\Description\DescriptorReferencesTrait
+     */
+    use DescriptorReferencesTrait;
+
+    /**
      * The bean name.
      *
      * @var string
@@ -53,27 +60,6 @@ abstract class BeanDescriptor implements BeanDescriptorInterface, DescriptorInte
      * @var string
      */
     protected $className;
-
-    /**
-     * The array with the EPB references.
-     *
-     * @var array
-     */
-    protected $epbReferences = array();
-
-    /**
-     * The array with the resource references.
-     *
-     * @var array
-     */
-    protected $resReferences = array();
-
-    /**
-     * The array with the persistence unit references.
-     *
-     * @var array
-     */
-    protected $persistenceUnitReferences = array();
 
     /**
      * Sets the bean name.
@@ -120,118 +106,6 @@ abstract class BeanDescriptor implements BeanDescriptorInterface, DescriptorInte
     }
 
     /**
-     * Adds a EPB reference configuration.
-     *
-     * @param \AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface $epbReference The EPB reference configuration
-     *
-     * @return void
-     */
-    public function addEpbReference(EpbReferenceDescriptorInterface $epbReference)
-    {
-        $this->epbReferences[$epbReference->getName()] = $epbReference;
-    }
-
-    /**
-     * Sets the array with the EPB references.
-     *
-     * @param array $epbReferences The EPB references
-     *
-     * @return void
-     */
-    public function setEpbReferences(array $epbReferences)
-    {
-        $this->epbReferences = $epbReferences;
-    }
-
-    /**
-     * The array with the EPB references.
-     *
-     * @return array The EPB references
-     */
-    public function getEpbReferences()
-    {
-        return $this->epbReferences;
-    }
-
-    /**
-     * Adds a resource reference configuration.
-     *
-     * @param \AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface $resReference The resource reference configuration
-     *
-     * @return void
-     */
-    public function addResReference(ResReferenceDescriptorInterface $resReference)
-    {
-        $this->resReferences[$resReference->getName()] = $resReference;
-    }
-
-    /**
-     * Sets the array with the resource references.
-     *
-     * @param array $resReferences The resource references
-     *
-     * @return void
-     */
-    public function setResReferences(array $resReferences)
-    {
-        $this->resReferences = $resReferences;
-    }
-
-    /**
-     * The array with the resource references.
-     *
-     * @return array The resource references
-     */
-    public function getResReferences()
-    {
-        return $this->resReferences;
-    }
-
-    /**
-     * Adds a persistence unit reference configuration.
-     *
-     * @param \AppserverIo\Psr\EnterpriseBeans\Description\PersistenceUnitReferenceDescriptorInterface $persistenceUnitReference The persistence unit reference configuration
-     *
-     * @return void
-     */
-    public function addPersistenceUnitReference(PersistenceUnitReferenceDescriptorInterface $persistenceUnitReference)
-    {
-        $this->persistenceUnitReferences[$persistenceUnitReference->getName()] = $persistenceUnitReference;
-    }
-
-    /**
-     * Sets the array with the persistence unit references.
-     *
-     * @param array $persistenceUnitReferences The persistence unit references
-     *
-     * @return void
-     */
-    public function setPersistenceUnitReferences(array $persistenceUnitReferences)
-    {
-        $this->persistenceUnitReferences = $persistenceUnitReferences;
-    }
-
-    /**
-     * The array with the persistence unit references.
-     *
-     * @return array The persistence unit references
-     */
-    public function getPersistenceUnitReferences()
-    {
-        return $this->persistenceUnitReferences;
-    }
-
-    /**
-     * Returns an array with the merge EBP, resource and persistence unit references.
-     *
-     * @return array The array with the merge all bean references
-     */
-    public function getReferences()
-    {
-        return array_merge($this->epbReferences, $this->resReferences, $this->persistenceUnitReferences);
-    }
-
-    /**
      * Returns a new annotation instance for the passed reflection class.
      *
      * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the bean configuration
@@ -270,41 +144,8 @@ abstract class BeanDescriptor implements BeanDescriptorInterface, DescriptorInte
             $this->setName($reflectionClass->getShortName());
         }
 
-        // we've to check for property annotations that references EPB or resources
-        foreach ($reflectionClass->getProperties() as $reflectionProperty) {
-            // load the EPB references
-            if ($epbReference = EpbReferenceDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty)) {
-                $this->addEpbReference($epbReference);
-            }
-
-            // load the resource references
-            if ($resReference = ResReferenceDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty)) {
-                $this->addResReference($resReference);
-            }
-
-            // load the persistence unit references
-            if ($persistenceUnitReference = PersistenceUnitReferenceDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty)) {
-                $this->addPersistenceUnitReference($persistenceUnitReference);
-            }
-        }
-
-        // we've to check for method annotations that references EPB or resources
-        foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
-            // load the EPB references
-            if ($epbReference = EpbReferenceDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
-                $this->addEpbReference($epbReference);
-            }
-
-            // load the resource references
-            if ($resReference = ResReferenceDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
-                $this->addResReference($resReference);
-            }
-
-            // load the persistence unit references
-            if ($persistenceUnitReference = PersistenceUnitReferenceDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
-                $this->addPersistenceUnitReference($persistenceUnitReference);
-            }
-        }
+        // initialize references from the passed reflection class
+        $this->referencesFromReflectionClass($reflectionClass);
     }
 
     /**
@@ -330,20 +171,8 @@ abstract class BeanDescriptor implements BeanDescriptorInterface, DescriptorInte
             $this->setName(DescriptorUtil::trim($name));
         }
 
-        // initialize the enterprise bean references
-        foreach ($node->xpath('a:epb-ref') as $epbReference) {
-            $this->addEpbReference(EpbReferenceDescriptor::newDescriptorInstance()->fromDeploymentDescriptor($epbReference));
-        }
-
-        // initialize the resource references
-        foreach ($node->xpath('a:res-ref') as $resReference) {
-            $this->addResReference(ResReferenceDescriptor::newDescriptorInstance()->fromDeploymentDescriptor($resReference));
-        }
-
-        // initialize the resource references
-        foreach ($node->xpath('a:persistence-unit-ref') as $persistenceUnitReference) {
-            $this->addPersistenceUnitReference(PersistenceUnitReferenceDescriptor::newDescriptorInstance()->fromDeploymentDescriptor($persistenceUnitReference));
-        }
+        // initialize references from the passed deployment descriptor
+        $this->referencesFromDeploymentDescriptor($node);
     }
 
     /**
