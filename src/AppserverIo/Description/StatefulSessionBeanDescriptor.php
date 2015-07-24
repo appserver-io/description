@@ -251,6 +251,11 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
         // merge the default bean members by invoking the parent method
         parent::merge($beanDescriptor);
 
+        // only merge the more special configuration fields if the desciptor has the right type
+        if (!$beanDescriptor instanceof StatefulSessionBeanDescriptorInterface) {
+            return;
+        }
+
         // merge the post detach callback method names
         foreach ($beanDescriptor->getPostDetachCallbacks() as $postDetachCallback) {
             if (in_array($postDetachCallback, $this->postDetachCallbacks) === false) {
