@@ -1,4 +1,4 @@
-# Version 1.2.1
+# Version 1.2.2
 
 ## Bugfixes
 
@@ -7,6 +7,16 @@
 ## Features
 
 * Use value of beanName instead of name when beanInterface value is not specified
+
+# Version 1.2.1
+
+## Bugfixes
+
+* Introduced type check on merge to avoid Fatal Errors on mismatches
+
+## Features
+
+* None
 
 # Version 1.2.0
 

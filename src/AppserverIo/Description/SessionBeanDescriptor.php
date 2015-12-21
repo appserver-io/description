@@ -313,6 +313,11 @@ abstract class SessionBeanDescriptor extends BeanDescriptor implements SessionBe
         // merge the default bean members by invoking the parent method
         parent::merge($beanDescriptor);
 
+        // only merge the more special configuration fields if the desciptor has the right type
+        if (!$beanDescriptor instanceof SessionBeanDescriptorInterface) {
+            return;
+        }
+
         // merge the session type
         if ($sessionType = $beanDescriptor->getSessionType()) {
             $this->setSessionType($sessionType);

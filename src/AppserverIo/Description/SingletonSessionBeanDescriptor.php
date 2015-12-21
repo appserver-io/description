@@ -187,6 +187,11 @@ class SingletonSessionBeanDescriptor extends SessionBeanDescriptor implements Si
         // merge the default bean members by invoking the parent method
         parent::merge($beanDescriptor);
 
+        // only merge the more special configuration fields if the desciptor has the right type
+        if (!$beanDescriptor instanceof SingletonSessionBeanDescriptorInterface) {
+            return;
+        }
+
         // merge the startup flag
         $this->setInitOnStartup($beanDescriptor->isInitOnStartup());
     }
