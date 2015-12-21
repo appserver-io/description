@@ -281,7 +281,7 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface, Descrip
         if ($beanNameAttribute = $annotationInstance->getBeanName()) {
             $this->setBeanName($beanNameAttribute);
         } else {
-            $this->setBeanName(ucfirst($this->getName()));
+            $this->setBeanName(ucfirst(str_replace(EpbReferenceDescriptor::REF_DIRECTORY . '/', '', $this->getName())));
         }
 
         // register the bean with the interface defined as @EnterpriseBean(beanInterface=****)
@@ -347,14 +347,14 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface, Descrip
         if ($beanNameAttribute = $annotationInstance->getBeanName()) {
             $this->setBeanName($beanNameAttribute);
         } else {
-            $this->setBeanName(ucfirst($this->getBeanName()));
+            $this->setBeanName(ucfirst(str_replace(EpbReferenceDescriptor::REF_DIRECTORY . '/', '', $this->getName())));
         }
 
         // register the bean with the interface defined as @EnterpriseBean(beanInterface=****)
         if ($beanInterfaceAttribute = $annotationInstance->getBeanInterface()) {
             $this->setBeanInterface($beanInterfaceAttribute);
         } else {
-            $this->setBeanInterface(sprintf('%sLocal', ucfirst($this->getName())));
+            $this->setBeanInterface(sprintf('%sLocal', ucfirst($this->getBeanName())));
         }
 
         // register the bean with the lookup name defined as @EnterpriseBean(lookup=****)
