@@ -277,20 +277,19 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface, Descrip
             $this->setName(sprintf('%s/%s', EpbReferenceDescriptor::REF_DIRECTORY, ucfirst($reflectionProperty->getPropertyName())));
         }
 
+        // register the bean with the name defined as @EnterpriseBean(beanName=****)
+        if ($beanNameAttribute = $annotationInstance->getBeanName()) {
+            $this->setBeanName($beanNameAttribute);
+        } else {
+            $this->setBeanName(ucfirst($this->getName()));
+        }
+
         // register the bean with the interface defined as @EnterpriseBean(beanInterface=****)
         if ($beanInterfaceAttribute = $annotationInstance->getBeanInterface()) {
             $this->setBeanInterface($beanInterfaceAttribute);
         } else {
             // use the property name as local business interface
-            $this->setBeanInterface(sprintf('%sLocal', ucfirst($reflectionProperty->getPropertyName())));
-        }
-
-        // register the bean with the name defined as @EnterpriseBean(beanName=****)
-        if ($beanNameAttribute = $annotationInstance->getBeanName()) {
-            $this->setBeanName($beanNameAttribute);
-        } else {
-            // use the property name
-            $this->setBeanName(ucfirst($reflectionProperty->getPropertyName()));
+            $this->setBeanInterface(sprintf('%sLocal', ucfirst($this->getBeanName())));
         }
 
         // register the bean with the lookup name defined as @EnterpriseBean(lookup=****)
@@ -344,26 +343,18 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface, Descrip
             }
         }
 
-        // register the bean with the interface defined as @EnterpriseBean(beanInterface=****)
-        if ($beanInterfaceAttribute = $annotationInstance->getBeanInterface()) {
-            $this->setBeanInterface($beanInterfaceAttribute);
-        } else {
-            // use the name of the first parameter as local business interface
-            foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-                $this->setBeanInterface(sprintf('%sLocal', ucfirst($reflectionParameter->getParameterName())));
-                break;
-            }
-        }
-
         // register the bean with the name defined as @EnterpriseBean(beanName=****)
         if ($beanNameAttribute = $annotationInstance->getBeanName()) {
             $this->setBeanName($beanNameAttribute);
         } else {
-            // use the name of the first parameter as local business interface
-            foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-                $this->setBeanName(ucfirst($reflectionParameter->getParameterName()));
-                break;
-            }
+            $this->setBeanName(ucfirst($this->getBeanName()));
+        }
+
+        // register the bean with the interface defined as @EnterpriseBean(beanInterface=****)
+        if ($beanInterfaceAttribute = $annotationInstance->getBeanInterface()) {
+            $this->setBeanInterface($beanInterfaceAttribute);
+        } else {
+            $this->setBeanInterface(sprintf('%sLocal', ucfirst($this->getName())));
         }
 
         // register the bean with the lookup name defined as @EnterpriseBean(lookup=****)

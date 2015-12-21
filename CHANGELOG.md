@@ -1,3 +1,13 @@
+# Version 1.2.1
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Use value of beanName instead of name when beanInterface value is not specified
+
 # Version 1.2.0
 
 ## Bugfixes
