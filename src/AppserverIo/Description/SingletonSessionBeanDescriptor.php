@@ -23,6 +23,7 @@ namespace AppserverIo\Description;
 use AppserverIo\Lang\String;
 use AppserverIo\Lang\Boolean;
 use AppserverIo\Lang\Reflection\ClassInterface;
+use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Startup;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Singleton;
 use AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface;
@@ -140,32 +141,30 @@ class SingletonSessionBeanDescriptor extends SessionBeanDescriptor implements Si
     }
 
     /**
-     * Initializes a bean descriptor instance from the passed deployment descriptor node.
+     * Initializes a bean descriptor instance from the passed configuration node.
      *
-     * @param \SimpleXmlElement $node The deployment node with the bean configuration
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The configuration node with the bean configuration
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\Description\SingletonSessionBeanDescriptorInterface|null The initialized descriptor instance
      */
-    public function fromDeploymentDescriptor(\SimpleXmlElement $node)
+    public function fromConfiguration(NodeInterface $node)
     {
 
-        // query if we've a <session> descriptor node
-        if ($node->getName() !== 'session') {
-            // if not, do nothing
+        // query whether we've to handle the passed configuration or not
+        if ($node->getNodeName() !== 'session') {
             return;
         }
 
-        // query if the session type matches
-        if ((string) $node->{'session-type'} !== SingletonSessionBeanDescriptor::SESSION_TYPE) {
-            // if not, do nothing
+        // query wheter or not the session type matches
+        if ((string) $node->getSessionType() !== SingletonSessionBeanDescriptor::SESSION_TYPE) {
             return;
         }
 
         // initialize the descriptor instance
-        parent::fromDeploymentDescriptor($node);
+        parent::fromConfiguration($node);
 
         // query for the startup flag
-        if ($initOnStartup = (string) $node->{'init-on-startup'}) {
+        if ($initOnStartup = (string) $node->getInitOnStartup()) {
             $this->setInitOnStartup(Boolean::valueOf(new String($initOnStartup))->booleanValue());
         }
 

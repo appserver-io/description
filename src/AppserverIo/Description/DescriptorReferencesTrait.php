@@ -21,6 +21,7 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ClassInterface;
+use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\PersistenceUnitReferenceDescriptorInterface;
@@ -193,6 +194,32 @@ trait DescriptorReferencesTrait
         // initialize the resource references
         foreach ($node->xpath('a:persistence-unit-ref') as $persistenceUnitReference) {
             $this->addPersistenceUnitReference(PersistenceUnitReferenceDescriptor::newDescriptorInstance()->fromDeploymentDescriptor($persistenceUnitReference));
+        }
+    }
+
+    /**
+     * Initializes a bean configuration instance with the references of the passed configuration node.
+     *
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The configuration node with the bean configuration
+     *
+     * @return void
+     */
+    public function referencesFromConfiguration(NodeInterface $node)
+    {
+
+        // initialize the enterprise bean references
+        foreach ($node->getEpbRefs() as $epbReference) {
+            $this->addEpbReference(EpbReferenceDescriptor::newDescriptorInstance()->fromConfiguration($epbReference));
+        }
+
+        // initialize the resource references
+        foreach ($node->getResRefs() as $resReference) {
+            $this->addResReference(ResReferenceDescriptor::newDescriptorInstance()->fromConfiguration($resReference));
+        }
+
+        // initialize the resource references
+        foreach ($node->getPersistenceUnitRefs() as $persistenceUnitReference) {
+            $this->addPersistenceUnitReference(PersistenceUnitReferenceDescriptor::newDescriptorInstance()->fromConfiguration($persistenceUnitReference));
         }
     }
 

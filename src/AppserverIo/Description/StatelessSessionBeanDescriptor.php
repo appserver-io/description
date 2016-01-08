@@ -21,6 +21,7 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ClassInterface;
+use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateless;
 use AppserverIo\Psr\EnterpriseBeans\Description\StatelessSessionBeanDescriptorInterface;
 
@@ -101,29 +102,27 @@ class StatelessSessionBeanDescriptor extends SessionBeanDescriptor implements St
     }
 
     /**
-     * Initializes a bean descriptor instance from the passed deployment descriptor node.
+     * Initializes a bean descriptor instance from the passed configuration node.
      *
-     * @param \SimpleXmlElement $node The deployment node with the bean configuration
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The configuration node with the bean configuration
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\Description\StatelessSessionBeanDescriptorInterface|null The initialized descriptor instance
      */
-    public function fromDeploymentDescriptor(\SimpleXmlElement $node)
+    public function fromConfiguration(NodeInterface $node)
     {
 
-        // query if we've a <session> descriptor node
-        if ($node->getName() !== 'session') {
-            // if not, do nothing
+        // query whether we've to handle the passed configuration or not
+        if ($node->getNodeName() !== 'session') {
             return;
         }
 
-        // query if the session type matches
-        if ((string) $node->{'session-type'} !== StatelessSessionBeanDescriptor::SESSION_TYPE) {
-            // if not, do nothing
+        // query wheter or not the session type matches
+        if ((string) $node->getSessionType() !== StatelessSessionBeanDescriptor::SESSION_TYPE) {
             return;
         }
 
         // initialize the descriptor instance
-        parent::fromDeploymentDescriptor($node);
+        parent::fromConfiguration($node);
 
         // return the instance
         return $this;

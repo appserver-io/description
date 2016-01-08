@@ -21,6 +21,7 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ClassInterface;
+use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateful;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PreAttach;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PostDetach;
@@ -199,38 +200,40 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
     }
 
     /**
-     * Initializes a bean descriptor instance from the passed deployment descriptor node.
+     * Initializes a bean descriptor instance from the passed configuration node.
      *
-     * @param \SimpleXmlElement $node The deployment node with the bean configuration
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The configuration node with the bean configuration
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\Description\StatefulSessionBeanDescriptorInterface|null The initialized descriptor instance
      */
-    public function fromDeploymentDescriptor(\SimpleXmlElement $node)
+    public function fromConfiguration(NodeInterface $node)
     {
 
-        // query if we've a <session> descriptor node
-        if ($node->getName() !== 'session') {
-            // if not, do nothing
+        // query whether we've to handle the passed configuration or not
+        if ($node->getNodeName() !== 'session') {
             return;
         }
 
-        // query if the session type matches
-        if ((string) $node->{'session-type'} !== StatefulSessionBeanDescriptor::SESSION_TYPE) {
-            // if not, do nothing
+        // query wheter or not the session type matches
+        if ((string) $node->getSessionType() !== StatefulSessionBeanDescriptor::SESSION_TYPE) {
             return;
         }
 
         // initialize the descriptor instance
-        parent::fromDeploymentDescriptor($node);
+        parent::fromConfiguration($node);
 
         // initialize the post detach callback methods
-        foreach ($node->xpath('a:post-detach/a:lifecycle-callback-method') as $postDetachCallback) {
-            $this->addPostDetachCallback(DescriptorUtil::trim((string) $postDetachCallback));
+        if ($postDetach = $node->getPostDetach()) {
+            foreach ($postDetach->getLifecycleCallbackMethods() as $postDetachCallback) {
+                $this->addPostDetachCallback(DescriptorUtil::trim((string) $postDetachCallback));
+            }
         }
 
         // initialize the pre attach callback methods
-        foreach ($node->xpath('a:pre-attach/a:lifecycle-callback-method') as $preAttachCallback) {
-            $this->addPreAttachCallback(DescriptorUtil::trim((string) $preAttachCallback));
+        if ($preAttach = $node->getPreAttach()) {
+            foreach ($preAttach->getLifecycleCallbackMethods() as $preAttachCallback) {
+                $this->addPreAttachCallback(DescriptorUtil::trim((string) $preAttachCallback));
+            }
         }
 
         // return the instance
@@ -258,14 +261,14 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
 
         // merge the post detach callback method names
         foreach ($beanDescriptor->getPostDetachCallbacks() as $postDetachCallback) {
-            if (in_array($postDetachCallback, $this->postDetachCallbacks) === false) {
+            if (in_array($postDetachCallback, $this->getPostDetachCallbacks()) === false) {
                 $this->addPostDetachCallback($postDetachCallback);
             }
         }
 
         // merge the pre attach callback method names
         foreach ($beanDescriptor->getPreAttachCallbacks() as $preAttachCallback) {
-            if (in_array($preAttachCallback, $this->preAttachCallbacks) === false) {
+            if (in_array($preAttachCallback, $this->getPreAttachCallbacks()) === false) {
                 $this->addPreAttachCallback($preAttachCallback);
             }
         }

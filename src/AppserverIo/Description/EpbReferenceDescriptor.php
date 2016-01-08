@@ -23,6 +23,7 @@ namespace AppserverIo\Description;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\MethodInterface;
 use AppserverIo\Lang\Reflection\PropertyInterface;
+use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
 use AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface;
@@ -376,40 +377,39 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface, Descrip
 
     /**
      * Creates and initializes a beans reference configuration instance from the passed
-     * deployment node.
+     * configuration node.
      *
-     * @param \SimpleXmlElement $node The deployment node with the beans reference configuration
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The configuration node  with the beans reference configuration
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface|null The initialized descriptor instance
      */
-    public function fromDeploymentDescriptor(\SimpleXmlElement $node)
+    public function fromConfiguration(NodeInterface $node)
     {
 
-        // query if we've a <epb-ref> descriptor node
-        if ($node->getName() !== 'epb-ref') {
-            // if not, do nothing
+        // query whether we've to handle the passed configuration or not
+        if ($node->getNodeName() !== 'epb-ref') {
             return;
         }
 
         // query for the reference name
-        if ($name = (string) $node->{'epb-ref-name'}) {
+        if ($name = (string) $node->getEpbRefName()) {
             $this->setName(sprintf('%s/%s', EpbReferenceDescriptor::REF_DIRECTORY, $name));
         }
 
         // query for the bean name and set it
-        if ($beanName = (string) $node->{'epb-link'}) {
+        if ($beanName = (string) $node->getEpbLink()) {
             $this->setBeanName($beanName);
         }
 
         // query for the lookup name and set it
-        if ($lookup = (string) $node->{'lookup-name'}) {
+        if ($lookup = (string) $node->getLookupName()) {
             $this->setLookup($lookup);
         }
 
         // query for the bean interface and set it
-        if ($beanInterface = (string) $node->{'local'}) {
+        if ($beanInterface = (string) $node->getLocal()) {
             $this->setBeanInterface($beanInterface);
-        } elseif ($beanInterface = (string) $node->{'remote'}) {
+        } elseif ($beanInterface = (string) $node->getRemote()) {
             $this->setBeanInterface($beanInterface);
         } else {
             // use the bean name as local interface
@@ -417,12 +417,12 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface, Descrip
         }
 
         // query for the description and set it
-        if ($description = (string) $node->{'description'}) {
+        if ($description = (string) $node->getDescription()) {
             $this->setDescription($description);
         }
 
         // query for the injection target
-        if ($injectionTarget = $node->{'injection-target'}) {
+        if ($injectionTarget = $node->getInjectionTarget()) {
             $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromDeploymentDescriptor($injectionTarget));
         }
 

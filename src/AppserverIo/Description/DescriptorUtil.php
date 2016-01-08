@@ -20,12 +20,6 @@
 
 namespace AppserverIo\Description;
 
-use AppserverIo\Lang\Reflection\ClassInterface;
-use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
-use AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface;
-use AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface;
-use AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface;
-
 /**
  * Abstract class for all bean descriptors.
  *

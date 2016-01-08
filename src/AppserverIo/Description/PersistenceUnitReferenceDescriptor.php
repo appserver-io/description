@@ -23,6 +23,7 @@ namespace AppserverIo\Description;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\MethodInterface;
 use AppserverIo\Lang\Reflection\PropertyInterface;
+use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
 use AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface;
@@ -248,33 +249,32 @@ class PersistenceUnitReferenceDescriptor implements PersistenceUnitReferenceDesc
 
     /**
      * Creates and initializes a beans reference configuration instance from the passed
-     * deployment node.
+     * configuration node.
      *
-     * @param \SimpleXmlElement $node The deployment node with the beans reference configuration
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The configuration node with the beans reference configuration
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface|null The initialized descriptor instance
      */
-    public function fromDeploymentDescriptor(\SimpleXmlElement $node)
+    public function fromConfiguration(NodeInterface $node)
     {
 
-        // query if we've a <res-ref> descriptor node
-        if ($node->getName() !== 'persistence-unit-ref') {
-            // if not, do nothing
+        // query whether we've to handle the passed configuration or not
+        if ($node->getNodeName() !== 'persistence-unit-ref') {
             return;
         }
 
         // query for the reference name
-        if ($name = (string) $node->{'persistence-unit-ref-name'}) {
+        if ($name = (string) $node->getPersistenceUnitRefName()) {
             $this->setName(sprintf('%s/%s', PersistenceUnitReferenceDescriptor::REF_DIRECTORY, $name));
         }
 
         // query for the reference type
-        if ($unitName = (string) $node->{'persistence-unit-name'}) {
+        if ($unitName = (string) $node->getPersistenceUnitName()) {
             $this->setUnitName($unitName);
         }
 
         // query for the injection target
-        if ($injectionTarget = $node->{'injection-target'}) {
+        if ($injectionTarget = $node->getInjectionTarget()) {
             $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromDeploymentDescriptor($injectionTarget));
         }
 

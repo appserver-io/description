@@ -21,6 +21,7 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ClassInterface;
+use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\MessageDriven;
 use AppserverIo\Psr\EnterpriseBeans\Description\MessageDrivenBeanDescriptorInterface;
 
@@ -83,23 +84,22 @@ class MessageDrivenBeanDescriptor extends BeanDescriptor implements MessageDrive
     }
 
     /**
-     * Initializes a bean descriptor instance from the passed deployment descriptor node.
+     * Initializes a bean descriptor instance from the passed configuration node.
      *
-     * @param \SimpleXmlElement $node The deployment node with the bean configuration
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The configuration node with the bean configuration
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\Description\MessageDrivenBeanDescriptorInterface|null The initialized descriptor instance
      */
-    public function fromDeploymentDescriptor(\SimpleXmlElement $node)
+    public function fromConfiguration(NodeInterface $node)
     {
 
-        // query if we've a <message-driven> descriptor node
-        if ($node->getName() !== 'message-driven') {
-            // if not, do nothing
+        // query whether we've to handle the passed configuration or not
+        if ($node->getNodeName() !== 'message-driven') {
             return;
         }
 
         // initialize the descriptor instance
-        parent::fromDeploymentDescriptor($node);
+        parent::fromConfiguration($node);
 
         // return the instance
         return $this;
