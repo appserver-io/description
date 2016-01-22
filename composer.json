@@ -4,7 +4,8 @@
 	"homepage" : "https://github.com/appserver-io/description",
 	"license" : "OSL-3.0",
 	"require" : {
-		"php" : ">=5.4.0"
+		"php" : ">=5.4.0",
+		"rhumsaa/uuid" : "~2.4"
 	},
 	"require-dev" : {
 		"appserver-io/build" : "~1.0",

@@ -27,6 +27,8 @@ use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
 use AppserverIo\Lang\Reflection\ReflectionProperty;
 use AppserverIo\Lang\Reflection\ReflectionMethod;
+use AppserverIo\Description\Api\Node\ServletNode;
+use AppserverIo\Description\Api\Node\MessageDrivenNode;
 
 /**
  * Test implementation for the ServletDescriptor class implementation.
@@ -459,14 +461,15 @@ class ServletDescriptorTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testFromDeploymentDescriptor()
+    public function testFromConfiguration()
     {
 
-        // load the deployment descriptor node
-        $node = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-servlet.xml'));
+        // initialize the configuration
+        $node = new ServletNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-servlet.xml');
 
         // initialize the descriptor from the nodes data
-        $this->descriptor->fromDeploymentDescriptor($node);
+        $this->descriptor->fromConfiguration($node);
 
         // check if all values have been initialized
         $this->assertSame('AppserverIo\Example\DummyServlet', $this->descriptor->getClassName());
@@ -485,14 +488,15 @@ class ServletDescriptorTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testFromInvalidDeploymentDescriptor()
+    public function testFromConfigurationInvalid()
     {
 
-        // load the deployment descriptor node
-        $node = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-statefulsessionbean.xml'));
+        // initialize the configuration
+        $node = new MessageDrivenNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-messagedrivenbean.xml');
 
         // check that the descriptor has not been initialized
-        $this->assertNull($this->descriptor->fromDeploymentDescriptor($node));
+        $this->assertNull($this->descriptor->fromConfiguration($node));
     }
 
     /**
@@ -503,16 +507,20 @@ class ServletDescriptorTest extends \PHPUnit_Framework_TestCase
     public function testMergeSuccessful()
     {
 
-        // load the deployment descriptor node
-        $node = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-servlet.xml'));
+        // initialize the configuration
+        $node = new ServletNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-servlet.xml');
 
         // initialize the descriptor from the nodes data
-        $this->descriptor->fromDeploymentDescriptor($node);
+        $this->descriptor->fromConfiguration($node);
 
         // initialize the descriptor to merge
         $descriptorToMerge = $this->getMockForAbstractClass('AppserverIo\Description\ServletDescriptor');
-        $nodeToMerge = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-servlet-to-merge.xml'));
-        $descriptorToMerge->fromDeploymentDescriptor($nodeToMerge);
+
+        // initialize the configuration of the descriptor to be merged
+        $nodeToMerge = new ServletNode();
+        $nodeToMerge->initFromFile(__DIR__ . '/_files/dd-servlet-to-merge.xml');
+        $descriptorToMerge->fromConfiguration($nodeToMerge);
 
         // we add a dummy URL pattern => because parsing from deployment descriptor is NOT possible
         $descriptorToMerge->addUrlPattern('/index*');
@@ -543,16 +551,20 @@ class ServletDescriptorTest extends \PHPUnit_Framework_TestCase
     public function testMergeWithException()
     {
 
-        // load the deployment descriptor node
-        $node = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-servlet.xml'));
+        // initialize the configuration
+        $node = new ServletNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-servlet.xml');
 
         // initialize the descriptor from the nodes data
-        $this->descriptor->fromDeploymentDescriptor($node);
+        $this->descriptor->fromConfiguration($node);
 
         // initialize the descriptor to merge
         $descriptorToMerge = $this->getMockForAbstractClass('AppserverIo\Description\ServletDescriptor');
-        $nodeToMerge = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-servlet-to-merge-with-exception.xml'));
-        $descriptorToMerge->fromDeploymentDescriptor($nodeToMerge);
+
+        // initialize the configuration of the descriptor to be merged
+        $nodeToMerge = new ServletNode();
+        $nodeToMerge->initFromFile(__DIR__ . '/_files/dd-servlet-to-merge-with-exception.xml');
+        $descriptorToMerge->fromConfiguration($nodeToMerge);
 
         // merge the descriptors
         $this->descriptor->merge($descriptorToMerge);

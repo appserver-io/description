@@ -23,9 +23,9 @@ namespace AppserverIo\Description;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\MethodInterface;
 use AppserverIo\Lang\Reflection\PropertyInterface;
-use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface;
+use AppserverIo\Description\Configuration\InjectionTargetConfigurationInterface;
 
 /**
  * Utility class that stores a beans injection target configuration.
@@ -190,25 +190,25 @@ class InjectionTargetDescriptor implements InjectionTargetDescriptorInterface, D
      * Creates and initializes a beans injection target configuration instance from the passed
      * configuration node instance.
      *
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The configuration node with the beans injection target configuration
+     * @param \AppserverIo\Description\Configuration\InjectionTargetConfigurationInterface $configuration The configuration node with the beans injection target configuration
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface|null The initialized descriptor instance
      */
-    public function fromConfiguration(NodeInterface $node)
+    public function fromConfiguration(InjectionTargetConfigurationInterface $configuration)
     {
 
         // query for the target class name we want to inject to
-        if ($targetClass = (string) $node->getInjectionTargetClass()) {
+        if ($targetClass = (string) $configuration->getInjectionTargetClass()) {
             $this->setTargetClass($targetClass);
         }
 
         // query for the target property name we want to inject to
-        if ($targetProperty = (string) $node->getInjectionTargetProperty()) {
+        if ($targetProperty = (string) $configuration->getInjectionTargetProperty()) {
             $this->setTargetProperty($targetProperty);
         }
 
         // query for the target method we want to use for injection
-        if ($targetMethod = (string) $node->getInjectionTargetMethod()) {
+        if ($targetMethod = (string) $configuration->getInjectionTargetMethod()) {
             $this->setTargetMethod($targetMethod);
         }
 

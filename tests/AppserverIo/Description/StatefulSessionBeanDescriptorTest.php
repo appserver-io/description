@@ -24,6 +24,8 @@ use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateful;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PreAttach;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PostDetach;
+use AppserverIo\Description\Api\Node\SessionNode;
+use AppserverIo\Description\Api\Node\MessageDrivenNode;
 
 /**
  * Test implementation for the StatefulSessionBeanDescriptor class implementation.
@@ -119,17 +121,18 @@ class StatefulSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testFromDeploymentDescriptor()
+    public function testFromConfiguration()
     {
 
-        // load the deployment descriptor node
-        $node = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-statefulsessionbean.xml'));
+        // initialize the configuration
+        $node = new SessionNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-statefulsessionbean.xml');
 
         // initialize the descriptor from the nodes data
-        $this->descriptor->fromDeploymentDescriptor($node);
+        $this->descriptor->fromConfiguration($node);
 
         // check that the descriptor has been initialized
-        $this->assertSame($this->descriptor, $this->descriptor->fromDeploymentDescriptor($node));
+        $this->assertSame($this->descriptor, $this->descriptor->fromConfiguration($node));
         $this->assertSame('UserProcessor', $this->descriptor->getName());
         $this->assertSame('AppserverIo\Apps\Example\Services\UserProcessor', $this->descriptor->getClassName());
 
@@ -144,14 +147,15 @@ class StatefulSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testFromWrongDeploymentDescriptor()
+    public function testFromConfigurationOtherBeanType()
     {
 
-        // load the deployment descriptor node
-        $node = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-messagedrivenbean.xml'));
+        // initialize the configuration
+        $node = new MessageDrivenNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-messagedrivenbean.xml');
 
         // check that the descriptor has not been initialized
-        $this->assertNull($this->descriptor->fromDeploymentDescriptor($node));
+        $this->assertNull($this->descriptor->fromConfiguration($node));
     }
 
     /**
@@ -159,14 +163,43 @@ class StatefulSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testFromInvalidDeploymentDescriptor()
+    public function testFromConfigurationInvalid()
     {
 
-        // load the deployment descriptor node
-        $node = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-sessionbean.xml'));
+        // initialize the configuration
+        $node = new SessionNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-sessionbean.xml');
 
         // check that the descriptor has not been initialized
-        $this->assertNull($this->descriptor->fromDeploymentDescriptor($node));
+        $this->assertNull($this->descriptor->fromConfiguration($node));
+    }
+
+    /**
+     * Tests that merging with a wrong deployment descriptor, e. g. a
+     * message driven bean, won't work.
+     *
+     * @return void
+     */
+    public function testMergeInvalid()
+    {
+
+        // initialize the configuration
+        $node = new SessionNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-statefulsessionbean.xml');
+
+        // initialize the descriptor from the nodes data
+        $this->descriptor->fromConfiguration($node);
+
+        // initialize the descriptor to merge
+        $descriptorToMerge = $this->getMockForAbstractClass('AppserverIo\Description\StatelessSessionBeanDescriptor');
+
+        $cloned = clone $this->descriptor;
+
+        // merge the descriptors
+        $this->descriptor->merge($descriptorToMerge);
+
+        // check if all values have been merged
+        $this->assertEquals($this->descriptor, $cloned);
     }
 
     /**
@@ -177,16 +210,20 @@ class StatefulSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
     public function testMergeSuccessful()
     {
 
-        // load the deployment descriptor node
-        $node = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-statefulsessionbean.xml'));
+        // initialize the configuration
+        $node = new SessionNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-statefulsessionbean.xml');
 
         // initialize the descriptor from the nodes data
-        $this->descriptor->fromDeploymentDescriptor($node);
+        $this->descriptor->fromConfiguration($node);
 
         // initialize the descriptor to merge
         $descriptorToMerge = $this->getMockForAbstractClass('AppserverIo\Description\StatefulSessionBeanDescriptor');
-        $nodeToMerge = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-statefulsessionbean-to-merge.xml'));
-        $descriptorToMerge->fromDeploymentDescriptor($nodeToMerge);
+
+        // initialize the configuration of the descriptor to be merged
+        $nodeToMerge = new SessionNode();
+        $nodeToMerge->initFromFile(__DIR__ . '/_files/dd-statefulsessionbean-to-merge.xml');
+        $descriptorToMerge->fromConfiguration($nodeToMerge);
 
         // merge the descriptors
         $this->descriptor->merge($descriptorToMerge);

@@ -21,12 +21,13 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ClassInterface;
-use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateful;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PreAttach;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PostDetach;
 use AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\StatefulSessionBeanDescriptorInterface;
+use AppserverIo\Description\Configuration\ConfigurationInterface;
+use AppserverIo\Description\Configuration\SessionConfigurationInterface;
 
 /**
  * Implementation for a stateful session bean descriptor.
@@ -202,35 +203,35 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
     /**
      * Initializes a bean descriptor instance from the passed configuration node.
      *
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The configuration node with the bean configuration
+     * @param \AppserverIo\Description\Configuration\ConfigurationInterface $configuration The configuration node with the bean configuration
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\Description\StatefulSessionBeanDescriptorInterface|null The initialized descriptor instance
      */
-    public function fromConfiguration(NodeInterface $node)
+    public function fromConfiguration(ConfigurationInterface $configuration)
     {
 
-        // query whether we've to handle the passed configuration or not
-        if ($node->getNodeName() !== 'session') {
+        // query whether or not we've a session bean configuration
+        if (!$configuration instanceof SessionConfigurationInterface) {
             return;
         }
 
         // query wheter or not the session type matches
-        if ((string) $node->getSessionType() !== StatefulSessionBeanDescriptor::SESSION_TYPE) {
+        if ((string) $configuration->getSessionType() !== StatefulSessionBeanDescriptor::SESSION_TYPE) {
             return;
         }
 
         // initialize the descriptor instance
-        parent::fromConfiguration($node);
+        parent::fromConfiguration($configuration);
 
         // initialize the post detach callback methods
-        if ($postDetach = $node->getPostDetach()) {
+        if ($postDetach = $configuration->getPostDetach()) {
             foreach ($postDetach->getLifecycleCallbackMethods() as $postDetachCallback) {
                 $this->addPostDetachCallback(DescriptorUtil::trim((string) $postDetachCallback));
             }
         }
 
         // initialize the pre attach callback methods
-        if ($preAttach = $node->getPreAttach()) {
+        if ($preAttach = $configuration->getPreAttach()) {
             foreach ($preAttach->getLifecycleCallbackMethods() as $preAttachCallback) {
                 $this->addPreAttachCallback(DescriptorUtil::trim((string) $preAttachCallback));
             }
@@ -251,13 +252,13 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
     public function merge(BeanDescriptorInterface $beanDescriptor)
     {
 
-        // merge the default bean members by invoking the parent method
-        parent::merge($beanDescriptor);
-
         // only merge the more special configuration fields if the desciptor has the right type
         if (!$beanDescriptor instanceof StatefulSessionBeanDescriptorInterface) {
             return;
         }
+
+        // merge the default bean members by invoking the parent method
+        parent::merge($beanDescriptor);
 
         // merge the post detach callback method names
         foreach ($beanDescriptor->getPostDetachCallbacks() as $postDetachCallback) {

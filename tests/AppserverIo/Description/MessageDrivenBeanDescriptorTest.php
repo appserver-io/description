@@ -22,6 +22,8 @@ namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\MessageDriven;
+use AppserverIo\Description\Api\Node\MessageDrivenNode;
+use AppserverIo\Description\Api\Node\SessionNode;
 
 /**
  * Test implementation for the MessageDrivenBeanDescriptor class implementation.
@@ -115,17 +117,18 @@ class MessageDrivenBeanDescriptorTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testFromDeploymentDescriptor()
+    public function testFromConfiguration()
     {
 
-        // load the deployment descriptor node
-        $node = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-messagedrivenbean.xml'));
+        // initialize the configuration
+        $node = new MessageDrivenNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-messagedrivenbean.xml');
 
         // initialize the descriptor from the nodes data
-        $this->descriptor->fromDeploymentDescriptor($node);
+        $this->descriptor->fromConfiguration($node);
 
         // check that the descriptor has been initialized
-        $this->assertSame($this->descriptor, $this->descriptor->fromDeploymentDescriptor($node));
+        $this->assertSame($this->descriptor, $this->descriptor->fromConfiguration($node));
         $this->assertSame('ImportReceiver', $this->descriptor->getName());
         $this->assertSame('AppserverIo\Apps\Example\MessageBeans\ImportReceiver', $this->descriptor->getClassName());
         $this->assertCount(0, $this->descriptor->getEpbReferences());
@@ -138,13 +141,14 @@ class MessageDrivenBeanDescriptorTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testFromInvalidDeploymentDescriptor()
+    public function testFromInvalidConfiguration()
     {
 
-        // load the deployment descriptor node
-        $node = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-sessionbean.xml'));
+        // initialize the configuration
+        $node = new SessionNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-statefulsessionbean.xml');
 
         // check that the descriptor has not been initialized
-        $this->assertNull($this->descriptor->fromDeploymentDescriptor($node));
+        $this->assertNull($this->descriptor->fromConfiguration($node));
     }
 }

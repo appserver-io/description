@@ -1,3 +1,13 @@
+# Version 2.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Using configuration based initialization and replace fromDeploymentDescriptor() with fromConfiguration() method
+
 # Version 1.2.2
 
 ## Bugfixes

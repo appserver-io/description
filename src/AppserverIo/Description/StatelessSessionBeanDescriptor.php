@@ -21,9 +21,10 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ClassInterface;
-use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateless;
 use AppserverIo\Psr\EnterpriseBeans\Description\StatelessSessionBeanDescriptorInterface;
+use AppserverIo\Description\Configuration\ConfigurationInterface;
+use AppserverIo\Description\Configuration\SessionConfigurationInterface;
 
 /**
  * Implementation for a stateless session bean descriptor.
@@ -104,25 +105,25 @@ class StatelessSessionBeanDescriptor extends SessionBeanDescriptor implements St
     /**
      * Initializes a bean descriptor instance from the passed configuration node.
      *
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The configuration node with the bean configuration
+     * @param \AppserverIo\Description\Configuration\ConfigurationInterface $configuration The configuration node with the bean configuration
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\Description\StatelessSessionBeanDescriptorInterface|null The initialized descriptor instance
      */
-    public function fromConfiguration(NodeInterface $node)
+    public function fromConfiguration(ConfigurationInterface $configuration)
     {
 
-        // query whether we've to handle the passed configuration or not
-        if ($node->getNodeName() !== 'session') {
+        // query whether or not we've a session bean configuration
+        if (!$configuration instanceof SessionConfigurationInterface) {
             return;
         }
 
         // query wheter or not the session type matches
-        if ((string) $node->getSessionType() !== StatelessSessionBeanDescriptor::SESSION_TYPE) {
+        if ((string) $configuration->getSessionType() !== StatelessSessionBeanDescriptor::SESSION_TYPE) {
             return;
         }
 
         // initialize the descriptor instance
-        parent::fromConfiguration($node);
+        parent::fromConfiguration($configuration);
 
         // return the instance
         return $this;

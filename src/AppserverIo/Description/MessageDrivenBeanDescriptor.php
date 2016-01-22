@@ -21,9 +21,10 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ClassInterface;
-use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\MessageDriven;
 use AppserverIo\Psr\EnterpriseBeans\Description\MessageDrivenBeanDescriptorInterface;
+use AppserverIo\Description\Configuration\ConfigurationInterface;
+use AppserverIo\Description\Configuration\MessageDrivenConfigurationInterface;
 
 /**
  * Implementation for message driven bean descriptor.
@@ -86,20 +87,20 @@ class MessageDrivenBeanDescriptor extends BeanDescriptor implements MessageDrive
     /**
      * Initializes a bean descriptor instance from the passed configuration node.
      *
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The configuration node with the bean configuration
+     * @param \AppserverIo\Description\Configuration\ConfigurationInterface $configuration The configuration node with the bean configuration
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\Description\MessageDrivenBeanDescriptorInterface|null The initialized descriptor instance
      */
-    public function fromConfiguration(NodeInterface $node)
+    public function fromConfiguration(ConfigurationInterface $configuration)
     {
 
-        // query whether we've to handle the passed configuration or not
-        if ($node->getNodeName() !== 'message-driven') {
+        // query whether or not we've a message driven bean configuration
+        if (!$configuration instanceof MessageDrivenConfigurationInterface) {
             return;
         }
 
         // initialize the descriptor instance
-        parent::fromConfiguration($node);
+        parent::fromConfiguration($configuration);
 
         // return the instance
         return $this;

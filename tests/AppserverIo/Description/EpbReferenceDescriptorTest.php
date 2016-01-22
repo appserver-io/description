@@ -24,6 +24,7 @@ use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Lang\Reflection\ReflectionMethod;
 use AppserverIo\Lang\Reflection\ReflectionProperty;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
+use AppserverIo\Description\Api\Node\EpbRefNode;
 
 /**
  * Test implementation for the EpbReferenceDescriptor class implementation.
@@ -375,14 +376,15 @@ class EpbReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testFromDeploymentDescriptor()
+    public function testFromConfiguration()
     {
 
-        // load the deployment descriptor node
-        $node = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-epb-ref.xml'));
+        // initialize the configuration
+        $node = new EpbRefNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-epb-ref.xml');
 
         // initialize the descriptor from the nodes data
-        $this->descriptor->fromDeploymentDescriptor($node);
+        $this->descriptor->fromConfiguration($node);
 
         // check if all values have been initialized
         $this->assertSame('env/UserProcessor', $this->descriptor->getName());
@@ -394,21 +396,6 @@ class EpbReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests that initialization from an invalid deployment descriptor won't work.
-     *
-     * @return void
-     */
-    public function testFromDeploymentDescriptorInvalid()
-    {
-
-        // load the deployment descriptor node
-        $node = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-messagedrivenbean.xml'));
-
-        // check that the descriptor has not been initialized
-        $this->assertNull($this->descriptor->fromDeploymentDescriptor($node));
-    }
-
-    /**
      * Tests if the merge method works successfully.
      *
      * @return void
@@ -416,16 +403,20 @@ class EpbReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
     public function testMergeSuccessful()
     {
 
-        // load the deployment descriptor node
-        $node = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-epb-ref.xml'));
+        // initialize the configuration
+        $node = new EpbRefNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-epb-ref.xml');
 
         // initialize the descriptor from the nodes data
-        $this->descriptor->fromDeploymentDescriptor($node);
+        $this->descriptor->fromConfiguration($node);
 
         // initialize the descriptor to merge
         $descriptorToMerge = $this->getMockForAbstractClass('AppserverIo\Description\EpbReferenceDescriptor');
-        $nodeToMerge = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-epb-ref-to-merge.xml'));
-        $descriptorToMerge->fromDeploymentDescriptor($nodeToMerge);
+
+        // initialize the configuration of the descriptor to be merged
+        $nodeToMerge = new EpbRefNode();
+        $nodeToMerge->initFromFile(__DIR__ . '/_files/dd-epb-ref-to-merge.xml');
+        $descriptorToMerge->fromConfiguration($nodeToMerge);
 
         // merge the descriptors
         $this->descriptor->merge($descriptorToMerge);

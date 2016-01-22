@@ -21,10 +21,10 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ClassInterface;
-use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
 use AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface;
+use AppserverIo\Description\Configuration\ConfigurationInterface;
 
 /**
  * Abstract class for all bean descriptors.
@@ -149,25 +149,25 @@ abstract class BeanDescriptor implements BeanDescriptorInterface, DescriptorInte
     /**
      * Initializes a bean configuration instance from the passed configuration node.
      *
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node
+     * @param \AppserverIo\Description\Configuration\ConfigurationInterface $configuration The bean configuration
      *
      * @return void
      */
-    public function fromConfiguration(NodeInterface $node)
+    public function fromConfiguration(ConfigurationInterface $configuration)
     {
 
         // query for the class name and set it
-        if ($className = (string) $node->getEpbClass()) {
+        if ($className = (string) $configuration->getEpbClass()) {
             $this->setClassName(DescriptorUtil::trim($className));
         }
 
         // query for the name and set it
-        if ($name = (string) $node->getEpbName()) {
+        if ($name = (string) $configuration->getEpbName()) {
             $this->setName(DescriptorUtil::trim($name));
         }
 
         // initialize references from the passed deployment descriptor
-        $this->referencesFromConfiguration($node);
+        $this->referencesFromConfiguration($configuration);
     }
 
     /**
