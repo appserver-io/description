@@ -22,6 +22,8 @@ namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Singleton;
+use AppserverIo\Description\Api\Node\SessionNode;
+use AppserverIo\Description\Api\Node\MessageDrivenNode;
 
 /**
  * Test implementation for the SingletonSessionBeanDescriptor class implementation.
@@ -117,17 +119,17 @@ class SingletonSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testFromDeploymentDescriptor()
+    public function testFromConfiguration()
     {
 
-        // load the deployment descriptor node
-        $node = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-singletonsessionbean.xml'));
+        // initialize the configuration
+        $node = new SessionNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-singletonsessionbean.xml');
 
         // initialize the descriptor from the nodes data
-        $this->descriptor->fromDeploymentDescriptor($node);
+        $this->descriptor->fromConfiguration($node);
 
         // check that the descriptor has been initialized
-        $this->assertSame($this->descriptor, $this->descriptor->fromDeploymentDescriptor($node));
         $this->assertSame('ASingletonProcessor', $this->descriptor->getName());
         $this->assertSame('AppserverIo\Apps\Example\Services\ASingletonProcessor', $this->descriptor->getClassName());
         $this->assertTrue($this->descriptor->isInitOnStartup());
@@ -142,14 +144,15 @@ class SingletonSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testFromWrongDeploymentDescriptor()
+    public function testFromConfigurationOtherBeanType()
     {
 
-        // load the deployment descriptor node
-        $node = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-messagedrivenbean.xml'));
+        // initialize the configuration
+        $node = new MessageDrivenNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-messagedrivenbean.xml');
 
         // check that the descriptor has not been initialized
-        $this->assertNull($this->descriptor->fromDeploymentDescriptor($node));
+        $this->assertNull($this->descriptor->fromConfiguration($node));
     }
 
     /**
@@ -157,14 +160,43 @@ class SingletonSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testFromInvalidDeploymentDescriptor()
+    public function testFromConfigurationInvalid()
     {
 
-        // load the deployment descriptor node
-        $node = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-statefulsessionbean.xml'));
+        // initialize the configuration
+        $node = new SessionNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-statefulsessionbean.xml');
 
         // check that the descriptor has not been initialized
-        $this->assertNull($this->descriptor->fromDeploymentDescriptor($node));
+        $this->assertNull($this->descriptor->fromConfiguration($node));
+    }
+
+    /**
+     * Tests that merging with a wrong deployment descriptor, e. g. a
+     * message driven bean, won't work.
+     *
+     * @return void
+     */
+    public function testMergeInvalid()
+    {
+
+        // initialize the configuration
+        $node = new SessionNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-singletonsessionbean.xml');
+
+        // initialize the descriptor from the nodes data
+        $this->descriptor->fromConfiguration($node);
+
+        // initialize the descriptor to merge
+        $descriptorToMerge = $this->getMockForAbstractClass('AppserverIo\Description\StatefulSessionBeanDescriptor');
+
+        $cloned = clone $this->descriptor;
+
+        // merge the descriptors
+        $this->descriptor->merge($descriptorToMerge);
+
+        // check if all values have been merged
+        $this->assertEquals($this->descriptor, $cloned);
     }
 
     /**
@@ -175,16 +207,20 @@ class SingletonSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
     public function testMergeSuccessful()
     {
 
-        // load the deployment descriptor node
-        $node = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-singletonsessionbean.xml'));
+        // initialize the configuration
+        $node = new SessionNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-singletonsessionbean.xml');
 
         // initialize the descriptor from the nodes data
-        $this->descriptor->fromDeploymentDescriptor($node);
+        $this->descriptor->fromConfiguration($node);
 
         // initialize the descriptor to merge
         $descriptorToMerge = $this->getMockForAbstractClass('AppserverIo\Description\SingletonSessionBeanDescriptor');
-        $nodeToMerge = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-singletonsessionbean-to-merge.xml'));
-        $descriptorToMerge->fromDeploymentDescriptor($nodeToMerge);
+
+        // initialize the configuration of the descriptor to be merged
+        $nodeToMerge = new SessionNode();
+        $nodeToMerge->initFromFile(__DIR__ . '/_files/dd-singletonsessionbean-to-merge.xml');
+        $descriptorToMerge->fromConfiguration($nodeToMerge);
 
         // merge the descriptors
         $this->descriptor->merge($descriptorToMerge);

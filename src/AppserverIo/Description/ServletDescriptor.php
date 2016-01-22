@@ -20,14 +20,13 @@
 
 namespace AppserverIo\Description;
 
+use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Psr\Servlet\ServletException;
 use AppserverIo\Psr\Servlet\Annotations\Route;
-use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\Servlet\Description\ServletDescriptorInterface;
-use AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface;
-use AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface;
-use AppserverIo\Psr\EnterpriseBeans\Description\PersistenceUnitReferenceDescriptorInterface;
+use AppserverIo\Description\Configuration\ServletConfigurationInterface;
+use AppserverIo\Description\Configuration\ConfigurationInterface;
 
 /**
  * A servlet descriptor implementation.
@@ -346,51 +345,47 @@ class ServletDescriptor implements ServletDescriptorInterface, DescriptorInterfa
     }
 
     /**
-     * Initializes a servlet descriptor instance from the passed deployment descriptor node.
+     * Initializes a servlet descriptor instance from the passed configuration node.
      *
-     * @param \SimpleXmlElement $node The deployment node with the servlet description
+     * @param \AppserverIo\Description\Configuration\ConfigurationInterface $configuration The servlet configuration
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\Description\ServletDescriptorInterface|null The initialized descriptor instance
      */
-    public function fromDeploymentDescriptor(\SimpleXmlElement $node)
+    public function fromConfiguration(ConfigurationInterface $configuration)
     {
 
-        // register the appserver namespace
-        $node->registerXPathNamespace('a', 'http://www.appserver.io/appserver');
-
-        // query if we've a <servlet> descriptor node
-        if ($node->getName() !== 'servlet') {
-            // if not, do nothing
+        // query whether or not we've servlet configuration
+        if (!$configuration instanceof ServletConfigurationInterface) {
             return;
         }
 
         // query for the class name and set it
-        if ($className = (string) $node->{'servlet-class'}) {
+        if ($className = (string) $configuration->getServletClass()) {
             $this->setClassName($className);
         }
 
         // query for the name and set it
-        if ($name = (string) $node->{'servlet-name'}) {
+        if ($name = (string) $configuration->getServletName()) {
             $this->setName($name);
         }
 
         // query for the description and set it
-        if ($description = (string) $node->{'description'}) {
+        if ($description = (string) $configuration->getDescription()) {
             $this->setDescription($description);
         }
 
         // query for the display name and set it
-        if ($displayName = (string) $node->{'display-name'}) {
+        if ($displayName = (string) $configuration->getDisplayName()) {
             $this->setDisplayName($displayName);
         }
 
         // append the init params to the servlet configuration
-        foreach ($node->{'init-param'} as $initParam) {
-            $this->addInitParam((string) $initParam->{'param-name'}, (string) $initParam->{'param-value'});
+        foreach ($configuration->getInitParams() as $initParam) {
+            $this->addInitParam((string) $initParam->getParamName(), (string) $initParam->getParamValue());
         }
 
         // initialize references from the passed deployment descriptor
-        $this->referencesFromDeploymentDescriptor($node);
+        $this->referencesFromConfiguration($configuration);
 
         // return the instance
         return $this;

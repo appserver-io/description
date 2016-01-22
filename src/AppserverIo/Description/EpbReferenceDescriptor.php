@@ -23,10 +23,12 @@ namespace AppserverIo\Description;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\MethodInterface;
 use AppserverIo\Lang\Reflection\PropertyInterface;
+use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
 use AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface;
+use AppserverIo\Description\Configuration\EpbRefConfigurationInterface;
 
 /**
  * Utility class that stores a beans reference configuration.
@@ -277,20 +279,19 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface, Descrip
             $this->setName(sprintf('%s/%s', EpbReferenceDescriptor::REF_DIRECTORY, ucfirst($reflectionProperty->getPropertyName())));
         }
 
+        // register the bean with the name defined as @EnterpriseBean(beanName=****)
+        if ($beanNameAttribute = $annotationInstance->getBeanName()) {
+            $this->setBeanName($beanNameAttribute);
+        } else {
+            $this->setBeanName(ucfirst(str_replace(EpbReferenceDescriptor::REF_DIRECTORY . '/', '', $this->getName())));
+        }
+
         // register the bean with the interface defined as @EnterpriseBean(beanInterface=****)
         if ($beanInterfaceAttribute = $annotationInstance->getBeanInterface()) {
             $this->setBeanInterface($beanInterfaceAttribute);
         } else {
             // use the property name as local business interface
-            $this->setBeanInterface(sprintf('%sLocal', ucfirst($reflectionProperty->getPropertyName())));
-        }
-
-        // register the bean with the name defined as @EnterpriseBean(beanName=****)
-        if ($beanNameAttribute = $annotationInstance->getBeanName()) {
-            $this->setBeanName($beanNameAttribute);
-        } else {
-            // use the property name
-            $this->setBeanName(ucfirst($reflectionProperty->getPropertyName()));
+            $this->setBeanInterface(sprintf('%sLocal', ucfirst($this->getBeanName())));
         }
 
         // register the bean with the lookup name defined as @EnterpriseBean(lookup=****)
@@ -344,26 +345,18 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface, Descrip
             }
         }
 
-        // register the bean with the interface defined as @EnterpriseBean(beanInterface=****)
-        if ($beanInterfaceAttribute = $annotationInstance->getBeanInterface()) {
-            $this->setBeanInterface($beanInterfaceAttribute);
-        } else {
-            // use the name of the first parameter as local business interface
-            foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-                $this->setBeanInterface(sprintf('%sLocal', ucfirst($reflectionParameter->getParameterName())));
-                break;
-            }
-        }
-
         // register the bean with the name defined as @EnterpriseBean(beanName=****)
         if ($beanNameAttribute = $annotationInstance->getBeanName()) {
             $this->setBeanName($beanNameAttribute);
         } else {
-            // use the name of the first parameter as local business interface
-            foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-                $this->setBeanName(ucfirst($reflectionParameter->getParameterName()));
-                break;
-            }
+            $this->setBeanName(ucfirst(str_replace(EpbReferenceDescriptor::REF_DIRECTORY . '/', '', $this->getName())));
+        }
+
+        // register the bean with the interface defined as @EnterpriseBean(beanInterface=****)
+        if ($beanInterfaceAttribute = $annotationInstance->getBeanInterface()) {
+            $this->setBeanInterface($beanInterfaceAttribute);
+        } else {
+            $this->setBeanInterface(sprintf('%sLocal', ucfirst($this->getBeanName())));
         }
 
         // register the bean with the lookup name defined as @EnterpriseBean(lookup=****)
@@ -385,40 +378,34 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface, Descrip
 
     /**
      * Creates and initializes a beans reference configuration instance from the passed
-     * deployment node.
+     * configuration node.
      *
-     * @param \SimpleXmlElement $node The deployment node with the beans reference configuration
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $configuration The configuration node with the beans reference configuration
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface|null The initialized descriptor instance
      */
-    public function fromDeploymentDescriptor(\SimpleXmlElement $node)
+    public function fromConfiguration(EpbRefConfigurationInterface $configuration)
     {
 
-        // query if we've a <epb-ref> descriptor node
-        if ($node->getName() !== 'epb-ref') {
-            // if not, do nothing
-            return;
-        }
-
         // query for the reference name
-        if ($name = (string) $node->{'epb-ref-name'}) {
+        if ($name = (string) $configuration->getEpbRefName()) {
             $this->setName(sprintf('%s/%s', EpbReferenceDescriptor::REF_DIRECTORY, $name));
         }
 
         // query for the bean name and set it
-        if ($beanName = (string) $node->{'epb-link'}) {
+        if ($beanName = (string) $configuration->getEpbLink()) {
             $this->setBeanName($beanName);
         }
 
         // query for the lookup name and set it
-        if ($lookup = (string) $node->{'lookup-name'}) {
+        if ($lookup = (string) $configuration->getLookupName()) {
             $this->setLookup($lookup);
         }
 
         // query for the bean interface and set it
-        if ($beanInterface = (string) $node->{'local'}) {
+        if ($beanInterface = (string) $configuration->getLocal()) {
             $this->setBeanInterface($beanInterface);
-        } elseif ($beanInterface = (string) $node->{'remote'}) {
+        } elseif ($beanInterface = (string) $configuration->getRemote()) {
             $this->setBeanInterface($beanInterface);
         } else {
             // use the bean name as local interface
@@ -426,13 +413,13 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface, Descrip
         }
 
         // query for the description and set it
-        if ($description = (string) $node->{'description'}) {
+        if ($description = (string) $configuration->getDescription()) {
             $this->setDescription($description);
         }
 
         // query for the injection target
-        if ($injectionTarget = $node->{'injection-target'}) {
-            $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromDeploymentDescriptor($injectionTarget));
+        if ($injectionTarget = $configuration->getInjectionTarget()) {
+            $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromConfiguration($injectionTarget));
         }
 
         // return the instance

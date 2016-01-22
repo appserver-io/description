@@ -27,6 +27,7 @@ use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
 use AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface;
+use AppserverIo\Description\Configuration\ResRefConfigurationInterface;
 
 /**
  * Utility class that stores a resource reference configuration.
@@ -326,44 +327,38 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface, Descrip
 
     /**
      * Creates and initializes a beans reference configuration instance from the passed
-     * deployment node.
+     * configuration node.
      *
-     * @param \SimpleXmlElement $node The deployment node with the beans reference configuration
+     * @param \AppserverIo\Description\Configuration\ResRefConfigurationInterface $configuration The configuration node with the beans reference configuration
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface|null The initialized descriptor instance
      */
-    public function fromDeploymentDescriptor(\SimpleXmlElement $node)
+    public function fromConfiguration(ResRefConfigurationInterface $configuration)
     {
 
-        // query if we've a <res-ref> descriptor node
-        if ($node->getName() !== 'res-ref') {
-            // if not, do nothing
-            return;
-        }
-
         // query for the reference name
-        if ($name = (string) $node->{'res-ref-name'}) {
+        if ($name = (string) $configuration->getResRefName()) {
             $this->setName(sprintf('%s/%s', ResReferenceDescriptor::REF_DIRECTORY, $name));
         }
 
         // query for the reference type
-        if ($type = (string) $node->{'res-ref-type'}) {
+        if ($type = (string) $configuration->getResRefType()) {
             $this->setType($type);
         }
 
         // query for the description and set it
-        if ($description = (string) $node->{'description'}) {
+        if ($description = (string) $configuration->getDescription()) {
             $this->setDescription($description);
         }
 
         // query for the lookup name and set it
-        if ($lookup = (string) $node->{'lookup-name'}) {
+        if ($lookup = (string) $configuration->getLookupName()) {
             $this->setLookup($lookup);
         }
 
         // query for the injection target
-        if ($injectionTarget = $node->{'injection-target'}) {
-            $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromDeploymentDescriptor($injectionTarget));
+        if ($injectionTarget = $configuration->getInjectionTarget()) {
+            $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromConfiguration($injectionTarget));
         }
 
         // return the instance

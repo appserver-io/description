@@ -23,6 +23,8 @@ namespace AppserverIo\Description;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateless;
 use AppserverIo\Psr\EnterpriseBeans\Description\StatelessSessionBeanDescriptorInterface;
+use AppserverIo\Description\Configuration\ConfigurationInterface;
+use AppserverIo\Description\Configuration\SessionConfigurationInterface;
 
 /**
  * Implementation for a stateless session bean descriptor.
@@ -101,29 +103,27 @@ class StatelessSessionBeanDescriptor extends SessionBeanDescriptor implements St
     }
 
     /**
-     * Initializes a bean descriptor instance from the passed deployment descriptor node.
+     * Initializes a bean descriptor instance from the passed configuration node.
      *
-     * @param \SimpleXmlElement $node The deployment node with the bean configuration
+     * @param \AppserverIo\Description\Configuration\ConfigurationInterface $configuration The configuration node with the bean configuration
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\Description\StatelessSessionBeanDescriptorInterface|null The initialized descriptor instance
      */
-    public function fromDeploymentDescriptor(\SimpleXmlElement $node)
+    public function fromConfiguration(ConfigurationInterface $configuration)
     {
 
-        // query if we've a <session> descriptor node
-        if ($node->getName() !== 'session') {
-            // if not, do nothing
+        // query whether or not we've a session bean configuration
+        if (!$configuration instanceof SessionConfigurationInterface) {
             return;
         }
 
-        // query if the session type matches
-        if ((string) $node->{'session-type'} !== StatelessSessionBeanDescriptor::SESSION_TYPE) {
-            // if not, do nothing
+        // query wheter or not the session type matches
+        if ((string) $configuration->getSessionType() !== StatelessSessionBeanDescriptor::SESSION_TYPE) {
             return;
         }
 
         // initialize the descriptor instance
-        parent::fromDeploymentDescriptor($node);
+        parent::fromConfiguration($configuration);
 
         // return the instance
         return $this;

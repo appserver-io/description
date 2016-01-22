@@ -24,6 +24,7 @@ use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Lang\Reflection\ReflectionMethod;
 use AppserverIo\Lang\Reflection\ReflectionProperty;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
+use AppserverIo\Description\Api\Node\ResRefNode;
 
 /**
  * Test implementation for the ResReferenceDescriptorTest class implementation.
@@ -380,14 +381,15 @@ class ResReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testFromDeploymentDescriptor()
+    public function testFromConfiguration()
     {
 
-        // load the deployment descriptor node
-        $node = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-res-ref.xml'));
+        // initialize the configuration
+        $node = new ResRefNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-res-ref.xml');
 
         // initialize the descriptor from the nodes data
-        $this->descriptor->fromDeploymentDescriptor($node);
+        $this->descriptor->fromConfiguration($node);
 
         // check if all values have been initialized
         $this->assertSame('env/TimerServiceContextInterface', $this->descriptor->getName());
@@ -398,21 +400,6 @@ class ResReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests that initialization from an invalid deployment descriptor won't work.
-     *
-     * @return void
-     */
-    public function testFromDeploymentDescriptorInvalid()
-    {
-
-        // load the deployment descriptor node
-        $node = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-messagedrivenbean.xml'));
-
-        // check that the descriptor has not been initialized
-        $this->assertNull($this->descriptor->fromDeploymentDescriptor($node));
-    }
-
-    /**
      * Tests if the merge method works successfully.
      *
      * @return void
@@ -420,16 +407,20 @@ class ResReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
     public function testMergeSuccessful()
     {
 
-        // load the deployment descriptor node
-        $node = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-res-ref.xml'));
+        // initialize the configuration
+        $node = new ResRefNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-res-ref.xml');
 
         // initialize the descriptor from the nodes data
-        $this->descriptor->fromDeploymentDescriptor($node);
+        $this->descriptor->fromConfiguration($node);
 
         // initialize the descriptor to merge
         $descriptorToMerge = $this->getMockForAbstractClass('AppserverIo\Description\ResReferenceDescriptor');
-        $nodeToMerge = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-res-ref-to-merge.xml'));
-        $descriptorToMerge->fromDeploymentDescriptor($nodeToMerge);
+
+        // initialize the configuration of the descriptor to be merged
+        $nodeToMerge = new ResRefNode();
+        $nodeToMerge->initFromFile(__DIR__ . '/_files/dd-res-ref-to-merge.xml');
+        $descriptorToMerge->fromConfiguration($nodeToMerge);
 
         // merge the descriptors
         $this->descriptor->merge($descriptorToMerge);

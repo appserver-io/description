@@ -22,6 +22,8 @@ namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateless;
+use AppserverIo\Description\Api\Node\SessionNode;
+use AppserverIo\Description\Api\Node\MessageDrivenNode;
 
 /**
  * Test implementation for the StatelessSessionBeanDescriptor class implementation.
@@ -115,17 +117,18 @@ class StatelessSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testFromDeploymentDescriptor()
+    public function testFromConfiguration()
     {
 
-        // load the deployment descriptor node
-        $node = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-statelesssessionbean.xml'));
+        // initialize the configuration
+        $node = new SessionNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-statelesssessionbean.xml');
 
         // initialize the descriptor from the nodes data
-        $this->descriptor->fromDeploymentDescriptor($node);
+        $this->descriptor->fromConfiguration($node);
 
         // check that the descriptor has been initialized
-        $this->assertSame($this->descriptor, $this->descriptor->fromDeploymentDescriptor($node));
+        $this->assertSame($this->descriptor, $this->descriptor->fromConfiguration($node));
         $this->assertSame('SchemaProcessor', $this->descriptor->getName());
         $this->assertSame('AppserverIo\Apps\Example\Services\SchemaProcessor', $this->descriptor->getClassName());
     }
@@ -136,14 +139,15 @@ class StatelessSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testFromWrongDeploymentDescriptor()
+    public function testFromConfigurationOtherBeanType()
     {
 
-        // load the deployment descriptor node
-        $node = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-messagedrivenbean.xml'));
+        // initialize the configuration
+        $node = new MessageDrivenNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-messagedrivenbean.xml');
 
         // check that the descriptor has not been initialized
-        $this->assertNull($this->descriptor->fromDeploymentDescriptor($node));
+        $this->assertNull($this->descriptor->fromConfiguration($node));
     }
 
     /**
@@ -151,13 +155,14 @@ class StatelessSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testFromInvalidDeploymentDescriptor()
+    public function testFromConfigurationInvalid()
     {
 
-        // load the deployment descriptor node
-        $node = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-statefulsessionbean.xml'));
+        // initialize the configuration
+        $node = new SessionNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-statefulsessionbean.xml');
 
         // check that the descriptor has not been initialized
-        $this->assertNull($this->descriptor->fromDeploymentDescriptor($node));
+        $this->assertNull($this->descriptor->fromConfiguration($node));
     }
 }

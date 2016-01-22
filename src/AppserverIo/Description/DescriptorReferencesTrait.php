@@ -24,6 +24,7 @@ use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\PersistenceUnitReferenceDescriptorInterface;
+use AppserverIo\Description\Configuration\ReferencesConfigurationInterface;
 
 /**
  * Trait with functionality to handle bean, resource and persistence unit references.
@@ -171,28 +172,28 @@ trait DescriptorReferencesTrait
     }
 
     /**
-     * Initializes a bean configuration instance with the references of the passed deployment descriptor node.
+     * Initializes a bean configuration instance with the references of the passed configuration node.
      *
-     * @param \SimpleXmlElement $node The deployment node with the bean configuration
+     * @param \AppserverIo\Description\Configuration\ReferencesConfigurationInterface $configuration The configuration node with the bean configuration
      *
      * @return void
      */
-    public function referencesFromDeploymentDescriptor(\SimpleXMLElement $node)
+    public function referencesFromConfiguration(ReferencesConfigurationInterface $configuration)
     {
 
         // initialize the enterprise bean references
-        foreach ($node->xpath('a:epb-ref') as $epbReference) {
-            $this->addEpbReference(EpbReferenceDescriptor::newDescriptorInstance()->fromDeploymentDescriptor($epbReference));
+        foreach ($configuration->getEpbRefs() as $epbReference) {
+            $this->addEpbReference(EpbReferenceDescriptor::newDescriptorInstance()->fromConfiguration($epbReference));
         }
 
         // initialize the resource references
-        foreach ($node->xpath('a:res-ref') as $resReference) {
-            $this->addResReference(ResReferenceDescriptor::newDescriptorInstance()->fromDeploymentDescriptor($resReference));
+        foreach ($configuration->getResRefs() as $resReference) {
+            $this->addResReference(ResReferenceDescriptor::newDescriptorInstance()->fromConfiguration($resReference));
         }
 
         // initialize the resource references
-        foreach ($node->xpath('a:persistence-unit-ref') as $persistenceUnitReference) {
-            $this->addPersistenceUnitReference(PersistenceUnitReferenceDescriptor::newDescriptorInstance()->fromDeploymentDescriptor($persistenceUnitReference));
+        foreach ($configuration->getPersistenceUnitRefs() as $persistenceUnitReference) {
+            $this->addPersistenceUnitReference(PersistenceUnitReferenceDescriptor::newDescriptorInstance()->fromConfiguration($persistenceUnitReference));
         }
     }
 

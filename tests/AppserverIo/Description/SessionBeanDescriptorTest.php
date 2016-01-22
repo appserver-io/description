@@ -23,6 +23,8 @@ namespace AppserverIo\Description;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
 use AppserverIo\Lang\Reflection\ReflectionClass;
+use AppserverIo\Description\Api\Node\SessionNode;
+use AppserverIo\Description\Api\Node\MessageDrivenNode;
 /**
  * Test implementation for the SessionBeanDescriptor class implementation.
  *
@@ -348,14 +350,14 @@ class SessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testFromDeploymentDescriptor()
+    public function testFromConfiguration()
     {
-
-        // load the deployment descriptor node
-        $node = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-sessionbean-to-merge.xml'));
+        // initialize the configuration
+        $node = new SessionNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-sessionbean-to-merge.xml');
 
         // initialize the descriptor from the nodes data
-        $this->descriptor->fromDeploymentDescriptor($node);
+        $this->descriptor->fromConfiguration($node);
 
         // check if all values have been initialized
         $this->assertSame('SampleProcessor', $this->descriptor->getName());
@@ -376,6 +378,50 @@ class SessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests that initialization from an invalid deployment descriptor won't work.
+     *
+     * @return void
+     */
+    public function testFromConfigurationInvalid()
+    {
+
+        // initialize the configuration
+        $node = new MessageDrivenNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-messagedrivenbean.xml');
+
+        // check that the descriptor has not been initialized
+        $this->assertNull($this->descriptor->fromConfiguration($node));
+    }
+
+    /**
+     * Tests that merging with a wrong deployment descriptor, e. g. a
+     * message driven bean, won't work.
+     *
+     * @return void
+     */
+    public function testMergeInvalid()
+    {
+
+        // initialize the configuration
+        $node = new SessionNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-statefulsessionbean.xml');
+
+        // initialize the descriptor from the nodes data
+        $this->descriptor->fromConfiguration($node);
+
+        // initialize the descriptor to merge
+        $descriptorToMerge = $this->getMockForAbstractClass('AppserverIo\Description\MessageDrivenBeanDescriptor');
+
+        $cloned = clone $this->descriptor;
+
+        // merge the descriptors
+        $this->descriptor->merge($descriptorToMerge);
+
+        // check if all values have been merged
+        $this->assertEquals($this->descriptor, $cloned);
+    }
+
+    /**
      * Tests if the merge method works successfully.
      *
      * @return void
@@ -383,16 +429,20 @@ class SessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
     public function testMergeSuccessful()
     {
 
-        // load the deployment descriptor node
-        $node = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-sessionbean.xml'));
+        // initialize the configuration
+        $node = new SessionNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-sessionbean.xml');
 
         // initialize the descriptor from the nodes data
-        $this->descriptor->fromDeploymentDescriptor($node);
+        $this->descriptor->fromConfiguration($node);
 
         // initialize the descriptor to merge
         $descriptorToMerge = $this->getMockForAbstractClass('AppserverIo\Description\SessionBeanDescriptor');
-        $nodeToMerge = new \SimpleXMLElement(file_get_contents(__DIR__ . '/_files/dd-sessionbean-to-merge.xml'));
-        $descriptorToMerge->fromDeploymentDescriptor($nodeToMerge);
+
+        // initialize the configuration of the descriptor to be merged
+        $nodeToMerge = new SessionNode();
+        $nodeToMerge->initFromFile(__DIR__ . '/_files/dd-sessionbean-to-merge.xml');
+        $descriptorToMerge->fromConfiguration($nodeToMerge);
 
         // merge the descriptors
         $this->descriptor->merge($descriptorToMerge);

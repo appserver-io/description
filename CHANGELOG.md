@@ -1,3 +1,23 @@
+# Version 2.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Using configuration based initialization and replace fromDeploymentDescriptor() with fromConfiguration() method
+
+# Version 1.2.2
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Use value of beanName instead of name when beanInterface value is not specified
+
 # Version 1.2.1
 
 ## Bugfixes

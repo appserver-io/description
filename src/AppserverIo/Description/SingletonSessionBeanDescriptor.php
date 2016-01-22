@@ -27,6 +27,8 @@ use AppserverIo\Psr\EnterpriseBeans\Annotations\Startup;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Singleton;
 use AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\SingletonSessionBeanDescriptorInterface;
+use AppserverIo\Description\Configuration\ConfigurationInterface;
+use AppserverIo\Description\Configuration\SessionConfigurationInterface;
 
 /**
  * Implementation for a singleton session bean descriptor.
@@ -140,32 +142,30 @@ class SingletonSessionBeanDescriptor extends SessionBeanDescriptor implements Si
     }
 
     /**
-     * Initializes a bean descriptor instance from the passed deployment descriptor node.
+     * Initializes a bean descriptor instance from the passed configuration node.
      *
-     * @param \SimpleXmlElement $node The deployment node with the bean configuration
+     * @param \AppserverIo\Description\Configuration\ConfigurationInterface $configuration The configuration node with the bean configuration
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\Description\SingletonSessionBeanDescriptorInterface|null The initialized descriptor instance
      */
-    public function fromDeploymentDescriptor(\SimpleXmlElement $node)
+    public function fromConfiguration(ConfigurationInterface $configuration)
     {
 
-        // query if we've a <session> descriptor node
-        if ($node->getName() !== 'session') {
-            // if not, do nothing
+        // query whether or not we've a session bean configuration
+        if (!$configuration instanceof SessionConfigurationInterface) {
             return;
         }
 
-        // query if the session type matches
-        if ((string) $node->{'session-type'} !== SingletonSessionBeanDescriptor::SESSION_TYPE) {
-            // if not, do nothing
+        // query wheter or not the session type matches
+        if ((string) $configuration->getSessionType() !== SingletonSessionBeanDescriptor::SESSION_TYPE) {
             return;
         }
 
         // initialize the descriptor instance
-        parent::fromDeploymentDescriptor($node);
+        parent::fromConfiguration($configuration);
 
         // query for the startup flag
-        if ($initOnStartup = (string) $node->{'init-on-startup'}) {
+        if ($initOnStartup = (string) $configuration->getInitOnStartup()) {
             $this->setInitOnStartup(Boolean::valueOf(new String($initOnStartup))->booleanValue());
         }
 
@@ -184,13 +184,13 @@ class SingletonSessionBeanDescriptor extends SessionBeanDescriptor implements Si
     public function merge(BeanDescriptorInterface $beanDescriptor)
     {
 
-        // merge the default bean members by invoking the parent method
-        parent::merge($beanDescriptor);
-
         // only merge the more special configuration fields if the desciptor has the right type
         if (!$beanDescriptor instanceof SingletonSessionBeanDescriptorInterface) {
             return;
         }
+
+        // merge the default bean members by invoking the parent method
+        parent::merge($beanDescriptor);
 
         // merge the startup flag
         $this->setInitOnStartup($beanDescriptor->isInitOnStartup());

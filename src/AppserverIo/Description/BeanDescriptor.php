@@ -24,9 +24,7 @@ use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
 use AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface;
-use AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface;
-use AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface;
-use AppserverIo\Psr\EnterpriseBeans\Description\PersistenceUnitReferenceDescriptorInterface;
+use AppserverIo\Description\Configuration\ConfigurationInterface;
 
 /**
  * Abstract class for all bean descriptors.
@@ -149,30 +147,27 @@ abstract class BeanDescriptor implements BeanDescriptorInterface, DescriptorInte
     }
 
     /**
-     * Initializes a bean configuration instance from the passed deployment descriptor node.
+     * Initializes a bean configuration instance from the passed configuration node.
      *
-     * @param \SimpleXmlElement $node The deployment node with the bean configuration
+     * @param \AppserverIo\Description\Configuration\ConfigurationInterface $configuration The bean configuration
      *
      * @return void
      */
-    public function fromDeploymentDescriptor(\SimpleXmlElement $node)
+    public function fromConfiguration(ConfigurationInterface $configuration)
     {
 
-        // register the appserver namespace
-        $node->registerXPathNamespace('a', 'http://www.appserver.io/appserver');
-
         // query for the class name and set it
-        if ($className = (string) $node->{'epb-class'}) {
+        if ($className = (string) $configuration->getEpbClass()) {
             $this->setClassName(DescriptorUtil::trim($className));
         }
 
         // query for the name and set it
-        if ($name = (string) $node->{'epb-name'}) {
+        if ($name = (string) $configuration->getEpbName()) {
             $this->setName(DescriptorUtil::trim($name));
         }
 
         // initialize references from the passed deployment descriptor
-        $this->referencesFromDeploymentDescriptor($node);
+        $this->referencesFromConfiguration($configuration);
     }
 
     /**

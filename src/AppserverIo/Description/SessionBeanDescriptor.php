@@ -25,9 +25,8 @@ use AppserverIo\Psr\EnterpriseBeans\Annotations\PreDestroy;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PostConstruct;
 use AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\SessionBeanDescriptorInterface;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateful;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateless;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Singleton;
+use AppserverIo\Description\Configuration\SessionConfigurationInterface;
+use AppserverIo\Description\Configuration\ConfigurationInterface;
 
 /**
  * Implementation for an abstract session bean descriptor.
@@ -254,48 +253,54 @@ abstract class SessionBeanDescriptor extends BeanDescriptor implements SessionBe
     }
 
     /**
-     * Initializes a bean descriptor instance from the passed deployment descriptor node.
+     * Initializes a bean descriptor instance from the passed configuration node.
      *
-     * @param \SimpleXmlElement $node The deployment node with the bean description
+     * @param \AppserverIo\Description\Configuration\ConfigurationInterface $configuration The configuration node with the bean description
      *
      * @return void
      */
-    public function fromDeploymentDescriptor(\SimpleXmlElement $node)
+    public function fromConfiguration(ConfigurationInterface $configuration)
     {
 
-        // register the appserver namespace
-        $node->registerXPathNamespace('a', 'http://www.appserver.io/appserver');
+        // query whether or not we've a session bean configuration
+        if (!$configuration instanceof SessionConfigurationInterface) {
+            return;
+        }
 
         // initialize the bean descriptor
-        parent::fromDeploymentDescriptor($node);
+        parent::fromConfiguration($configuration);
 
         // query for the session type and set it
-        if ($sessionType = (string) $node->{'session-type'}) {
+        if ($sessionType = (string) $configuration->getSessionType()) {
             $this->setSessionType($sessionType);
         }
 
         // query for the name of the local business interface and set it
-        if ($local = (string) $node->{'local'}) {
+        if ($local = (string) $configuration->getLocal()) {
             $this->setLocal($local);
         } else {
             $this->setLocal(sprintf('%sLocal', rtrim($this->getName(), 'Bean')));
         }
 
         // query for the name of the remote business interface and set it
-        if ($remote = (string) $node->{'remote'}) {
+        if ($remote = (string) $configuration->getRemote()) {
             $this->setRemote($remote);
         } else {
             $this->setRemote(sprintf('%sRemote', rtrim($this->getName(), 'Bean')));
         }
 
         // initialize the post construct callback methods
-        foreach ($node->xpath('a:post-construct/a:lifecycle-callback-method') as $postConstructCallback) {
-            $this->addPostConstructCallback(DescriptorUtil::trim((string) $postConstructCallback));
+        if ($postConstructNode = $configuration->getPostConstruct()) {
+            foreach ($postConstructNode->getLifecycleCallbackMethods() as $postConstructCallback) {
+                $this->addPostConstructCallback(DescriptorUtil::trim((string) $postConstructCallback));
+            }
         }
 
         // initialize the pre destroy callback methods
-        foreach ($node->xpath('a:pre-destroy/a:lifecycle-callback-method') as $preDestroyCallback) {
-            $this->addPreDestroyCallback(DescriptorUtil::trim((string) $preDestroyCallback));
+        if ($preDestroyNode = $configuration->getPreDestroy()) {
+            foreach ($preDestroyNode->getLifecycleCallbackMethods() as $preDestroyCallback) {
+                $this->addPreDestroyCallback(DescriptorUtil::trim((string) $preDestroyCallback));
+            }
         }
     }
 
@@ -310,13 +315,13 @@ abstract class SessionBeanDescriptor extends BeanDescriptor implements SessionBe
     public function merge(BeanDescriptorInterface $beanDescriptor)
     {
 
-        // merge the default bean members by invoking the parent method
-        parent::merge($beanDescriptor);
-
         // only merge the more special configuration fields if the desciptor has the right type
         if (!$beanDescriptor instanceof SessionBeanDescriptorInterface) {
             return;
         }
+
+        // merge the default bean members by invoking the parent method
+        parent::merge($beanDescriptor);
 
         // merge the session type
         if ($sessionType = $beanDescriptor->getSessionType()) {
@@ -325,14 +330,14 @@ abstract class SessionBeanDescriptor extends BeanDescriptor implements SessionBe
 
         // merge the post construct callback method names
         foreach ($beanDescriptor->getPostConstructCallbacks() as $postConstructCallback) {
-            if (in_array($postConstructCallback, $this->postConstructCallbacks) === false) {
+            if (in_array($postConstructCallback, $this->getPostConstructCallbacks()) === false) {
                 $this->addPostConstructCallback($postConstructCallback);
             }
         }
 
         // merge the pre destroy callback method names
         foreach ($beanDescriptor->getPreDestroyCallbacks() as $preDestroyCallback) {
-            if (in_array($preDestroyCallback, $this->preDestroyCallbacks) === false) {
+            if (in_array($preDestroyCallback, $this->getPreDestroyCallbacks()) === false) {
                 $this->addPreDestroyCallback($preDestroyCallback);
             }
         }
