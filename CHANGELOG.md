@@ -1,3 +1,13 @@
+# Version 3.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add preInit() and postInit() callbacks to AbstractNode class
+
 # Version 2.0.0
 
 ## Bugfixes
