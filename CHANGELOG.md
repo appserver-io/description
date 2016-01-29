@@ -1,3 +1,13 @@
+# Version 2.0.1
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add PHPUnit tests for AbstractNode and AbstractValueNode classes
+
 # Version 2.0.0
 
 ## Bugfixes
