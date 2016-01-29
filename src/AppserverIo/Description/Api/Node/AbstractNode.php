@@ -113,6 +113,9 @@ abstract class AbstractNode implements NodeInterface
         // set the node name from the configuration
         $this->setNodeName($configuration->getNodeName());
 
+        // invoke the preInit() method
+        $this->preInit();
+
         // iterate over the PROTECTED properties and initialize them with the configuration data
         $reflectionObject = new \ReflectionObject($this);
 
@@ -120,6 +123,31 @@ abstract class AbstractNode implements NodeInterface
             // ONLY use PROTECTED properties, NOT PRIVATE, else UUID's will be overwritten!!
             $this->getValueForReflectionProperty($reflectionProperty, $configuration);
         }
+
+        // invoke the postInit() method
+        $this->postInit();
+    }
+
+    /**
+     * Will be invoked before the node will be initialized from
+     * the configuration values.
+     *
+     * @return void
+     */
+    protected function preInit()
+    {
+        // implement functionality in subclasses
+    }
+
+    /**
+     * Will be invoked after the node will be initialized from
+     * the configuration values.
+     *
+     * @return void
+     */
+    protected function postInit()
+    {
+        // implement functionality in subclasses
     }
 
     /**
