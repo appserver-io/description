@@ -1,3 +1,13 @@
+# Version 3.0.1
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add PHPUnit tests for AbstractNode and AbstractValueNode classes
+
 # Version 3.0.0
 
 ## Bugfixes
