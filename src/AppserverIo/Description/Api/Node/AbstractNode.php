@@ -31,6 +31,9 @@ use AppserverIo\Lang\String;
 use AppserverIo\Lang\Boolean;
 use AppserverIo\Lang\Integer;
 use AppserverIo\Lang\Float;
+use AppserverIo\Properties\PropertiesInterface;
+use AppserverIo\Description\Api\Utils\PropertyStreamFilter;
+use AppserverIo\Description\Api\Utils\PropertyStreamFilterParams;
 
 /**
  * Abstract node class.
@@ -119,13 +122,101 @@ abstract class AbstractNode implements NodeInterface
         // iterate over the PROTECTED properties and initialize them with the configuration data
         $reflectionObject = new \ReflectionObject($this);
 
+        // ONLY use PROTECTED properties, NOT PRIVATE, else UUID's will be overwritten!!
         foreach ($reflectionObject->getProperties(\ReflectionProperty::IS_PROTECTED) as $reflectionProperty) {
-            // ONLY use PROTECTED properties, NOT PRIVATE, else UUID's will be overwritten!!
             $this->getValueForReflectionProperty($reflectionProperty, $configuration);
         }
 
         // invoke the postInit() method
         $this->postInit();
+    }
+
+    /**
+     * Recursively replace variables in the string properties of this node with
+     * the values found in the passed properties instance.
+     *
+     * @param \AppserverIo\Properties\PropertiesInterface $properties The properties with the values to replace
+     * @param string                                      $pattern    The pattern that declares the variables
+     *
+     * @return void
+     */
+    public function replaceProperties(PropertiesInterface $properties, $pattern = PropertyStreamFilterParams::PATTERN)
+    {
+
+        // create a reflection object of the node instance
+        $reflectionObject = new \ReflectionObject($this);
+
+        // ONLY use PROTECTED properties, NOT PRIVATE, else UUID's will be overwritten!!
+        foreach ($reflectionObject->getProperties(\ReflectionProperty::IS_PROTECTED) as $reflectionProperty) {
+            // replace the properties in all string properties
+            if (is_string($this->{$reflectionProperty->getName()})) {
+                $this->{$reflectionProperty->getName()} = $this->replacePropertiesInString($properties, $this->{$reflectionProperty->getName()}, $pattern);
+            }
+            // recursively invoke the method on the sibeling nodes
+            if (is_array($this->{$reflectionProperty->getName()})) {
+                foreach ($this->{$reflectionProperty->getName()} as $node) {
+                    if ($node instanceof NodeInterface) {
+                        $node->replaceProperties($properties, $pattern);
+                    }
+                }
+            }
+            // recursively invoke the method on the sibeling nodes
+            if ($this->{$reflectionProperty->getName()} instanceof NodeInterface) {
+                $this->{$reflectionProperty->getName()}->replaceProperties($properties, $pattern);
+            }
+        }
+    }
+
+    /**
+     * Replaces the variables declared by the passed token with the
+     * properties and returns the content.
+     *
+     * @param \AppserverIo\Properties\PropertiesInterface $properties The properties with the values to replace
+     * @param string                                      $string     The string to replace the variables with the properties
+     * @param string                                      $pattern    The pattern that declares the variables (in valid sprintf format)
+     *
+     * @return string The content of the file with the replaced variables
+     */
+    protected function replacePropertiesInString(PropertiesInterface $properties, $string, $pattern = PropertyStreamFilterParams::PATTERN)
+    {
+
+        // open the stream
+        $fp = fopen('php://temp', 'r+');
+
+        // write/rewind the content into the string to allow using stream filters
+        fputs($fp, $string);
+        rewind($fp);
+
+        // replace the properties and close the stream
+        $replaced = $this->replacePropertiesInStream($properties, $fp, $pattern);
+        fclose($fp);
+
+        // return the string with the properties replaced
+        return $replaced;
+    }
+
+    /**
+     * Replaces the variables declared by the passed token with the
+     * properties and returns the content.
+     *
+     * @param \AppserverIo\Properties\PropertiesInterface $properties The properties with the values to replace
+     * @param resource                                    $fp         The file pointer to replace the variables with the properties
+     * @param string                                      $pattern    The pattern that declares the variables (in valid sprintf format)
+     *
+     * @return string The content of the file with the replaced variables
+     */
+    protected function replacePropertiesInStream(PropertiesInterface $properties, $fp, $pattern = PropertyStreamFilterParams::PATTERN)
+    {
+
+        // initialize the params for the stream filter
+        $params = new PropertyStreamFilterParams($properties, $pattern);
+
+        // register the filter
+        stream_filter_register(PropertyStreamFilter::NAME, 'AppserverIo\Description\Api\Utils\PropertyStreamFilter');
+        stream_filter_append($fp, PropertyStreamFilter::NAME, STREAM_FILTER_READ, $params);
+
+        // replace the properties and close the stream
+        return stream_get_contents($fp);
     }
 
     /**
