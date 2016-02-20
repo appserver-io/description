@@ -9,6 +9,7 @@
 	},
 	"require-dev" : {
 		"appserver-io/build" : "~1.0",
+		"appserver-io/properties" : "~1.0",
 		"appserver-io/configuration" : "~2.0",
 		"appserver-io-psr/epb" : "~1.0",
 		"appserver-io-psr/servlet" : "~1.0",

@@ -1,3 +1,13 @@
+# Version 4.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add method replaceProperties() to recursively replace variables in node values with values from a property file
+
 # Version 3.0.1
 
 ## Bugfixes
