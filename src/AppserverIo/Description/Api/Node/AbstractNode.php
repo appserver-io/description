@@ -31,9 +31,10 @@ use AppserverIo\Lang\String;
 use AppserverIo\Lang\Boolean;
 use AppserverIo\Lang\Integer;
 use AppserverIo\Lang\Float;
+use AppserverIo\Properties\PropertiesUtil;
 use AppserverIo\Properties\PropertiesInterface;
-use AppserverIo\Description\Api\Utils\PropertyStreamFilter;
-use AppserverIo\Description\Api\Utils\PropertyStreamFilterParams;
+use AppserverIo\Properties\Filter\PropertyStreamFilterParams;
+use AppserverIo\Configuration\Interfaces\ValueInterface;
 
 /**
  * Abstract node class.
@@ -146,11 +147,18 @@ abstract class AbstractNode implements NodeInterface
         // create a reflection object of the node instance
         $reflectionObject = new \ReflectionObject($this);
 
+        // load the properties utility to replace the propertis in the members
+        $propertiesUtil = PropertiesUtil::singleton();
+
         // ONLY use PROTECTED properties, NOT PRIVATE, else UUID's will be overwritten!!
         foreach ($reflectionObject->getProperties(\ReflectionProperty::IS_PROTECTED) as $reflectionProperty) {
             // replace the properties in all string properties
             if (is_string($this->{$reflectionProperty->getName()})) {
-                $this->{$reflectionProperty->getName()} = $this->replacePropertiesInString($properties, $this->{$reflectionProperty->getName()}, $pattern);
+                $this->{$reflectionProperty->getName()} = $propertiesUtil->replacePropertiesInString(
+                    $properties,
+                    $this->{$reflectionProperty->getName()},
+                    $pattern
+                );
             }
             // recursively invoke the method on the sibeling nodes
             if (is_array($this->{$reflectionProperty->getName()})) {
@@ -164,59 +172,11 @@ abstract class AbstractNode implements NodeInterface
             if ($this->{$reflectionProperty->getName()} instanceof NodeInterface) {
                 $this->{$reflectionProperty->getName()}->replaceProperties($properties, $pattern);
             }
+            // recursively invoke the method on the sibeling nodes
+            if ($this->{$reflectionProperty->getName()} instanceof ValueInterface) {
+                $this->{$reflectionProperty->getName()}->replaceProperties($properties, $pattern);
+            }
         }
-    }
-
-    /**
-     * Replaces the variables declared by the passed token with the
-     * properties and returns the content.
-     *
-     * @param \AppserverIo\Properties\PropertiesInterface $properties The properties with the values to replace
-     * @param string                                      $string     The string to replace the variables with the properties
-     * @param string                                      $pattern    The pattern that declares the variables (in valid sprintf format)
-     *
-     * @return string The content of the file with the replaced variables
-     */
-    protected function replacePropertiesInString(PropertiesInterface $properties, $string, $pattern = PropertyStreamFilterParams::PATTERN)
-    {
-
-        // open the stream
-        $fp = fopen('php://temp', 'r+');
-
-        // write/rewind the content into the string to allow using stream filters
-        fputs($fp, $string);
-        rewind($fp);
-
-        // replace the properties and close the stream
-        $replaced = $this->replacePropertiesInStream($properties, $fp, $pattern);
-        fclose($fp);
-
-        // return the string with the properties replaced
-        return $replaced;
-    }
-
-    /**
-     * Replaces the variables declared by the passed token with the
-     * properties and returns the content.
-     *
-     * @param \AppserverIo\Properties\PropertiesInterface $properties The properties with the values to replace
-     * @param resource                                    $fp         The file pointer to replace the variables with the properties
-     * @param string                                      $pattern    The pattern that declares the variables (in valid sprintf format)
-     *
-     * @return string The content of the file with the replaced variables
-     */
-    protected function replacePropertiesInStream(PropertiesInterface $properties, $fp, $pattern = PropertyStreamFilterParams::PATTERN)
-    {
-
-        // initialize the params for the stream filter
-        $params = new PropertyStreamFilterParams($properties, $pattern);
-
-        // register the filter
-        stream_filter_register(PropertyStreamFilter::NAME, 'AppserverIo\Description\Api\Utils\PropertyStreamFilter');
-        stream_filter_append($fp, PropertyStreamFilter::NAME, STREAM_FILTER_READ, $params);
-
-        // replace the properties and close the stream
-        return stream_get_contents($fp);
     }
 
     /**
