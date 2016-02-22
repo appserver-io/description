@@ -1,3 +1,14 @@
+# Version 5.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add method replaceProperties() to recursively replace variables in value nodes with values from a property file
+* Remove protected replacePropertiesInString() and replacePropertiesInStream() methods => switch properties library
+
 # Version 4.0.0
 
 ## Bugfixes

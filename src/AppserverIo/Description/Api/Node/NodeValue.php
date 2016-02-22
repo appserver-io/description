@@ -20,6 +20,9 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Properties\PropertiesUtil;
+use AppserverIo\Properties\PropertiesInterface;
+use AppserverIo\Properties\Filter\PropertyStreamFilterParams;
 use AppserverIo\Configuration\Interfaces\ValueInterface;
 use AppserverIo\Configuration\Interfaces\ConfigurationInterface;
 
@@ -95,5 +98,23 @@ class NodeValue implements ValueInterface
     public function __toString()
     {
         return $this->getValue();
+    }
+
+    /**
+     * Replace the variables in the node's value with the values found in the
+     * passed properties instance.
+     *
+     * @param \AppserverIo\Properties\PropertiesInterface $properties The properties with the values to replace
+     * @param string                                      $pattern    The pattern that declares the variables
+     *
+     * @return void
+     */
+    public function replaceProperties(PropertiesInterface $properties, $pattern = PropertyStreamFilterParams::PATTERN)
+    {
+        // query whether or not the node value is a string
+        if (is_string($this->value)) {
+            // load the properties utility and replace the properties in the node value
+            $this->value = PropertiesUtil::singleton()->replacePropertiesInString($properties, $this->value, $pattern);
+        }
     }
 }
