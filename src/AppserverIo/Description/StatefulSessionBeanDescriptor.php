@@ -21,6 +21,7 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ClassInterface;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\Remove;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateful;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PreAttach;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PostDetach;
@@ -61,6 +62,13 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
      * @var array
      */
     protected $postDetachCallbacks = array();
+
+    /**
+     * The array with the remove methods.
+     *
+     * @var array
+     */
+    protected $removeMethods = array();
 
     /**
      * Initialize the session bean descriptor with the session type.
@@ -162,6 +170,40 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
     }
 
     /**
+     * Adds a remove method name.
+     *
+     * @param string $removeMethod The remove method name
+     *
+     * @return void
+     */
+    public function addRemoveMethod($removeMethod)
+    {
+        $this->removeMethods[] = $removeMethod;
+    }
+
+    /**
+     * Returns the array with the remove method names.
+     *
+     * @return array The array with the remove method names
+     */
+    public function getRemoveMethods()
+    {
+        return $this->removeMethods;
+    }
+
+    /**
+     * Queries whether the passed method name is a remove method or not.
+     *
+     * @param string $methodName The method name to be queried
+     *
+     * @return boolean TRUE if the passed method name is a remove method, else FALSE
+     */
+    public function isRemoveMethod($methodName)
+    {
+        return in_array($methodName, $this->removeMethods);
+    }
+
+    /**
      * Initializes the bean descriptor instance from the passed reflection class instance.
      *
      * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the bean configuration
@@ -190,6 +232,11 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
             // if we found a @PreAttach annotation, invoke the method
             if ($reflectionMethod->hasAnnotation(PreAttach::ANNOTATION)) {
                 $this->addPreAttachCallback(DescriptorUtil::trim($reflectionMethod->getMethodName()));
+            }
+
+            // if we found a @Remove annotation, invoke the method
+            if ($reflectionMethod->hasAnnotation(Remove::ANNOTATION)) {
+                $this->addRemoveMethod(DescriptorUtil::trim($reflectionMethod->getMethodName()));
             }
         }
 
@@ -237,6 +284,13 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
             }
         }
 
+        // initialize the remove methods
+        if ($removeMethod = $configuration->getRemoveMethod()) {
+            foreach ($removeMethod->getMethodNames() as $methodName) {
+                $this->addRemoveMethod(DescriptorUtil::trim((string) $methodName));
+            }
+        }
+
         // return the instance
         return $this;
     }
@@ -271,6 +325,13 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
         foreach ($beanDescriptor->getPreAttachCallbacks() as $preAttachCallback) {
             if (in_array($preAttachCallback, $this->getPreAttachCallbacks()) === false) {
                 $this->addPreAttachCallback($preAttachCallback);
+            }
+        }
+
+        // merge the pre attach callback method names
+        foreach ($beanDescriptor->getRemoveMethods() as $removeMethod) {
+            if (in_array($removeMethod, $this->getRemoveMethods()) === false) {
+                $this->addRemoveMethod($removeMethod);
             }
         }
     }
