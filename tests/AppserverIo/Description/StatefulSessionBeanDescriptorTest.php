@@ -236,6 +236,7 @@ class StatefulSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
         // check for initialized lifecycle callbacks
         $this->assertContains('newDetach', $this->descriptor->getPostDetachCallbacks());
         $this->assertContains('newAttach', $this->descriptor->getPreAttachCallbacks());
+        $this->assertContains('logout', $this->descriptor->getRemoveMethods());
     }
 
     /**
@@ -261,6 +262,39 @@ class StatefulSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test the add/getter for the remove methods.
+     *
+     * @return void
+     */
+    public function testAddGetRemoveMethods()
+    {
+        $this->descriptor->addRemoveMethod('logout');
+        $this->assertEquals(array('logout'), $this->descriptor->getRemoveMethods());
+    }
+
+    /**
+     * Test if isRemoveMethod() method returns TRUE as expected.
+     *
+     * @return void
+     */
+    public function testIsRemoveMethodTrue()
+    {
+        $this->descriptor->addRemoveMethod($removeMethod = 'logout');
+        $this->assertTrue($this->descriptor->isRemoveMethod($removeMethod));
+    }
+
+    /**
+     * Test if isRemoveMethod() method returns FALSE as expected.
+     *
+     * @return void
+     */
+    public function testIsRemoveMethodFals()
+    {
+        $this->descriptor->addRemoveMethod('logout');
+        $this->assertFalse($this->descriptor->isRemoveMethod('login'));
+    }
+
+    /**
      * A dummy implemenatation for pre-attach method.
      *
      * @return void
@@ -278,6 +312,17 @@ class StatefulSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
      * @PostDetach
      */
     public function detach()
+    {
+        // dummy implementation
+    }
+
+    /**
+     * A dummy implementation for remove method.
+     *
+     * @return void
+     * @Remove
+     */
+    public function logout()
     {
         // dummy implementation
     }
