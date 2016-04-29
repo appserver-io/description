@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\AbstractValueNodeTest
+ * AppserverIo\Description\Api\Node\AbstractValueNodeTest
  *
  * NOTICE OF LICENSE
  *
@@ -12,9 +12,9 @@
  * PHP version 5
  *
  * @author    Tim Wagner <tw@appserver.io>
- * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @copyright 2016 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/appserver-io/appserver
+ * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
 
@@ -24,9 +24,9 @@ namespace AppserverIo\Description\Api\Node;
  * Test for the abstract value node implementation.
  *
  * @author    Tim Wagner <tw@appserver.io>
- * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @copyright 2016 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/appserver-io/appserver
+ * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
 class AbstractValueNodeTest extends \PHPUnit_Framework_TestCase

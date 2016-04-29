@@ -9,4 +9,7 @@
     <post-detach>
         <lifecycle-callback-method>newDetach</lifecycle-callback-method>
     </post-detach>
+    <remove-method>
+        <method-name>logout</method-name>
+    </remove-method>
 </session>

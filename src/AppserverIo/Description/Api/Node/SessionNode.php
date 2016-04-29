@@ -99,6 +99,14 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
     protected $preAttach;
 
     /**
+     * The remove method information.
+     *
+     * @var \AppserverIo\Description\Api\Node\PreAttachNode
+     * @AS\Mapping(nodeName="remove-method", nodeType="AppserverIo\Description\Api\Node\RemoveMethodNode")
+     */
+    protected $removeMethod;
+
+    /**
      * The enterprise bean remote interface information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
@@ -216,6 +224,16 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
     public function getPreAttach()
     {
         return $this->preAttach;
+    }
+
+    /**
+     * Return's the remove method information.
+     *
+     * @return \AppserverIo\Description\Api\Node\RemoveMethodNode The remove method information
+     */
+    public function getRemoveMethod()
+    {
+        return $this->removeMethod;
     }
 
     /**

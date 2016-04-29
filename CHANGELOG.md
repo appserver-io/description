@@ -1,3 +1,13 @@
+# Version 6.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add remove method functionality
+
 # Version 5.0.0
 
 ## Bugfixes
