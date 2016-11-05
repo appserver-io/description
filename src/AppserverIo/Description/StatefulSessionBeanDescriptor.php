@@ -25,6 +25,8 @@ use AppserverIo\Psr\EnterpriseBeans\Annotations\Remove;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateful;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PreAttach;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PostDetach;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\PrePassivate;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\PostActivate;
 use AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\StatefulSessionBeanDescriptorInterface;
 use AppserverIo\Description\Configuration\ConfigurationInterface;
@@ -62,6 +64,20 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
      * @var array
      */
     protected $postDetachCallbacks = array();
+
+    /**
+     * The array with the pre passivate callback method names.
+     *
+     * @var array
+     */
+    protected $prePassivateCallbacks = array();
+
+    /**
+     * The array with the post activate callback method names.
+     *
+     * @var array
+     */
+    protected $postActivateCallbacks = array();
 
     /**
      * The array with the remove methods.
@@ -170,6 +186,74 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
     }
 
     /**
+     * Adds a pre passivate callback method name.
+     *
+     * @param string $prePassivateCallback The pre passivate callback method name
+     *
+     * @return void
+     */
+    public function addPrePassivateCallback($prePassivateCallback)
+    {
+        $this->prePassivateCallbacks[] = $prePassivateCallback;
+    }
+
+    /**
+     * Sets the array with the pre passivate callback method names.
+     *
+     * @param array $prePassivateCallbacks The pre passivate callback method names
+     *
+     * @return void
+     */
+    public function setPrePassivateCallbacks(array $prePassivateCallbacks)
+    {
+        $this->prePassivateCallbacks = $prePassivateCallbacks;
+    }
+
+    /**
+     * The array with the pre passivate callback method names.
+     *
+     * @return array The pre passivate callback method names
+     */
+    public function getPrePassivateCallbacks()
+    {
+        return $this->prePassivateCallbacks;
+    }
+
+    /**
+     * Adds a post activate callback method name.
+     *
+     * @param string $postActivateCallback The post activate callback method name
+     *
+     * @return void
+     */
+    public function addPostActivateCallback($postActivateCallback)
+    {
+        $this->postActivateCallbacks[] = $postActivateCallback;
+    }
+
+    /**
+     * Sets the array with the post activate callback method names.
+     *
+     * @param array $postActivateCallbacks The post activate callback method names
+     *
+     * @return void
+     */
+    public function setPostActivateCallbacks(array $postActivateCallbacks)
+    {
+        $this->postActivateCallbacks = $postActivateCallbacks;
+    }
+
+    /**
+     * The array with the post activate callback method names.
+     *
+     * @return array The post activate callback method names
+     */
+    public function getPostActivateCallbacks()
+    {
+        return $this->postActivateCallbacks;
+    }
+
+    /**
      * Adds a remove method name.
      *
      * @param string $removeMethod The remove method name
@@ -234,6 +318,16 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
                 $this->addPreAttachCallback(DescriptorUtil::trim($reflectionMethod->getMethodName()));
             }
 
+            // if we found a @PostActivate annotation, invoke the method
+            if ($reflectionMethod->hasAnnotation(PostActivate::ANNOTATION)) {
+                $this->addPostActivateCallback(DescriptorUtil::trim($reflectionMethod->getMethodName()));
+            }
+
+            // if we found a @PrePassivate annotation, invoke the method
+            if ($reflectionMethod->hasAnnotation(PrePassivate::ANNOTATION)) {
+                $this->addPrePassivateCallback(DescriptorUtil::trim($reflectionMethod->getMethodName()));
+            }
+
             // if we found a @Remove annotation, invoke the method
             if ($reflectionMethod->hasAnnotation(Remove::ANNOTATION)) {
                 $this->addRemoveMethod(DescriptorUtil::trim($reflectionMethod->getMethodName()));
@@ -284,6 +378,20 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
             }
         }
 
+        // initialize the post activate callback methods
+        if ($postActivate = $configuration->getPostActivate()) {
+            foreach ($postActivate->getLifecycleCallbackMethods() as $postActivateCallback) {
+                $this->addPostActivateCallback(DescriptorUtil::trim((string) $postActivateCallback));
+            }
+        }
+
+        // initialize the pre passivate callback methods
+        if ($prePassivate = $configuration->getPrePassivate()) {
+            foreach ($prePassivate->getLifecycleCallbackMethods() as $prePassivateCallback) {
+                $this->addPrePassivateCallback(DescriptorUtil::trim((string) $prePassivateCallback));
+            }
+        }
+
         // initialize the remove methods
         if ($removeMethod = $configuration->getRemoveMethod()) {
             foreach ($removeMethod->getMethodNames() as $methodName) {
@@ -325,6 +433,20 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
         foreach ($beanDescriptor->getPreAttachCallbacks() as $preAttachCallback) {
             if (in_array($preAttachCallback, $this->getPreAttachCallbacks()) === false) {
                 $this->addPreAttachCallback($preAttachCallback);
+            }
+        }
+
+        // merge the post activate callback method names
+        foreach ($beanDescriptor->getPostActivateCallbacks() as $postActivateCallback) {
+            if (in_array($postActivateCallback, $this->getPostActivateCallbacks()) === false) {
+                $this->addPostActivateCallback($postActivateCallback);
+            }
+        }
+
+        // merge the pre passivate callback method names
+        foreach ($beanDescriptor->getPrePassivateCallbacks() as $prePassivateCallback) {
+            if (in_array($prePassivateCallback, $this->getPrePassivateCallbacks()) === false) {
+                $this->addPrePassivateCallback($prePassivateCallback);
             }
         }
 

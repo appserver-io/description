@@ -12,4 +12,10 @@
     <post-detach>
         <lifecycle-callback-method>detach</lifecycle-callback-method>
     </post-detach>
+    <pre-passivate>
+        <lifecycle-callback-method>passivate</lifecycle-callback-method>
+    </pre-passivate>
+    <post-activate>
+        <lifecycle-callback-method>activate</lifecycle-callback-method>
+    </post-activate>
 </session>

@@ -136,6 +136,9 @@ class SingletonSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(0, $this->descriptor->getEpbReferences());
         $this->assertCount(0, $this->descriptor->getResReferences());
         $this->assertCount(0, $this->descriptor->getReferences());
+        $this->assertCount(1, $this->descriptor->getPostConstructCallbacks());
+        $this->assertCount(1, $this->descriptor->getPostDetachCallbacks());
+        $this->assertCount(1, $this->descriptor->getPreAttachCallbacks());
     }
 
     /**
@@ -229,8 +232,65 @@ class SingletonSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('ASingletonProcessor', $this->descriptor->getName());
         $this->assertSame('AppserverIo\Apps\Example\Services\ASingletonProcessor', $this->descriptor->getClassName());
         $this->assertFalse($this->descriptor->isInitOnStartup());
+        $this->assertContains('newDetach', $this->descriptor->getPostDetachCallbacks());
+        $this->assertContains('newAttach', $this->descriptor->getPreAttachCallbacks());
         $this->assertCount(0, $this->descriptor->getEpbReferences());
         $this->assertCount(0, $this->descriptor->getResReferences());
         $this->assertCount(0, $this->descriptor->getReferences());
+        $this->assertCount(1, $this->descriptor->getPostConstructCallbacks());
+        $this->assertCount(2, $this->descriptor->getPostDetachCallbacks());
+        $this->assertCount(2, $this->descriptor->getPreAttachCallbacks());
+    }
+
+    /**
+     * Tests the setter/getter for the pre-attach lifecycle callbacks.
+     *
+     * @return void
+     */
+    public function testSetGetPreAttachCallbacks()
+    {
+        $this->descriptor->setPreAttachCallbacks($preAttachCallbacks = array('attach'));
+        $this->assertSame($preAttachCallbacks, $this->descriptor->getPreAttachCallbacks());
+    }
+
+    /**
+     * Tests the setter/getter for the post-detach lifecycle callbacks.
+     *
+     * @return void
+     */
+    public function testSetGetPostDetachCallbacks()
+    {
+        $this->descriptor->setPostDetachCallbacks($postDetachCallbacks = array('attach'));
+        $this->assertSame($postDetachCallbacks, $this->descriptor->getPostDetachCallbacks());
+    }
+
+    /**
+     * Dummy method to test annotation parsing.
+     *
+     * @return void
+     * @PostConstruct
+     */
+    public function postConstruct()
+    {
+    }
+
+    /**
+     * Dummy method to test annotation parsing.
+     *
+     * @return void
+     * @PostDetach
+     */
+    public function postDetach()
+    {
+    }
+
+    /**
+     * Dummy method to test annotation parsing.
+     *
+     * @return void
+     * @PreAttach
+     */
+    public function preAttach()
+    {
     }
 }

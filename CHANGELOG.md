@@ -1,3 +1,14 @@
+# Version 7.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add @PrePassivate + @PostActivate annotations to SFSB
+* Add @PreAttach + @PostDetach annotations to SSB
+
 # Version 6.0.0
 
 ## Bugfixes
