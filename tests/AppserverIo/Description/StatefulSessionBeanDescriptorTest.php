@@ -26,6 +26,8 @@ use AppserverIo\Psr\EnterpriseBeans\Annotations\PreAttach;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PostDetach;
 use AppserverIo\Description\Api\Node\SessionNode;
 use AppserverIo\Description\Api\Node\MessageDrivenNode;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\PostActivate;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\PrePassivate;
 
 /**
  * Test implementation for the StatefulSessionBeanDescriptor class implementation.
@@ -81,7 +83,13 @@ class StatefulSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
     {
 
         // initialize the annotation aliases
-        $aliases = array(Stateful::ANNOTATION => Stateful::__getClass());
+        $aliases = array(
+            Stateful::ANNOTATION => Stateful::__getClass(),
+            PreAttach::ANNOTATION => PreAttach::__getClass(),
+            PostDetach::ANNOTATION => PostDetach::__getClass(),
+            PostActivate::ANNOTATION => PostActivate::__getClass(),
+            PrePassivate::ANNOTATION => PrePassivate::__getClass()
+        );
 
         // create the reflection class
         $reflectionClass = new ReflectionClass(__CLASS__, array(), $aliases);
@@ -95,6 +103,8 @@ class StatefulSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(0, $this->descriptor->getReferences());
         $this->assertCount(1, $this->descriptor->getPreAttachCallbacks());
         $this->assertCount(1, $this->descriptor->getPostDetachCallbacks());
+        $this->assertCount(1, $this->descriptor->getPostActivateCallbacks());
+        $this->assertCount(1, $this->descriptor->getPrePassivateCallbacks());
     }
 
     /**
@@ -236,7 +246,13 @@ class StatefulSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
         // check for initialized lifecycle callbacks
         $this->assertContains('newDetach', $this->descriptor->getPostDetachCallbacks());
         $this->assertContains('newAttach', $this->descriptor->getPreAttachCallbacks());
+        $this->assertContains('newActivate', $this->descriptor->getPostActivateCallbacks());
+        $this->assertContains('newPassivate', $this->descriptor->getPrePassivateCallbacks());
         $this->assertContains('logout', $this->descriptor->getRemoveMethods());
+        $this->assertCount(2, $this->descriptor->getPostDetachCallbacks());
+        $this->assertCount(2, $this->descriptor->getPreAttachCallbacks());
+        $this->assertCount(2, $this->descriptor->getPostActivateCallbacks());
+        $this->assertCount(2, $this->descriptor->getPrePassivateCallbacks());
     }
 
     /**
@@ -259,6 +275,28 @@ class StatefulSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
     {
         $this->descriptor->setPreAttachCallbacks($preAttachCallbacks = array('attach'));
         $this->assertSame($preAttachCallbacks, $this->descriptor->getPreAttachCallbacks());
+    }
+
+    /**
+     * Tests the setter/getter for the pre-passivate lifecycle callbacks.
+     *
+     * @return void
+     */
+    public function testSetGetPrePassivateCallbacks()
+    {
+        $this->descriptor->setPrePassivateCallbacks($prePassivateCallbacks = array('passivate'));
+        $this->assertSame($prePassivateCallbacks, $this->descriptor->getPrePassivateCallbacks());
+    }
+
+    /**
+     * Tests the setter/getter for the post-activate lifecycle callbacks.
+     *
+     * @return void
+     */
+    public function testSetGetPostActivateCallbacks()
+    {
+        $this->descriptor->setPostActivateCallbacks($postActivateCallbacks = array('activate'));
+        $this->assertSame($postActivateCallbacks, $this->descriptor->getPostActivateCallbacks());
     }
 
     /**
@@ -312,6 +350,28 @@ class StatefulSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
      * @PostDetach
      */
     public function detach()
+    {
+        // dummy implementation
+    }
+
+    /**
+     * A dummy implemenatation for post-activate method.
+     *
+     * @return void
+     * @PostActivate
+     */
+    public function activate()
+    {
+        // dummy implementation
+    }
+
+    /**
+     * A dummy implemenatation for pre-passivate method.
+     *
+     * @return void
+     * @PrePassivate
+     */
+    public function passivate()
     {
         // dummy implementation
     }

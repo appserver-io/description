@@ -75,6 +75,20 @@ interface SessionConfigurationInterface extends BeanConfigurationInterface, Refe
     public function getPreAttach();
 
     /**
+     * Return's the post activate information.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\PostActivateNode
+     */
+    public function getPostActivate();
+
+    /**
+     * Return's the pre passivate information.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\PrePassivateNode
+     */
+    public function getPrePassivate();
+
+    /**
      * Return's the enterprise bean remote interface information.
      *
      * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface

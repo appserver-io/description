@@ -25,6 +25,8 @@ use AppserverIo\Lang\Boolean;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Startup;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Singleton;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\PreAttach;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\PostDetach;
 use AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\SingletonSessionBeanDescriptorInterface;
 use AppserverIo\Description\Configuration\ConfigurationInterface;
@@ -50,6 +52,20 @@ class SingletonSessionBeanDescriptor extends SessionBeanDescriptor implements Si
     const SESSION_TYPE = 'Singleton';
 
     /**
+     * The array with the pre attach callback method names.
+     *
+     * @var array
+     */
+    protected $preAttachCallbacks = array();
+
+    /**
+     * The array with the post detach callback method names.
+     *
+     * @var array
+     */
+    protected $postDetachCallbacks = array();
+
+    /**
      * Whether the bean should be initialized on server startup.
      *
      * @var boolean
@@ -62,6 +78,74 @@ class SingletonSessionBeanDescriptor extends SessionBeanDescriptor implements Si
     public function __construct()
     {
         $this->setSessionType(SingletonSessionBeanDescriptor::SESSION_TYPE);
+    }
+
+    /**
+     * Adds a pre attach callback method name.
+     *
+     * @param string $preAttachCallback The pre attach callback method name
+     *
+     * @return void
+     */
+    public function addPreAttachCallback($preAttachCallback)
+    {
+        $this->preAttachCallbacks[] = $preAttachCallback;
+    }
+
+    /**
+     * Sets the array with the pre attach callback method names.
+     *
+     * @param array $preAttachCallbacks The pre attach callback method names
+     *
+     * @return void
+     */
+    public function setPreAttachCallbacks(array $preAttachCallbacks)
+    {
+        $this->preAttachCallbacks = $preAttachCallbacks;
+    }
+
+    /**
+     * The array with the pre attach callback method names.
+     *
+     * @return array The pre attach callback method names
+     */
+    public function getPreAttachCallbacks()
+    {
+        return $this->preAttachCallbacks;
+    }
+
+    /**
+     * Adds a post detach callback method name.
+     *
+     * @param string $postDetachCallback The post detach callback method name
+     *
+     * @return void
+     */
+    public function addPostDetachCallback($postDetachCallback)
+    {
+        $this->postDetachCallbacks[] = $postDetachCallback;
+    }
+
+    /**
+     * Sets the array with the post detach callback method names.
+     *
+     * @param array $postDetachCallbacks The post detach callback method names
+     *
+     * @return void
+     */
+    public function setPostDetachCallbacks(array $postDetachCallbacks)
+    {
+        $this->postDetachCallbacks = $postDetachCallbacks;
+    }
+
+    /**
+     * The array with the post detach callback method names.
+     *
+     * @return array The post detach callback method names
+     */
+    public function getPostDetachCallbacks()
+    {
+        return $this->postDetachCallbacks;
     }
 
     /**
@@ -128,6 +212,19 @@ class SingletonSessionBeanDescriptor extends SessionBeanDescriptor implements Si
         // set the session type
         $this->setSessionType(SingletonSessionBeanDescriptor::SESSION_TYPE);
 
+        // we've to check for a @PostDetach or @PreAttach annotation
+        foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
+            // if we found a @PostDetach annotation, invoke the method
+            if ($reflectionMethod->hasAnnotation(PostDetach::ANNOTATION)) {
+                $this->addPostDetachCallback(DescriptorUtil::trim($reflectionMethod->getMethodName()));
+            }
+
+            // if we found a @PreAttach annotation, invoke the method
+            if ($reflectionMethod->hasAnnotation(PreAttach::ANNOTATION)) {
+                $this->addPreAttachCallback(DescriptorUtil::trim($reflectionMethod->getMethodName()));
+            }
+        }
+
         // initialize the descriptor instance
         parent::fromReflectionClass($reflectionClass);
 
@@ -164,6 +261,20 @@ class SingletonSessionBeanDescriptor extends SessionBeanDescriptor implements Si
         // initialize the descriptor instance
         parent::fromConfiguration($configuration);
 
+        // initialize the post detach callback methods
+        if ($postDetach = $configuration->getPostDetach()) {
+            foreach ($postDetach->getLifecycleCallbackMethods() as $postDetachCallback) {
+                $this->addPostDetachCallback(DescriptorUtil::trim((string) $postDetachCallback));
+            }
+        }
+
+        // initialize the pre attach callback methods
+        if ($preAttach = $configuration->getPreAttach()) {
+            foreach ($preAttach->getLifecycleCallbackMethods() as $preAttachCallback) {
+                $this->addPreAttachCallback(DescriptorUtil::trim((string) $preAttachCallback));
+            }
+        }
+
         // query for the startup flag
         if ($initOnStartup = (string) $configuration->getInitOnStartup()) {
             $this->setInitOnStartup(Boolean::valueOf(new String($initOnStartup))->booleanValue());
@@ -191,6 +302,20 @@ class SingletonSessionBeanDescriptor extends SessionBeanDescriptor implements Si
 
         // merge the default bean members by invoking the parent method
         parent::merge($beanDescriptor);
+
+        // merge the post detach callback method names
+        foreach ($beanDescriptor->getPostDetachCallbacks() as $postDetachCallback) {
+            if (in_array($postDetachCallback, $this->getPostDetachCallbacks()) === false) {
+                $this->addPostDetachCallback($postDetachCallback);
+            }
+        }
+
+        // merge the pre attach callback method names
+        foreach ($beanDescriptor->getPreAttachCallbacks() as $preAttachCallback) {
+            if (in_array($preAttachCallback, $this->getPreAttachCallbacks()) === false) {
+                $this->addPreAttachCallback($preAttachCallback);
+            }
+        }
 
         // merge the startup flag
         $this->setInitOnStartup($beanDescriptor->isInitOnStartup());

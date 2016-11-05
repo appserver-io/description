@@ -7,4 +7,10 @@
     <post-construct>
         <lifecycle-callback-method>initialize</lifecycle-callback-method>
     </post-construct>
+    <pre-attach>
+        <lifecycle-callback-method>attach</lifecycle-callback-method>
+    </pre-attach>
+    <post-detach>
+        <lifecycle-callback-method>detach</lifecycle-callback-method>
+    </post-detach>
 </session>

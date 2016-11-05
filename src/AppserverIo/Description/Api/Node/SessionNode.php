@@ -99,6 +99,22 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
     protected $preAttach;
 
     /**
+     * The post activate information.
+     *
+     * @var \AppserverIo\Description\Api\Node\PostActivateNode
+     * @AS\Mapping(nodeName="post-activate", nodeType="AppserverIo\Description\Api\Node\PostActivateNode")
+     */
+    protected $postActivate;
+
+    /**
+     * The pre passivate information.
+     *
+     * @var \AppserverIo\Description\Api\Node\PrePassivateNode
+     * @AS\Mapping(nodeName="pre-passivate", nodeType="AppserverIo\Description\Api\Node\PrePassivateNode")
+     */
+    protected $prePassivate;
+
+    /**
      * The remove method information.
      *
      * @var \AppserverIo\Description\Api\Node\PreAttachNode
@@ -224,6 +240,26 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
     public function getPreAttach()
     {
         return $this->preAttach;
+    }
+
+    /**
+     * Return's the post activate information.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\PostActivateNode
+     */
+    public function getPostActivate()
+    {
+        return $this->postActivate;
+    }
+
+    /**
+     * Return's the pre passivate information.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\PrePassivateNode
+     */
+    public function getPrePassivate()
+    {
+        return $this->prePassivate;
     }
 
     /**
