@@ -47,6 +47,13 @@ interface ReferencesConfigurationInterface
     public function getResRefs();
 
     /**
+     * Return's the class reference information.
+     *
+     * @return array
+     */
+    public function getClassRefs();
+
+    /**
      * Return's the persistence unit reference information.
      *
      * @return array

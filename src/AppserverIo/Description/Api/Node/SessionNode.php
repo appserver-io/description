@@ -155,6 +155,14 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
     protected $resRefs = array();
 
     /**
+     * The class reference information.
+     *
+     * @var array
+     * @AS\Mapping(nodeName="class-ref", nodeType="array", elementType="AppserverIo\Description\Api\Node\ClassRefNode")
+     */
+    protected $classRefs = array();
+
+    /**
      * The persistence unit reference information.
      *
      * @var array
@@ -310,6 +318,16 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
     public function getResRefs()
     {
         return $this->resRefs;
+    }
+
+    /**
+     * Return's the class reference information.
+     *
+     * @return array The class reference information
+     */
+    public function getClassRefs()
+    {
+        return $this->classRefs;
     }
 
     /**

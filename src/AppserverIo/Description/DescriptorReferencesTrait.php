@@ -21,6 +21,7 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ClassInterface;
+use AppserverIo\Psr\Di\Description\ClassReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\PersistenceUnitReferenceDescriptorInterface;
@@ -51,6 +52,13 @@ trait DescriptorReferencesTrait
      * @var array
      */
     protected $resReferences = array();
+
+    /**
+     * The array with the class references.
+     *
+     * @var array
+     */
+    protected $classReferences = array();
 
     /**
      * The array with the persistence unit references.
@@ -128,6 +136,40 @@ trait DescriptorReferencesTrait
     }
 
     /**
+     * Adds a class reference configuration.
+     *
+     * @param \AppserverIo\Psr\Di\Description\ClassReferenceDescriptorInterface $classReference The class reference configuration
+     *
+     * @return void
+     */
+    public function addClassReference(ClassReferenceDescriptorInterface $classReference)
+    {
+        $this->classReferences[$classReference->getName()] = $classReference;
+    }
+
+    /**
+     * Sets the array with the class references.
+     *
+     * @param array $classReference The class references
+     *
+     * @return void
+     */
+    public function setClassReferences(array $classReference)
+    {
+        $this->classReferences = $classReference;
+    }
+
+    /**
+     * The array with the class references.
+     *
+     * @return array The class references
+     */
+    public function getClassReferences()
+    {
+        return $this->classReferences;
+    }
+
+    /**
      * Adds a persistence unit reference configuration.
      *
      * @param \AppserverIo\Psr\EnterpriseBeans\Description\PersistenceUnitReferenceDescriptorInterface $persistenceUnitReference The persistence unit reference configuration
@@ -168,7 +210,12 @@ trait DescriptorReferencesTrait
      */
     public function getReferences()
     {
-        return array_merge($this->epbReferences, $this->resReferences, $this->persistenceUnitReferences);
+        return array_merge(
+            $this->epbReferences,
+            $this->resReferences,
+            $this->classReferences,
+            $this->persistenceUnitReferences
+        );
     }
 
     /**
@@ -219,6 +266,11 @@ trait DescriptorReferencesTrait
                 $this->addResReference($resReference);
             }
 
+            // load the class references
+            if ($classReference = ClassReferenceDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty)) {
+                $this->addClassReference($classReference);
+            }
+
             // load the persistence unit references
             if ($persistenceUnitReference = PersistenceUnitReferenceDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty)) {
                 $this->addPersistenceUnitReference($persistenceUnitReference);
@@ -235,6 +287,11 @@ trait DescriptorReferencesTrait
             // load the resource references
             if ($resReference = ResReferenceDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
                 $this->addResReference($resReference);
+            }
+
+            // load the class references
+            if ($classReference = ClassReferenceDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
+                $this->addClassReference($classReference);
             }
 
             // load the persistence unit references
