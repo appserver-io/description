@@ -181,7 +181,7 @@ class ServletNode extends AbstractNode implements ServletConfigurationInterface
      *
      * @return array The class reference information
      */
-    public function getClassRefs()
+    public function getBeanRefs()
     {
         return $this->classRefs;
     }

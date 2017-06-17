@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Description\ClassReferenceDescriptor
+ * AppserverIo\Description\BeanReferenceDescriptor
  *
  * NOTICE OF LICENSE
  *
@@ -24,12 +24,12 @@ use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\MethodInterface;
 use AppserverIo\Lang\Reflection\PropertyInterface;
 use AppserverIo\Psr\Deployment\DescriptorInterface;
-use AppserverIo\Psr\Di\Annotations\Inject;
-use AppserverIo\Psr\Di\Description\ClassReferenceDescriptorInterface;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\Inject;
+use AppserverIo\Psr\EnterpriseBeans\Description\BeanReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface;
 
 /**
- * Utility class that stores a resource reference configuration.
+ * Utility class that stores a bean reference configuration.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -37,7 +37,7 @@ use AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterfa
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-class ClassReferenceDescriptor implements ClassReferenceDescriptorInterface, DescriptorInterface
+class BeanReferenceDescriptor implements BeanReferenceDescriptorInterface, DescriptorInterface
 {
 
     /**
@@ -159,11 +159,11 @@ class ClassReferenceDescriptor implements ClassReferenceDescriptorInterface, Des
     /**
      * Returns a new descriptor instance.
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\ClassReferenceDescriptorInterface The descriptor instance
+     * @return \AppserverIo\Psr\EnterpriseBeans\Description\BeanReferenceDescriptorInterface The descriptor instance
      */
     public static function newDescriptorInstance()
     {
-        return new ClassReferenceDescriptor();
+        return new BeanReferenceDescriptor();
     }
 
     /**
@@ -172,7 +172,7 @@ class ClassReferenceDescriptor implements ClassReferenceDescriptorInterface, Des
      *
      * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the beans reference configuration
      *
-     * @return \AppserverIo\Psr\Di\Description\ClassReferenceDescriptorInterface|null The initialized descriptor instance
+     * @return \AppserverIo\Psr\Di\Description\BeanReferenceDescriptorInterface|null The initialized descriptor instance
      */
     public function fromReflectionClass(ClassInterface $reflectionClass)
     {
@@ -204,9 +204,9 @@ class ClassReferenceDescriptor implements ClassReferenceDescriptorInterface, Des
 
         // load the reference name defined as @Inject(name=****)
         if ($name = $annotationInstance->getName()) {
-            $this->setName(sprintf('%s/%s', ClassReferenceDescriptor::REF_DIRECTORY, $name));
+            $this->setName(sprintf('%s/%s', BeanReferenceDescriptor::REF_DIRECTORY, $name));
         } else {
-            $this->setName(sprintf('%s/%s', ClassReferenceDescriptor::REF_DIRECTORY, ucfirst($reflectionProperty->getPropertyName())));
+            $this->setName(sprintf('%s/%s', BeanReferenceDescriptor::REF_DIRECTORY, ucfirst($reflectionProperty->getPropertyName())));
         }
 
         // load the class type defined as @Inject(type=****)
@@ -253,11 +253,11 @@ class ClassReferenceDescriptor implements ClassReferenceDescriptorInterface, Des
 
         // load the reference name defined as @Inject(name=****)
         if ($name = $annotationInstance->getName()) {
-            $this->setName(sprintf('%s/%s', ClassReferenceDescriptor::REF_DIRECTORY, $name));
+            $this->setName(sprintf('%s/%s', BeanReferenceDescriptor::REF_DIRECTORY, $name));
         } else {
             // use the name of the first parameter
             foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-                $this->setName(sprintf('%s/%s', ClassReferenceDescriptor::REF_DIRECTORY, ucfirst($reflectionParameter->getParameterName())));
+                $this->setName(sprintf('%s/%s', BeanReferenceDescriptor::REF_DIRECTORY, ucfirst($reflectionParameter->getParameterName())));
                 break;
             }
         }
@@ -289,20 +289,20 @@ class ClassReferenceDescriptor implements ClassReferenceDescriptorInterface, Des
      * Creates and initializes a beans reference configuration instance from the passed
      * configuration node.
      *
-     * @param \AppserverIo\Description\Configuration\ClassRefConfigurationInterface $configuration The configuration node with the class reference configuration
+     * @param \AppserverIo\Description\Configuration\BeanRefConfigurationInterface $configuration The configuration node with the class reference configuration
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\ClassRefConfigurationInterface|null The initialized descriptor instance
+     * @return \AppserverIo\Psr\EnterpriseBeans\Description\BeanRefConfigurationInterface|null The initialized descriptor instance
      */
-    public function fromConfiguration(ClassRefConfigurationInterface $configuration)
+    public function fromConfiguration(BeanRefConfigurationInterface $configuration)
     {
 
         // query for the reference name
-        if ($name = (string) $configuration->getClassRefName()) {
-            $this->setName(sprintf('%s/%s', ClassRefConfigurationInterface::REF_DIRECTORY, $name));
+        if ($name = (string) $configuration->getBeanRefName()) {
+            $this->setName(sprintf('%s/%s', BeanRefConfigurationInterface::REF_DIRECTORY, $name));
         }
 
         // query for the reference type
-        if ($type = (string) $configuration->getClassRefType()) {
+        if ($type = (string) $configuration->getBeanRefType()) {
             $this->setType($type);
         }
 
@@ -324,30 +324,30 @@ class ClassReferenceDescriptor implements ClassReferenceDescriptorInterface, Des
      * Merges the passed configuration into this one. Configuration values
      * of the passed configuration will overwrite the this one.
      *
-     * @param \AppserverIo\Psr\Di\Description\ClassReferenceDescriptorInterface $classReferenceDescriptor The configuration to merge
+     * @param \AppserverIo\Psr\Di\Description\BeanReferenceDescriptorInterface $beanReferenceDescriptor The configuration to merge
      *
      * @return void
      */
-    public function merge(ClassReferenceDescriptorInterface $classReferenceDescriptor)
+    public function merge(BeanReferenceDescriptorInterface $beanReferenceDescriptor)
     {
 
         // merge the reference name
-        if ($name = $classReferenceDescriptor->getName()) {
+        if ($name = $beanReferenceDescriptor->getName()) {
             $this->setName($name);
         }
 
         // merge the reference type
-        if ($type = $classReferenceDescriptor->getType()) {
+        if ($type = $beanReferenceDescriptor->getType()) {
             $this->setType($type);
         }
 
         // merge the description
-        if ($description = $classReferenceDescriptor->getDescription()) {
+        if ($description = $beanReferenceDescriptor->getDescription()) {
             $this->setDescription($description);
         }
 
         // merge the injection target
-        if ($injectionTarget = $classReferenceDescriptor->getInjectionTarget()) {
+        if ($injectionTarget = $beanReferenceDescriptor->getInjectionTarget()) {
             $this->setInjectionTarget($injectionTarget);
         }
     }

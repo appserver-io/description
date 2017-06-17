@@ -47,11 +47,11 @@ interface ReferencesConfigurationInterface
     public function getResRefs();
 
     /**
-     * Return's the class reference information.
+     * Return's the bean reference information.
      *
      * @return array
      */
-    public function getClassRefs();
+    public function getBeanRefs();
 
     /**
      * Return's the persistence unit reference information.

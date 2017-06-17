@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Description\Configuration\ClassReferenceConfigurationInterface
+ * AppserverIo\Description\Configuration\BeanRefConfigurationInterface
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,7 @@
 namespace AppserverIo\Description\Configuration;
 
 /**
- * Interface for a class reference DTO implementation.
+ * Interface for a bean reference DTO implementation.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -29,34 +29,34 @@ namespace AppserverIo\Description\Configuration;
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-interface ClassReferenceConfigurationInterface
+interface BeanRefConfigurationInterface
 {
 
     /**
-     * Return's the class reference name information.
+     * Return's the bean reference name information.
      *
-     * @return \AppserverIo\Description\Api\Node\ValueNode The class reference name information
+     * @return \AppserverIo\Description\Api\Node\ValueNode The bean reference name information
      */
-    public function getClassRefName();
+    public function getBeanRefName();
 
     /**
-     * Return's the class reference type information.
+     * Return's the bean reference type information.
      *
-     * @return \AppserverIo\Description\Api\Node\ValueNode The class reference type information
+     * @return \AppserverIo\Description\Api\Node\ValueNode The bean reference type information
      */
-    public function getClassRefType();
+    public function getBeanRefType();
 
     /**
-     * Return's the class description information.
+     * Return's the bean description information.
      *
-     * @return \AppserverIo\Description\Api\Node\ValueNode The class description information
+     * @return \AppserverIo\Description\Api\Node\ValueNode The bean description information
      */
     public function getDescription();
 
     /**
-     * Return's the class injection target information.
+     * Return's the bean injection target information.
      *
-     * @return \AppserverIo\Description\Api\Node\InjectionTargetNode The class injection target information
+     * @return \AppserverIo\Description\Api\Node\InjectionTargetNode The bean injection target information
      */
     public function getInjectionTarget();
 }

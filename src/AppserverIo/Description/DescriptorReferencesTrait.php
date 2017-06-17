@@ -21,9 +21,9 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ClassInterface;
-use AppserverIo\Psr\Di\Description\ClassReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface;
+use AppserverIo\Psr\EnterpriseBeans\Description\BeanReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\PersistenceUnitReferenceDescriptorInterface;
 use AppserverIo\Description\Configuration\ReferencesConfigurationInterface;
 
@@ -58,7 +58,7 @@ trait DescriptorReferencesTrait
      *
      * @var array
      */
-    protected $classReferences = array();
+    protected $beanReferences = array();
 
     /**
      * The array with the persistence unit references.
@@ -136,37 +136,37 @@ trait DescriptorReferencesTrait
     }
 
     /**
-     * Adds a class reference configuration.
+     * Adds a bean reference configuration.
      *
-     * @param \AppserverIo\Psr\Di\Description\ClassReferenceDescriptorInterface $classReference The class reference configuration
-     *
-     * @return void
-     */
-    public function addClassReference(ClassReferenceDescriptorInterface $classReference)
-    {
-        $this->classReferences[$classReference->getName()] = $classReference;
-    }
-
-    /**
-     * Sets the array with the class references.
-     *
-     * @param array $classReference The class references
+     * @param \AppserverIo\Psr\Di\Description\BeanReferenceDescriptorInterface $beanReference The bean reference configuration
      *
      * @return void
      */
-    public function setClassReferences(array $classReference)
+    public function addBeanReference(BeanReferenceDescriptorInterface $beanReference)
     {
-        $this->classReferences = $classReference;
+        $this->beanReferences[$beanReference->getName()] = $beanReference;
     }
 
     /**
-     * The array with the class references.
+     * Sets the array with the bean references.
      *
-     * @return array The class references
+     * @param array $beanReference The bean references
+     *
+     * @return void
      */
-    public function getClassReferences()
+    public function setBeanReferences(array $beanReference)
     {
-        return $this->classReferences;
+        $this->beanReferences = $beanReference;
+    }
+
+    /**
+     * The array with the bean references.
+     *
+     * @return array The bean references
+     */
+    public function getBeanReferences()
+    {
+        return $this->beanReferences;
     }
 
     /**
@@ -213,7 +213,7 @@ trait DescriptorReferencesTrait
         return array_merge(
             $this->epbReferences,
             $this->resReferences,
-            $this->classReferences,
+            $this->beanReferences,
             $this->persistenceUnitReferences
         );
     }
@@ -236,6 +236,11 @@ trait DescriptorReferencesTrait
         // initialize the resource references
         foreach ($configuration->getResRefs() as $resReference) {
             $this->addResReference(ResReferenceDescriptor::newDescriptorInstance()->fromConfiguration($resReference));
+        }
+
+        // initialize the bean references
+        foreach ($configuration->getBeanRefs() as $beanReference) {
+            $this->addBeanReference(BeanReferenceDescriptor::newDescriptorInstance()->fromConfiguration($beanReference));
         }
 
         // initialize the resource references
@@ -266,9 +271,9 @@ trait DescriptorReferencesTrait
                 $this->addResReference($resReference);
             }
 
-            // load the class references
-            if ($classReference = ClassReferenceDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty)) {
-                $this->addClassReference($classReference);
+            // load the bean references
+            if ($beanReference = BeanReferenceDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty)) {
+                $this->addBeanReference($beanReference);
             }
 
             // load the persistence unit references
@@ -289,9 +294,9 @@ trait DescriptorReferencesTrait
                 $this->addResReference($resReference);
             }
 
-            // load the class references
-            if ($classReference = ClassReferenceDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
-                $this->addClassReference($classReference);
+            // load the bean references
+            if ($beanReference = BeanReferenceDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
+                $this->addBeanReference($beanReference);
             }
 
             // load the persistence unit references

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Description\Api\Node\ClassRefNode
+ * \AppserverIo\Description\Api\Node\BeanRefNode
  *
  * NOTICE OF LICENSE
  *
@@ -20,10 +20,10 @@
 
 namespace AppserverIo\Description\Api\Node;
 
-use AppserverIo\Description\Configuration\ClassRefConfigurationInterface;
+use AppserverIo\Description\Configuration\BeanRefConfigurationInterface;
 
 /**
- * DTO to transfer resource reference information.
+ * DTO to transfer bean reference information.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -31,27 +31,27 @@ use AppserverIo\Description\Configuration\ClassRefConfigurationInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class ClassRefNode extends AbstractNode implements ClassRefConfigurationInterface
+class BeanRefNode extends AbstractNode implements BeanRefConfigurationInterface
 {
 
     /**
-     * The class reference name information.
+     * The bean reference name information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
      * @AS\Mapping(nodeName="class-ref-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
-    protected $classRefName;
+    protected $beanRefName;
 
     /**
-     * The class reference type information.
+     * The bean reference type information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
      * @AS\Mapping(nodeName="class-ref-type", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
-    protected $classRefType;
+    protected $beanRefType;
 
     /**
-     * The class description information.
+     * The bean description information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
      * @AS\Mapping(nodeName="description", nodeType="AppserverIo\Description\Api\Node\ValueNode")
@@ -59,7 +59,7 @@ class ClassRefNode extends AbstractNode implements ClassRefConfigurationInterfac
     protected $description;
 
     /**
-     * The class injection target information.
+     * The bean injection target information.
      *
      * @var \AppserverIo\Description\Api\Node\InjectionTargetNode
      * @AS\Mapping(nodeName="injection-target", nodeType="AppserverIo\Description\Api\Node\InjectionTargetNode")
@@ -67,29 +67,29 @@ class ClassRefNode extends AbstractNode implements ClassRefConfigurationInterfac
     protected $injectionTarget;
 
     /**
-     * Return's the class reference name information.
+     * Return's the bean reference name information.
      *
-     * @return \AppserverIo\Description\Api\Node\ValueNode The class reference name information
+     * @return \AppserverIo\Description\Api\Node\ValueNode The bean reference name information
      */
-    public function getClassRefName()
+    public function getBeanRefName()
     {
-        return $this->classRefName;
+        return $this->beanRefName;
     }
 
     /**
-     * Return's the class reference type information.
+     * Return's the bean reference type information.
      *
-     * @return \AppserverIo\Description\Api\Node\ValueNode The class reference type information
+     * @return \AppserverIo\Description\Api\Node\ValueNode The bean reference type information
      */
-    public function getClassRefType()
+    public function getBeanRefType()
     {
-        return $this->classRefType;
+        return $this->beanRefType;
     }
 
     /**
-     * Return's the class description information.
+     * Return's the bean description information.
      *
-     * @return \AppserverIo\Description\Api\Node\ValueNode The class description information
+     * @return \AppserverIo\Description\Api\Node\ValueNode The bean description information
      */
     public function getDescription()
     {
@@ -97,9 +97,9 @@ class ClassRefNode extends AbstractNode implements ClassRefConfigurationInterfac
     }
 
     /**
-     * Return's the class injection target information.
+     * Return's the bean injection target information.
      *
-     * @return \AppserverIo\Description\Api\Node\InjectionTargetNode The class injection target information
+     * @return \AppserverIo\Description\Api\Node\InjectionTargetNode The bean injection target information
      */
     public function getInjectionTarget()
     {
