@@ -25,6 +25,7 @@ use AppserverIo\Lang\Reflection\MethodInterface;
 use AppserverIo\Lang\Reflection\PropertyInterface;
 use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Inject;
+use AppserverIo\Description\Configuration\BeanRefConfigurationInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\BeanReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface;
 
@@ -298,7 +299,7 @@ class BeanReferenceDescriptor implements BeanReferenceDescriptorInterface, Descr
 
         // query for the reference name
         if ($name = (string) $configuration->getBeanRefName()) {
-            $this->setName(sprintf('%s/%s', BeanRefConfigurationInterface::REF_DIRECTORY, $name));
+            $this->setName(sprintf('%s/%s', BeanReferenceDescriptor::REF_DIRECTORY, $name));
         }
 
         // query for the reference type
