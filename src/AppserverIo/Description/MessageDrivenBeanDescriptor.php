@@ -35,13 +35,14 @@ use AppserverIo\Description\Configuration\MessageDrivenConfigurationInterface;
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-class MessageDrivenBeanDescriptor extends EnterpriseBeanDescriptor implements MessageDrivenBeanDescriptorInterface
+class MessageDrivenBeanDescriptor extends BeanDescriptor implements MessageDrivenBeanDescriptorInterface
 {
 
     /**
      * Returns a new descriptor instance.
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\MessageDrivenBeanDescriptorInterface The descriptor instance
+     * @return \AppserverIo\Psr\EnterpriseBeans\Description\MessageDrivenBeanDescriptorInterface
+     *     The descriptor instance
      */
     public static function newDescriptorInstance()
     {

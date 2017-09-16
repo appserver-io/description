@@ -47,13 +47,6 @@ interface ReferencesConfigurationInterface
     public function getResRefs();
 
     /**
-     * Return's the bean reference information.
-     *
-     * @return array
-     */
-    public function getBeanRefs();
-
-    /**
      * Return's the persistence unit reference information.
      *
      * @return array

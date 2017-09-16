@@ -56,7 +56,8 @@ class StatelessSessionBeanDescriptor extends SessionBeanDescriptor implements St
     /**
      * Returns a new descriptor instance.
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\StatelessSessionBeanDescriptorInterface The descriptor instance
+     * @return \AppserverIo\Psr\EnterpriseBeans\Description\StatelessSessionBeanDescriptorInterface
+     *     The descriptor instance
      */
     public static function newDescriptorInstance()
     {
