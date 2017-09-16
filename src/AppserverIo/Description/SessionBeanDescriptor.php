@@ -37,7 +37,7 @@ use AppserverIo\Description\Configuration\ConfigurationInterface;
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-abstract class SessionBeanDescriptor extends BeanDescriptor implements SessionBeanDescriptorInterface
+abstract class SessionBeanDescriptor extends EnterpriseBeanDescriptor implements SessionBeanDescriptorInterface
 {
 
     /**

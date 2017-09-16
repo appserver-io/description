@@ -173,8 +173,7 @@ class SingletonSessionBeanDescriptor extends SessionBeanDescriptor implements Si
     /**
      * Returns a new descriptor instance.
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\SingletonSessionBeanDescriptorInterface
-     *     The descriptor instance
+     * @return \AppserverIo\Psr\EnterpriseBeans\Description\SingletonSessionBeanDescriptorInterface The descriptor instance
      */
     public static function newDescriptorInstance()
     {

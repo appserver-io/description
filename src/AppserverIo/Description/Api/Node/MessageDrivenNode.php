@@ -67,6 +67,14 @@ class MessageDrivenNode extends AbstractNode implements MessageDrivenConfigurati
     protected $resRefs = array();
 
     /**
+     * The bean reference information.
+     *
+     * @var array
+     * @AS\Mapping(nodeName="bean-ref", nodeType="array", elementType="AppserverIo\Description\Api\Node\BeanRefNode")
+     */
+    protected $beanRefs = array();
+
+    /**
      * The persistence unit reference information.
      *
      * @var array
@@ -112,6 +120,16 @@ class MessageDrivenNode extends AbstractNode implements MessageDrivenConfigurati
     public function getResRefs()
     {
         return $this->resRefs;
+    }
+
+    /**
+     * Return's the bean reference information.
+     *
+     * @return array The bean reference information
+     */
+    public function getBeanRefs()
+    {
+        return $this->beanRefs;
     }
 
     /**

@@ -20,11 +20,11 @@
 
 namespace AppserverIo\Description;
 
-use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
 use AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface;
 use AppserverIo\Description\Configuration\ConfigurationInterface;
+use AppserverIo\Lang\Reflection\ClassInterface;
 
 /**
  * Abstract class for all bean descriptors.
@@ -35,7 +35,7 @@ use AppserverIo\Description\Configuration\ConfigurationInterface;
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-abstract class BeanDescriptor implements BeanDescriptorInterface, DescriptorInterface
+class BeanDescriptor implements BeanDescriptorInterface, DescriptorInterface
 {
 
     /**
@@ -104,46 +104,13 @@ abstract class BeanDescriptor implements BeanDescriptorInterface, DescriptorInte
     }
 
     /**
-     * Returns a new annotation instance for the passed reflection class.
+     * Returns a new descriptor instance.
      *
-     * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the bean configuration
-     *
-     * @return \AppserverIo\Lang\Reflection\AnnotationInterface The reflection annotation
+     * @return \AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface The descriptor instance
      */
-    abstract protected function newAnnotationInstance(ClassInterface $reflectionClass);
-
-    /**
-     * Initializes the bean configuration instance from the passed reflection class instance.
-     *
-     * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the bean configuration
-     *
-     * @return void
-     */
-    public function fromReflectionClass(ClassInterface $reflectionClass)
+    public static function newDescriptorInstance()
     {
-
-        // create a new annotation instance
-        $reflectionAnnotation = $this->newAnnotationInstance($reflectionClass);
-
-        // load class name
-        $this->setClassName($reflectionClass->getName());
-
-        // initialize the annotation instance
-        $annotationInstance = $reflectionAnnotation->newInstance(
-            $reflectionAnnotation->getAnnotationName(),
-            $reflectionAnnotation->getValues()
-        );
-
-        // load the default name to register in naming directory
-        if ($nameAttribute = $annotationInstance->getName()) {
-            $this->setName(DescriptorUtil::trim($nameAttribute));
-        } else {
-            // if @Annotation(name=****) is NOT set, we use the short class name by default
-            $this->setName($reflectionClass->getShortName());
-        }
-
-        // initialize references from the passed reflection class
-        $this->referencesFromReflectionClass($reflectionClass);
+        return new BeanDescriptor();
     }
 
     /**
@@ -201,6 +168,11 @@ abstract class BeanDescriptor implements BeanDescriptorInterface, DescriptorInte
         // merge the resource references
         foreach ($beanDescriptor->getResReferences() as $resReference) {
             $this->addResReference($resReference);
+        }
+
+        // merge the bean references
+        foreach ($beanDescriptor->getBeanReferences() as $beanReference) {
+            $this->addBeanReference($beanReference);
         }
 
         // merge the persistence unit references
