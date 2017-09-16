@@ -23,7 +23,6 @@ namespace AppserverIo\Description;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
-use AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface;
 use AppserverIo\Description\Configuration\ConfigurationInterface;
 use AppserverIo\Description\Configuration\BeanConfigurationInterface;
 
@@ -151,23 +150,23 @@ class BeanDescriptor implements DescriptorInterface
      * Merges the passed configuration into this one. Configuration values
      * of the passed configuration will overwrite the this one.
      *
-     * @param \AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface $beanDescriptor The configuration to merge
+     * @param \AppserverIo\Psr\Deployment\DescriptorInterface $beanDescriptor The configuration to merge
      *
      * @return void
      */
-    public function merge(BeanDescriptorInterface $beanDescriptor)
+    public function merge(DescriptorInterface $beanDescriptor)
     {
 
         // check if the classes are equal
-        if ($this->getClassName() !== $beanDescriptor->getClassName()) {
+        if ($this->getName() !== $beanDescriptor->getName()) {
             throw new EnterpriseBeansException(
-                sprintf('You try to merge a bean configuration for % with %s', $beanDescriptor->getClassName(), $this->getClassName())
+                sprintf('You try to merge a bean configuration for % with %s', $beanDescriptor->getName(), $this->getName())
             );
         }
 
-        // merge the name
-        if ($name = $beanDescriptor->getName()) {
-            $this->setName($name);
+        // merge the class name
+        if ($className = $beanDescriptor->getClassName()) {
+            $this->setClassName($className);
         }
     }
 }

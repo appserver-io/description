@@ -322,7 +322,7 @@ class EnterpriseBeanDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->descriptor->fromConfiguration($node);
 
         // initialize the descriptor to merge
-        $descriptorToMerge = $this->getMockForAbstractClass('AppserverIo\Description\BeanDescriptor');
+        $descriptorToMerge = $this->getMockForAbstractClass('AppserverIo\Description\SessionBeanDescriptor');
 
         // initialize the configuration of the descriptor to be merged
         $nodeToMerge = new SessionNode();
@@ -359,7 +359,7 @@ class EnterpriseBeanDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->descriptor->fromConfiguration($node);
 
         // initialize the descriptor to merge
-        $descriptorToMerge = $this->getMockForAbstractClass('AppserverIo\Description\BeanDescriptor');
+        $descriptorToMerge = $this->getMockForAbstractClass('AppserverIo\Description\SessionBeanDescriptor');
 
         // initialize the configuration of the descriptor to be merged
         $nodeToMerge = new SessionNode();
