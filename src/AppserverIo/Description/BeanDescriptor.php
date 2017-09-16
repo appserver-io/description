@@ -24,6 +24,7 @@ use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
 use AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface;
 use AppserverIo\Description\Configuration\ConfigurationInterface;
+use AppserverIo\Lang\Reflection\ClassInterface;
 
 /**
  * Abstract class for all bean descriptors.
