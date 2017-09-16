@@ -20,11 +20,7 @@
 
 namespace AppserverIo\Description;
 
-use AppserverIo\Lang\Reflection\ReflectionClass;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
-use AppserverIo\Description\Api\Node\SessionNode;
+use AppserverIo\Description\Api\Node\BeanNode;
 
 /**
  * Test implementation for the BeanDescriptor class implementation.
@@ -78,78 +74,6 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Injects the dummy bean instance.
-     *
-     * @param mixed $dummyEnterpriseBean The dummy bean
-     *
-     * @return void
-     * @EnterpriseBean(name="SessionBean")
-     */
-    public function injectDummyEnterpriseBean($dummyEnterpriseBean)
-    {
-        $this->dummyEnterpriseBean = $dummyEnterpriseBean;
-    }
-
-    /**
-     * Injects the dummy resource instance.
-     *
-     * @param mixed $dummyResource The dummy resource
-     *
-     * @return void
-     * @Resource(name="Application")
-     */
-    public function injectDummyResource($dummyResource)
-    {
-        $this->dummyResource = $dummyResource;
-    }
-
-    /**
-     * Injects the dummy persistence unit instance.
-     *
-     * @param mixed $dummyPersistenceUnit The dummy persistence unit
-     *
-     * @return void
-     * @PersistenceUnit(name="PersistenceUnit")
-     */
-    public function injectDummyPersistenceUnit($dummyPersistenceUnit)
-    {
-        $this->dummyPersistenceUnit = $dummyPersistenceUnit;
-    }
-
-    /**
-     * Tests the setter/getter for the EPB references.
-     *
-     * @return void
-     */
-    public function testSetGetEpbReferences()
-    {
-        $this->descriptor->setEpbReferences($epbReferences = array(new \stdClass()));
-        $this->assertSame($epbReferences, $this->descriptor->getEpbReferences());
-    }
-
-    /**
-     * Tests the setter/getter for the resource references.
-     *
-     * @return void
-     */
-    public function testSetGetResReferences()
-    {
-        $this->descriptor->setResReferences($resReferences = array(new \stdClass()));
-        $this->assertSame($resReferences, $this->descriptor->getResReferences());
-    }
-
-    /**
-     * Tests the setter/getter for the persistence unit references.
-     *
-     * @return void
-     */
-    public function testSetGetPersistenceUnitReferences()
-    {
-        $this->descriptor->setPersistenceUnitReferences($persistenceUnitReferences = array(new \stdClass()));
-        $this->assertSame($persistenceUnitReferences, $this->descriptor->getPersistenceUnitReferences());
-    }
-
-    /**
      * Tests if the deployment initialization from a deployment descriptor
      * works as expected.
      *
@@ -159,19 +83,15 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
     {
 
         // initialize the configuration
-        $node = new SessionNode();
-        $node->initFromFile(__DIR__ . '/_files/dd-sessionbean.xml');
+        $node = new BeanNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-bean.xml');
 
         // initialize the descriptor from the nodes data
         $this->descriptor->fromConfiguration($node);
 
         // check if all values have been initialized
-        $this->assertSame('SampleProcessor', $this->descriptor->getName());
-        $this->assertSame('AppserverIo\Apps\Example\Services\SampleProcessor', $this->descriptor->getClassName());
-        $this->assertCount(2, $this->descriptor->getEpbReferences());
-        $this->assertCount(2, $this->descriptor->getResReferences());
-        $this->assertCount(1, $this->descriptor->getPersistenceUnitReferences());
-        $this->assertCount(5, $this->descriptor->getReferences());
+        $this->assertSame('Randomizer', $this->descriptor->getName());
+        $this->assertSame('AppserverIo\Apps\Example\Services\Randomizer', $this->descriptor->getClassName());
     }
 
     /**
@@ -183,8 +103,8 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
     {
 
         // initialize the configuration
-        $node = new SessionNode();
-        $node->initFromFile(__DIR__ . '/_files/dd-sessionbean.xml');
+        $node = new BeanNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-bean.xml');
 
         // initialize the descriptor from the nodes data
         $this->descriptor->fromConfiguration($node);
@@ -193,20 +113,16 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
         $descriptorToMerge = $this->getMockForAbstractClass('AppserverIo\Description\BeanDescriptor');
 
         // initialize the configuration of the descriptor to be merged
-        $nodeToMerge = new SessionNode();
-        $nodeToMerge->initFromFile(__DIR__ . '/_files/dd-sessionbean-to-merge.xml');
+        $nodeToMerge = new BeanNode();
+        $nodeToMerge->initFromFile(__DIR__ . '/_files/dd-bean-to-merge.xml');
         $descriptorToMerge->fromConfiguration($nodeToMerge);
 
         // merge the descriptors
         $this->descriptor->merge($descriptorToMerge);
 
         // check if all values have been merged
-        $this->assertSame('SampleProcessor', $this->descriptor->getName());
-        $this->assertSame('AppserverIo\Apps\Example\Services\SampleProcessor', $this->descriptor->getClassName());
-        $this->assertCount(2, $this->descriptor->getEpbReferences());
-        $this->assertCount(3, $this->descriptor->getResReferences());
-        $this->assertCount(2, $this->descriptor->getPersistenceUnitReferences());
-        $this->assertCount(7, $this->descriptor->getReferences());
+        $this->assertSame('Randomizer', $this->descriptor->getName());
+        $this->assertSame('AppserverIo\Apps\Example\Services\RandomizerNew', $this->descriptor->getClassName());
     }
 
     /**
@@ -220,8 +136,8 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
     {
 
         // initialize the configuration
-        $node = new SessionNode();
-        $node->initFromFile(__DIR__ . '/_files/dd-sessionbean.xml');
+        $node = new BeanNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-bean.xml');
 
         // initialize the descriptor from the nodes data
         $this->descriptor->fromConfiguration($node);
@@ -230,8 +146,8 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
         $descriptorToMerge = $this->getMockForAbstractClass('AppserverIo\Description\BeanDescriptor');
 
         // initialize the configuration of the descriptor to be merged
-        $nodeToMerge = new SessionNode();
-        $nodeToMerge->initFromFile(__DIR__ . '/_files/dd-sessionbean-to-merge-with-exception.xml');
+        $nodeToMerge = new BeanNode();
+        $nodeToMerge->initFromFile(__DIR__ . '/_files/dd-bean-to-merge-with-exception.xml');
         $descriptorToMerge->fromConfiguration($nodeToMerge);
 
         // merge the descriptors

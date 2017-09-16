@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Description\BeanDescriptor
+ * AppserverIo\Description\DescriptorUtil
  *
  * NOTICE OF LICENSE
  *

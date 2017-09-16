@@ -33,16 +33,16 @@ interface BeanConfigurationInterface extends ConfigurationInterface
 {
 
     /**
-     * Return's the enterprise bean name information.
+     * Return's the bean name information.
      *
      * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
      */
-    public function getEpbName();
+    public function getName();
 
     /**
-     * Return's the enterprise bean class information.
+     * Return's the bean class information.
      *
      * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
      */
-    public function getEpbClass();
+    public function getClass();
 }

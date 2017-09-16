@@ -29,7 +29,7 @@ namespace AppserverIo\Description\Configuration;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface SessionConfigurationInterface extends BeanConfigurationInterface, ReferencesConfigurationInterface
+interface SessionConfigurationInterface extends EnterpriseBeanConfigurationInterface, ReferencesConfigurationInterface
 {
 
     /**

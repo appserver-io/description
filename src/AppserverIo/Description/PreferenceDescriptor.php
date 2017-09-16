@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Description\BeanDescriptor
+ * AppserverIo\Description\PreferenceDescriptor
  *
  * NOTICE OF LICENSE
  *
@@ -24,10 +24,10 @@ use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
 use AppserverIo\Description\Configuration\ConfigurationInterface;
-use AppserverIo\Description\Configuration\BeanConfigurationInterface;
+use AppserverIo\Description\Configuration\PreferenceConfigurationInterface;
 
 /**
- * Abstract class for all bean descriptors.
+ * Implementation for a preference descriptor.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -35,7 +35,7 @@ use AppserverIo\Description\Configuration\BeanConfigurationInterface;
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-class BeanDescriptor implements DescriptorInterface
+class PreferenceDescriptor implements DescriptorInterface
 {
 
     /**
@@ -43,7 +43,7 @@ class BeanDescriptor implements DescriptorInterface
      *
      * @var string
      */
-    protected $name;
+    protected $interface;
 
     /**
      * The beans class name.
@@ -53,31 +53,31 @@ class BeanDescriptor implements DescriptorInterface
     protected $className;
 
     /**
-     * Sets the bean name.
+     * Sets the preference interface.
      *
-     * @param string $name The bean name
+     * @param string $interface The preference interface
      *
      * @return void
      */
-    public function setName($name)
+    public function setInterface($interface)
     {
-        $this->name = $name;
+        $this->interface = $interface;
     }
 
     /**
-     * Returns the bean name.
+     * Returns the preference interface.
      *
-     * @return string The bean name
+     * @return string The preference interface
      */
-    public function getName()
+    public function getInterface()
     {
-        return $this->name;
+        return $this->interface;
     }
 
     /**
-     * Sets the beans class name.
+     * Sets the preference class name.
      *
-     * @param string $className The beans class name
+     * @param string $className The preference class name
      *
      * @return void
      */
@@ -87,9 +87,9 @@ class BeanDescriptor implements DescriptorInterface
     }
 
     /**
-     * Returns the beans class name.
+     * Returns the preference class name.
      *
-     * @return string The beans class name
+     * @return string The preference class name
      */
     public function getClassName()
     {
@@ -99,11 +99,11 @@ class BeanDescriptor implements DescriptorInterface
     /**
      * Returns a new descriptor instance.
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface The descriptor instance
+     * @return \AppserverIo\Psr\Deployment\DescriptorInterface The descriptor instance
      */
     public static function newDescriptorInstance()
     {
-        return new BeanDescriptor();
+        return new PreferenceDescriptor();
     }
 
     /**
@@ -128,7 +128,7 @@ class BeanDescriptor implements DescriptorInterface
     {
 
         // query whether or not we've preference configuration
-        if (!$configuration instanceof BeanConfigurationInterface) {
+        if (!$configuration instanceof PreferenceConfigurationInterface) {
             return;
         }
 
@@ -137,9 +137,9 @@ class BeanDescriptor implements DescriptorInterface
             $this->setClassName(DescriptorUtil::trim($className));
         }
 
-        // query for the name and set it
-        if ($name = (string) $configuration->getName()) {
-            $this->setName(DescriptorUtil::trim($name));
+        // query for the interface and set it
+        if ($interface = (string) $configuration->getInterface()) {
+            $this->setInterface(DescriptorUtil::trim($interface));
         }
 
         // return the instance
@@ -150,22 +150,22 @@ class BeanDescriptor implements DescriptorInterface
      * Merges the passed configuration into this one. Configuration values
      * of the passed configuration will overwrite the this one.
      *
-     * @param \AppserverIo\Psr\Deployment\DescriptorInterface $beanDescriptor The configuration to merge
+     * @param \AppserverIo\Psr\Deployment\DescriptorInterface $descriptor The configuration to merge
      *
      * @return void
      */
-    public function merge(DescriptorInterface $beanDescriptor)
+    public function merge(DescriptorInterface $descriptor)
     {
 
-        // check if the classes are equal
-        if ($this->getName() !== $beanDescriptor->getName()) {
+        // check if the interfaces are equal
+        if ($this->getInterface() !== $descriptor->getInterface()) {
             throw new EnterpriseBeansException(
-                sprintf('You try to merge a bean configuration for % with %s', $beanDescriptor->getName(), $this->getName())
+                sprintf('You try to merge a preference configuration for % with %s', $descriptor->getInterface(), $this->getInterface())
             );
         }
 
         // merge the class name
-        if ($className = $beanDescriptor->getClassName()) {
+        if ($className = $descriptor->getClassName()) {
             $this->setClassName($className);
         }
     }
