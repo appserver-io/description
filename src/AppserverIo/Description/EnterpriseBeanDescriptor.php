@@ -35,6 +35,13 @@ abstract class EnterpriseBeanDescriptor extends BeanDescriptor
 {
 
     /**
+     * Trait with functionality to handle bean, resource and persistence unit references.
+     *
+     * @var AppserverIo\Description\DescriptorReferencesTrait
+     */
+    use DescriptorReferencesTrait;
+
+    /**
      * Returns a new annotation instance for the passed reflection class.
      *
      * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the bean configuration
