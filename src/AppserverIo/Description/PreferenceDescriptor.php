@@ -141,6 +141,9 @@ class PreferenceDescriptor implements DescriptorInterface
         if ($interface = (string) $configuration->getInterface()) {
             $this->setInterface(DescriptorUtil::trim($interface));
         }
+
+        // return the instance
+        return $this;
     }
 
     /**

@@ -143,8 +143,8 @@ class BeanDescriptor implements DescriptorInterface
             $this->setName(DescriptorUtil::trim($name));
         }
 
-        // initialize references from the passed deployment descriptor
-        $this->referencesFromConfiguration($configuration);
+        // return the instance
+        return $this;
     }
 
     /**
@@ -168,26 +168,6 @@ class BeanDescriptor implements DescriptorInterface
         // merge the name
         if ($name = $beanDescriptor->getName()) {
             $this->setName($name);
-        }
-
-        // merge the EPB references
-        foreach ($beanDescriptor->getEpbReferences() as $epbReference) {
-            $this->addEpbReference($epbReference);
-        }
-
-        // merge the resource references
-        foreach ($beanDescriptor->getResReferences() as $resReference) {
-            $this->addResReference($resReference);
-        }
-
-        // merge the bean references
-        foreach ($beanDescriptor->getBeanReferences() as $beanReference) {
-            $this->addBeanReference($beanReference);
-        }
-
-        // merge the persistence unit references
-        foreach ($beanDescriptor->getPersistenceUnitReferences() as $persistenceUnitReference) {
-            $this->addPersistenceUnitReference($persistenceUnitReference);
         }
     }
 }
