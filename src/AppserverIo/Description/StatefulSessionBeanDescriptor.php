@@ -97,7 +97,8 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
     /**
      * Returns a new descriptor instance.
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\StatefulSessionBeanDescriptorInterface The descriptor instance
+     * @return \AppserverIo\Psr\EnterpriseBeans\Description\StatefulSessionBeanDescriptorInterface
+     *     The descriptor instance
      */
     public static function newDescriptorInstance()
     {
