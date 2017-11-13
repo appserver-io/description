@@ -138,7 +138,7 @@ trait DescriptorReferencesTrait
     /**
      * Adds a bean reference configuration.
      *
-     * @param \AppserverIo\Psr\Di\Description\BeanReferenceDescriptorInterface $beanReference The bean reference configuration
+     * @param \AppserverIo\Psr\EnterpriseBeans\Description\BeanReferenceDescriptorInterface $beanReference The bean reference configuration
      *
      * @return void
      */

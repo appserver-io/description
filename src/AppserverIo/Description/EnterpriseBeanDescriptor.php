@@ -193,6 +193,11 @@ abstract class EnterpriseBeanDescriptor implements BeanDescriptorInterface, Desc
             $this->setName($name);
         }
 
+        // merge the bean references
+        foreach ($beanDescriptor->getBeanReferences() as $beanReference){
+            $this->addBeanReference($beanReference);
+        }
+
         // merge the EPB references
         foreach ($beanDescriptor->getEpbReferences() as $epbReference) {
             $this->addEpbReference($epbReference);

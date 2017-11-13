@@ -178,6 +178,11 @@ class InjectionTargetDescriptor implements InjectionTargetDescriptorInterface, D
     public function fromReflectionMethod(MethodInterface $reflectionMethod)
     {
 
+        // do nothing, if the passed method IS the constructor
+        if ($reflectionMethod->toPhpReflectionMethod()->isConstructor()) {
+            return;
+        }
+
         // initialize the injection target from the passed method
         $this->setTargetClass($reflectionMethod->getClassName());
         $this->setTargetMethod($reflectionMethod->getMethodName());

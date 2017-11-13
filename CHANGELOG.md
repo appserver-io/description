@@ -1,3 +1,13 @@
+# Version 8.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Refactoring for new DI implemenation
+
 # Version 7.0.1
 
 ## Bugfixes

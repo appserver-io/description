@@ -275,7 +275,7 @@ class ServletDescriptor implements ServletDescriptorInterface, DescriptorInterfa
      *
      * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the servlet description
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\ServletDescriptorInterface|null The initialized descriptor instance
+     * @return \AppserverIo\Description\Configuration\ServletConfigurationInterface|null The initialized descriptor instance
      */
     public function fromReflectionClass(ClassInterface $reflectionClass)
     {
@@ -349,7 +349,7 @@ class ServletDescriptor implements ServletDescriptorInterface, DescriptorInterfa
      *
      * @param \AppserverIo\Description\Configuration\ConfigurationInterface $configuration The servlet configuration
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\ServletDescriptorInterface|null The initialized descriptor instance
+     * @return \AppserverIo\Description\Configuration\ServletConfigurationInterface|null The initialized descriptor instance
      */
     public function fromConfiguration(ConfigurationInterface $configuration)
     {
@@ -395,7 +395,7 @@ class ServletDescriptor implements ServletDescriptorInterface, DescriptorInterfa
      * Merges the passed configuration into this one. Configuration values
      * of the passed configuration will overwrite the this one.
      *
-     * @param \AppserverIo\Psr\EnterpriseBeans\Description\ServletDescriptorInterface $servletDescriptor The descriptor to merge
+     * @param \AppserverIo\Description\Configuration\ServletConfigurationInterface $servletDescriptor The descriptor to merge
      *
      * @return void
      * @throws \AppserverIo\Psr\Servlet\ServletException Is thrown if you try to merge a servlet descriptor with a different class name

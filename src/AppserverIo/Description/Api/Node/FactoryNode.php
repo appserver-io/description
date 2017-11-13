@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Description\Api\Node\BeanNode
+ * \AppserverIo\Description\Api\Node\FactoryNode
  *
  * NOTICE OF LICENSE
  *
@@ -20,10 +20,10 @@
 
 namespace AppserverIo\Description\Api\Node;
 
-use AppserverIo\Description\Configuration\BeanConfigurationInterface;
+use AppserverIo\Description\Configuration\FactoryConfigurationInterface;
 
 /**
- * DTO to transfer a bean configuration.
+ * DTO to transfer the bean factory information.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -31,11 +31,11 @@ use AppserverIo\Description\Configuration\BeanConfigurationInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class BeanNode extends AbstractNode implements BeanConfigurationInterface
+class FactoryNode extends AbstractNode implements FactoryConfigurationInterface
 {
 
     /**
-     * The bean name information.
+     * The factory name information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
      * @AS\Mapping(nodeName="name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
@@ -43,7 +43,7 @@ class BeanNode extends AbstractNode implements BeanConfigurationInterface
     protected $name;
 
     /**
-     * The bean class information.
+     * The factory class information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
      * @AS\Mapping(nodeName="class", nodeType="AppserverIo\Description\Api\Node\ValueNode")
@@ -51,12 +51,12 @@ class BeanNode extends AbstractNode implements BeanConfigurationInterface
     protected $class;
 
     /**
-     * The bean factory information.
+     * The factory method information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="factory", nodeType="AppserverIo\Description\Api\Node\FactoryNode")
+     * @AS\Mapping(nodeName="method", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
-    protected $factory;
+    protected $method;
 
     /**
      * The enterprise bean reference information.
@@ -91,9 +91,9 @@ class BeanNode extends AbstractNode implements BeanConfigurationInterface
     protected $persistenceUnitRefs = array();
 
     /**
-     * Return's the bean name information.
+     * Return's the factory name information.
      *
-     * @return \AppserverIo\Description\Api\Node\ValueNode The bean name information
+     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
      */
     public function getName()
     {
@@ -101,9 +101,9 @@ class BeanNode extends AbstractNode implements BeanConfigurationInterface
     }
 
     /**
-     * Return's the bean class information.
+     * Return's the factory class information.
      *
-     * @return \AppserverIo\Description\Api\Node\ValueNode The bean class information
+     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
      */
     public function getClass()
     {
@@ -111,13 +111,13 @@ class BeanNode extends AbstractNode implements BeanConfigurationInterface
     }
 
     /**
-     * Return's the bean factory information.
+     * Return's the factory method information.
      *
      * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
      */
-    public function getFactory()
+    public function getMethod()
     {
-        return $this->factory;
+        return $this->method;
     }
 
     /**

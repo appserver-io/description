@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Description\Configuration\BeanConfigurationInterface
+ * AppserverIo\Description\Configuration\FactoryConfigurationInterface
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,7 @@
 namespace AppserverIo\Description\Configuration;
 
 /**
- * Interface for the bean node information.
+ * Interface for a enterprise bean reference DTO implementation.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -29,27 +29,27 @@ namespace AppserverIo\Description\Configuration;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface BeanConfigurationInterface extends ConfigurationInterface, ReferencesConfigurationInterface
+interface FactoryConfigurationInterface extends ConfigurationInterface, ReferencesConfigurationInterface
 {
 
     /**
-     * Return's the bean name information.
+     * Return's the factory name information.
      *
      * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
      */
     public function getName();
 
     /**
-     * Return's the bean class information.
+     * Return's the factory class information.
      *
      * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
      */
     public function getClass();
 
     /**
-     * Return's the bean factory information.
+     * Return's the factory method information.
      *
      * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
      */
-    public function getFactory();
+    public function getMethod();
 }

@@ -228,14 +228,14 @@ abstract class SessionBeanDescriptor extends EnterpriseBeanDescriptor implements
         if ($reflectionClass->hasAnnotation('Local')) {
             throw new \Exception('@Local annotation not implemented');
         } else {
-            $this->setLocal(sprintf('%sLocal', rtrim($this->getName(), 'Bean')));
+            $this->setLocal(sprintf('%sLocal', $this->getName()));
         }
 
         // query whether we've a @Remote annotation
         if ($reflectionClass->hasAnnotation('Remote')) {
             throw new \Exception('@Remote annotation not implemented');
         } else {
-            $this->setRemote(sprintf('%sRemote', rtrim($this->getName(), 'Bean')));
+            $this->setRemote(sprintf('%sRemote', $this->getName()));
         }
 
         // we've to check for a @PostConstruct or @PreDestroy annotation
@@ -279,14 +279,14 @@ abstract class SessionBeanDescriptor extends EnterpriseBeanDescriptor implements
         if ($local = (string) $configuration->getLocal()) {
             $this->setLocal($local);
         } else {
-            $this->setLocal(sprintf('%sLocal', rtrim($this->getName(), 'Bean')));
+            $this->setLocal(sprintf('%sLocal', $this->getName()));
         }
 
         // query for the name of the remote business interface and set it
         if ($remote = (string) $configuration->getRemote()) {
             $this->setRemote($remote);
         } else {
-            $this->setRemote(sprintf('%sRemote', rtrim($this->getName(), 'Bean')));
+            $this->setRemote(sprintf('%sRemote', $this->getName()));
         }
 
         // initialize the post construct callback methods

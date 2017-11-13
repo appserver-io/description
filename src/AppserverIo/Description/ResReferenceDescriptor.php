@@ -23,7 +23,6 @@ namespace AppserverIo\Description;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\MethodInterface;
 use AppserverIo\Lang\Reflection\PropertyInterface;
-use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
 use AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface;
@@ -38,22 +37,8 @@ use AppserverIo\Description\Configuration\ResRefConfigurationInterface;
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-class ResReferenceDescriptor implements ResReferenceDescriptorInterface, DescriptorInterface
+class ResReferenceDescriptor extends AbstractReferenceDescriptor implements ResReferenceDescriptorInterface
 {
-
-    /**
-     * Prefix for resource references.
-     *
-     * @var string
-     */
-    const REF_DIRECTORY = 'env';
-
-    /**
-     * The reference name.
-     *
-     * @var string
-     */
-    protected $name;
 
     /**
      * The resource type.
@@ -77,26 +62,11 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface, Descrip
     protected $description;
 
     /**
-     * Sets the reference name.
+     * The injection target.
      *
-     * @param string $name The reference name
-     *
-     * @return void
+     * @var \AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface
      */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * Returns the reference name.
-     *
-     * @return string The reference name
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
+    protected $injectionTarget;
 
     /**
      * Sets the resource type.
@@ -234,9 +204,9 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface, Descrip
 
         // load the reference name defined as @Resource(name=****)
         if ($name = $annotationInstance->getName()) {
-            $this->setName(sprintf('%s/%s', ResReferenceDescriptor::REF_DIRECTORY, $name));
+            $this->setName($name);
         } else {
-            $this->setName(sprintf('%s/%s', ResReferenceDescriptor::REF_DIRECTORY, ucfirst($reflectionProperty->getPropertyName())));
+            $this->setName(ucfirst($reflectionProperty->getPropertyName()));
         }
 
         // load the resource type defined as @Resource(type=****)
@@ -257,7 +227,9 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface, Descrip
         }
 
         // load the injection target data
-        $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty));
+        if ($injectionTarget = InjectionTargetDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty)) {
+            $this->setInjectionTarget($injectionTarget);
+        }
 
         // return the instance
         return $this;
@@ -288,11 +260,11 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface, Descrip
 
         // load the reference name defined as @Resource(name=****)
         if ($name = $annotationInstance->getName()) {
-            $this->setName(sprintf('%s/%s', ResReferenceDescriptor::REF_DIRECTORY, $name));
+            $this->setName($name);
         } else {
             // use the name of the first parameter
             foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-                $this->setName(sprintf('%s/%s', ResReferenceDescriptor::REF_DIRECTORY, ucfirst($reflectionParameter->getParameterName())));
+                $this->setName(ucfirst($reflectionParameter->getParameterName()));
                 break;
             }
         }
@@ -319,7 +291,9 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface, Descrip
         }
 
         // load the injection target data
-        $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod));
+        if ($injectionTarget = InjectionTargetDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
+            $this->setInjectionTarget($injectionTarget);
+        }
 
         // return the instance
         return $this;
@@ -338,7 +312,7 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface, Descrip
 
         // query for the reference name
         if ($name = (string) $configuration->getResRefName()) {
-            $this->setName(sprintf('%s/%s', ResReferenceDescriptor::REF_DIRECTORY, $name));
+            $this->setName($name);
         }
 
         // query for the reference type
@@ -356,7 +330,7 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface, Descrip
             $this->setLookup($lookup);
         }
 
-        // query for the injection target
+        // load the injection target data
         if ($injectionTarget = $configuration->getInjectionTarget()) {
             $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromConfiguration($injectionTarget));
         }

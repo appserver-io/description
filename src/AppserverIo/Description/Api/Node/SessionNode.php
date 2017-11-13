@@ -253,7 +253,7 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
     /**
      * Return's the post activate information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\PostActivateNode
+     * @return \AppserverIo\Description\Api\Node\ValueNode
      */
     public function getPostActivate()
     {
@@ -263,7 +263,7 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
     /**
      * Return's the pre passivate information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\PrePassivateNode
+     * @return \AppserverIo\Description\Api\Node\ValueNode
      */
     public function getPrePassivate()
     {
@@ -283,7 +283,7 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
     /**
      * Return's the enterprise bean remote interface information.
      *
-     * @return \AppserverIo\Description\Api\Node\RemoteNode The enterprise bean remote interface information
+     * @return \AppserverIo\Description\Api\Node\ValueNode The enterprise bean remote interface information
      */
     public function getRemote()
     {
@@ -293,7 +293,7 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
     /**
      * Return's the enterprise bean local interface information.
      *
-     * @return \AppserverIo\Description\Api\Node\LocalNode The enterprise bean local interface information
+     * @return \AppserverIo\Description\Api\Node\ValueNode The enterprise bean local interface information
      */
     public function getLocal()
     {

@@ -53,7 +53,7 @@ class EpbRefNode extends AbstractNode implements EpbRefConfigurationInterface
     /**
      * The enterprise bean link information.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\EpbLinkNode
+     * @var \AppserverIo\Description\Api\Node\ValueNode
      * @AS\Mapping(nodeName="epb-link", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $epbLink;

@@ -23,7 +23,6 @@ namespace AppserverIo\Description;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\MethodInterface;
 use AppserverIo\Lang\Reflection\PropertyInterface;
-use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Inject;
 use AppserverIo\Description\Configuration\BeanRefConfigurationInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\BeanReferenceDescriptorInterface;
@@ -38,22 +37,8 @@ use AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterfa
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-class BeanReferenceDescriptor implements BeanReferenceDescriptorInterface, DescriptorInterface
+class BeanReferenceDescriptor extends AbstractReferenceDescriptor implements BeanReferenceDescriptorInterface
 {
-
-    /**
-     * Prefix for resource references.
-     *
-     * @var string
-     */
-    const REF_DIRECTORY = 'env';
-
-    /**
-     * The reference name.
-     *
-     * @var string
-     */
-    protected $name;
 
     /**
      * The class type.
@@ -70,26 +55,11 @@ class BeanReferenceDescriptor implements BeanReferenceDescriptorInterface, Descr
     protected $description;
 
     /**
-     * Sets the reference name.
+     * The injection target.
      *
-     * @param string $name The reference name
-     *
-     * @return void
+     * @var \AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface
      */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * Returns the reference name.
-     *
-     * @return string The reference name
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
+    protected $injectionTarget;
 
     /**
      * Sets the class type.
@@ -173,7 +143,7 @@ class BeanReferenceDescriptor implements BeanReferenceDescriptorInterface, Descr
      *
      * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the beans reference configuration
      *
-     * @return \AppserverIo\Psr\Di\Description\BeanReferenceDescriptorInterface|null The initialized descriptor instance
+     * @return \AppserverIo\Psr\EnterpriseBeans\Description\BeanReferenceDescriptorInterface|null The initialized descriptor instance
      */
     public function fromReflectionClass(ClassInterface $reflectionClass)
     {
@@ -186,7 +156,7 @@ class BeanReferenceDescriptor implements BeanReferenceDescriptorInterface, Descr
      *
      * @param \AppserverIo\Lang\Reflection\PropertyInterface $reflectionProperty The reflection property with the beans reference configuration
      *
-     * @return \AppserverIo\Psr\Di\Description\ClassDescriptorInterface|null The initialized descriptor instance
+     * @return \AppserverIo\Psr\EnterpriseBeans\Description\BeanReferenceDescriptorInterface|null The initialized descriptor instance
      */
     public function fromReflectionProperty(PropertyInterface $reflectionProperty)
     {
@@ -205,9 +175,9 @@ class BeanReferenceDescriptor implements BeanReferenceDescriptorInterface, Descr
 
         // load the reference name defined as @Inject(name=****)
         if ($name = $annotationInstance->getName()) {
-            $this->setName(sprintf('%s/%s', BeanReferenceDescriptor::REF_DIRECTORY, $name));
+            $this->setName($name);
         } else {
-            $this->setName(sprintf('%s/%s', BeanReferenceDescriptor::REF_DIRECTORY, ucfirst($reflectionProperty->getPropertyName())));
+            $this->setName(ucfirst($reflectionProperty->getPropertyName()));
         }
 
         // load the class type defined as @Inject(type=****)
@@ -254,11 +224,11 @@ class BeanReferenceDescriptor implements BeanReferenceDescriptorInterface, Descr
 
         // load the reference name defined as @Inject(name=****)
         if ($name = $annotationInstance->getName()) {
-            $this->setName(sprintf('%s/%s', BeanReferenceDescriptor::REF_DIRECTORY, $name));
+            $this->setName($name);
         } else {
             // use the name of the first parameter
             foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-                $this->setName(sprintf('%s/%s', BeanReferenceDescriptor::REF_DIRECTORY, ucfirst($reflectionParameter->getParameterName())));
+                $this->setName(ucfirst($reflectionParameter->getParameterName()));
                 break;
             }
         }
@@ -280,7 +250,9 @@ class BeanReferenceDescriptor implements BeanReferenceDescriptorInterface, Descr
         }
 
         // load the injection target data
-        $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod));
+        if ($injectionTarget = InjectionTargetDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
+            $this->setInjectionTarget($injectionTarget);
+        }
 
         // return the instance
         return $this;
@@ -292,14 +264,14 @@ class BeanReferenceDescriptor implements BeanReferenceDescriptorInterface, Descr
      *
      * @param \AppserverIo\Description\Configuration\BeanRefConfigurationInterface $configuration The configuration node with the class reference configuration
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\BeanRefConfigurationInterface|null The initialized descriptor instance
+     * @return \AppserverIo\Psr\EnterpriseBeans\Description\BeanReferenceDescriptorInterface|null The initialized descriptor instance
      */
     public function fromConfiguration(BeanRefConfigurationInterface $configuration)
     {
 
         // query for the reference name
         if ($name = (string) $configuration->getBeanRefName()) {
-            $this->setName(sprintf('%s/%s', BeanReferenceDescriptor::REF_DIRECTORY, $name));
+            $this->setName($name);
         }
 
         // query for the reference type
@@ -312,7 +284,7 @@ class BeanReferenceDescriptor implements BeanReferenceDescriptorInterface, Descr
             $this->setDescription($description);
         }
 
-        // query for the injection target
+        // load the injection target data
         if ($injectionTarget = $configuration->getInjectionTarget()) {
             $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromConfiguration($injectionTarget));
         }
@@ -325,7 +297,7 @@ class BeanReferenceDescriptor implements BeanReferenceDescriptorInterface, Descr
      * Merges the passed configuration into this one. Configuration values
      * of the passed configuration will overwrite the this one.
      *
-     * @param \AppserverIo\Psr\Di\Description\BeanReferenceDescriptorInterface $beanReferenceDescriptor The configuration to merge
+     * @param \AppserverIo\Psr\EnterpriseBeans\Description\BeanReferenceDescriptorInterface $beanReferenceDescriptor The configuration to merge
      *
      * @return void
      */

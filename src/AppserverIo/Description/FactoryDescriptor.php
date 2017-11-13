@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Description\BeanDescriptor
+ * AppserverIo\Description\FactoryDescriptor
  *
  * NOTICE OF LICENSE
  *
@@ -21,16 +21,16 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ClassInterface;
+use AppserverIo\Psr\Deployment\DescriptorInterface;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\Factory;
+use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
+use AppserverIo\Psr\EnterpriseBeans\Description\FactoryDescriptorInterface;
 use AppserverIo\Description\Configuration\ConfigurationInterface;
 use AppserverIo\Description\Configuration\BeanConfigurationInterface;
-use AppserverIo\Psr\Deployment\DescriptorInterface;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Inject;
-use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
-use AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface;
-use AppserverIo\Psr\EnterpriseBeans\Description\FactoryDescriptorInterface;
+use AppserverIo\Description\Configuration\FactoryConfigurationInterface;
 
 /**
- * Abstract class for all bean descriptors.
+ * Abstract class for all producer descriptors.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -38,8 +38,15 @@ use AppserverIo\Psr\EnterpriseBeans\Description\FactoryDescriptorInterface;
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-class BeanDescriptor implements BeanDescriptorInterface, DescriptorInterface
+class FactoryDescriptor implements FactoryDescriptorInterface
 {
+
+    /**
+     * The default factory method.
+     *
+     * @var string
+     */
+    const DEFAULT_METHOD = 'factory';
 
     /**
      * Trait with functionality to handle bean, resource and persistence unit references.
@@ -63,11 +70,11 @@ class BeanDescriptor implements BeanDescriptorInterface, DescriptorInterface
     protected $className;
 
     /**
-     * The factory that creates the bean.
+     * The factory method that creates the bean.
      *
-     * @var \AppserverIo\Psr\EnterpriseBeans\Description\FactoryDescriptorInterface
+     * @var string
      */
-    protected $factory;
+    protected $method;
 
     /**
      * Sets the bean name.
@@ -114,35 +121,35 @@ class BeanDescriptor implements BeanDescriptorInterface, DescriptorInterface
     }
 
     /**
-     * Sets the factory that creates the bean.
+     * Sets the factory method that creates the bean.
      *
-     * @param \AppserverIo\Psr\EnterpriseBeans\Description\FactoryDescriptorInterface $factory The bean's factory
+     * @param string $factory The factory method
      *
      * @return void
      */
-    public function setFactory(FactoryDescriptorInterface $factory)
+    public function setMethod($method)
     {
-        $this->factory = $factory;
+        $this->method = $method;
     }
 
     /**
-     * Returns the factory that creates the bean.
+     * Returns the factory method that creates the bean.
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\FactoryDescriptorInterface The bean's factory
+     * @return string The factory factory
      */
-    public function getFactory()
+    public function getMethod()
     {
-        return $this->factory;
+        return $this->method;
     }
 
     /**
      * Returns a new descriptor instance.
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface The descriptor instance
+     * @return \AppserverIo\Psr\EnterpriseBeans\Description\FactoryDescriptorInterface The descriptor instance
      */
     public static function newDescriptorInstance()
     {
-        return new BeanDescriptor();
+        return new FactoryDescriptor();
     }
 
     /**
@@ -154,7 +161,7 @@ class BeanDescriptor implements BeanDescriptorInterface, DescriptorInterface
      */
     protected function newAnnotationInstance(ClassInterface $reflectionClass)
     {
-        return $reflectionClass->getAnnotation(Inject::ANNOTATION);
+        return $reflectionClass->getAnnotation(Factory::ANNOTATION);
     }
 
     /**
@@ -168,7 +175,7 @@ class BeanDescriptor implements BeanDescriptorInterface, DescriptorInterface
     {
 
         // query if we've an enterprise bean with a @Inject annotation
-        if ($reflectionClass->hasAnnotation(Inject::ANNOTATION) === false) {
+        if ($reflectionClass->hasAnnotation(Factory::ANNOTATION) === false) {
             // if not, do nothing
             return;
         }
@@ -193,13 +200,15 @@ class BeanDescriptor implements BeanDescriptorInterface, DescriptorInterface
             $this->setName($reflectionClass->getShortName());
         }
 
+        // load the factory method or set the default factory method
+        if ($method = $annotationInstance->getMethod()) {
+            $this->setMethod($method);
+        } else {
+            $this->setMethod(FactoryDescriptor::DEFAULT_METHOD);
+        }
+
         // initialize references from the passed reflection class
         $this->referencesFromReflectionClass($reflectionClass);
-
-        // load the factory information from the reflection class
-        if ($factory = FactoryDescriptor::newDescriptorInstance()->fromReflectionClass($reflectionClass)) {
-            $this->setFactory($factory);
-        }
 
         // return the instance
         return $this;
@@ -216,7 +225,7 @@ class BeanDescriptor implements BeanDescriptorInterface, DescriptorInterface
     {
 
         // query whether or not we've preference configuration
-        if (!$configuration instanceof BeanConfigurationInterface) {
+        if (!$configuration instanceof FactoryConfigurationInterface) {
             return;
         }
 
@@ -230,13 +239,13 @@ class BeanDescriptor implements BeanDescriptorInterface, DescriptorInterface
             $this->setName(DescriptorUtil::trim($name));
         }
 
+        // query for the factory and set it
+        if ($method = (string) $configuration->getMethod()) {
+            $this->setMethod(DescriptorUtil::trim($method));
+        }
+
         // initialize references from the passed deployment descriptor
         $this->referencesFromConfiguration($configuration);
-
-        // load the factory information from the reflection class
-        if ($factory = $configuration->getFactory()) {
-            $this->setFactory(FactoryDescriptor::newDescriptorInstance()->fromConfiguration($factory));
-        }
 
         // return the instance
         return $this;
@@ -246,47 +255,47 @@ class BeanDescriptor implements BeanDescriptorInterface, DescriptorInterface
      * Merges the passed configuration into this one. Configuration values
      * of the passed configuration will overwrite the this one.
      *
-     * @param \AppserverIo\Psr\Deployment\DescriptorInterface $beanDescriptor The configuration to merge
+     * @param \AppserverIo\Psr\Deployment\DescriptorInterface $factoryDescriptor The configuration to merge
      *
      * @return void
      */
-    public function merge(BeanDescriptorInterface $beanDescriptor)
+    public function merge(DescriptorInterface $factoryDescriptor)
     {
 
         // check if the classes are equal
-        if ($this->getName() !== $beanDescriptor->getName()) {
+        if ($this->getName() !== $factoryDescriptor->getName()) {
             throw new EnterpriseBeansException(
-                sprintf('You try to merge a bean configuration for % with %s', $beanDescriptor->getName(), $this->getName())
+                sprintf('You try to merge a bean configuration for % with %s', $factoryDescriptor->getName(), $this->getName())
             );
         }
 
         // merge the class name
-        if ($className = $beanDescriptor->getClassName()) {
+        if ($className = $factoryDescriptor->getClassName()) {
             $this->setClassName($className);
         }
 
-        // merge the factory
-        if ($factory = $beanDescriptor->getFactory()) {
-            $this->setFactory($factory);
+        // merge the method
+        if ($method = $factoryDescriptor->getMethod()) {
+            $this->setMethod($method);
         }
 
         // merge the bean references
-        foreach ($beanDescriptor->getBeanReferences() as $beanReference){
+        foreach ($factoryDescriptor->getBeanReferences() as $beanReference){
             $this->addBeanReference($beanReference);
         }
 
         // merge the EPB references
-        foreach ($beanDescriptor->getEpbReferences() as $epbReference) {
+        foreach ($factoryDescriptor->getEpbReferences() as $epbReference) {
             $this->addEpbReference($epbReference);
         }
 
         // merge the resource references
-        foreach ($beanDescriptor->getResReferences() as $resReference) {
+        foreach ($factoryDescriptor->getResReferences() as $resReference) {
             $this->addResReference($resReference);
         }
 
         // merge the persistence unit references
-        foreach ($beanDescriptor->getPersistenceUnitReferences() as $persistenceUnitReference) {
+        foreach ($factoryDescriptor->getPersistenceUnitReferences() as $persistenceUnitReference) {
             $this->addPersistenceUnitReference($persistenceUnitReference);
         }
     }
