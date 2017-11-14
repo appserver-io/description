@@ -167,7 +167,7 @@ class EpbReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
         // initialize the reflection method
         $reflectionMethod = $this->getMockBuilder('AppserverIo\Lang\Reflection\ReflectionMethod')
                                  ->setConstructorArgs(array(__CLASS__, array(), $aliases))
-                                 ->setMethods(array('hasAnnotation', 'getAnnotation'))
+                                 ->setMethods(array('hasAnnotation', 'getAnnotation', 'getClassName', 'getMethodName'))
                                  ->getMock();
 
         // mock the methods
@@ -181,9 +181,17 @@ class EpbReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
             ->method('getAnnotation')
             ->with(EnterpriseBean::ANNOTATION)
             ->will($this->returnValue($annotation));
+        $reflectionMethod
+            ->expects($this->exactly(2))
+            ->method('getClassName')
+            ->will($this->returnValue(__CLASS__));
+        $reflectionMethod
+            ->expects($this->exactly(2))
+            ->method('getMethodName')
+            ->will($this->returnValue('injectDummyEnterpriseBean'));
 
         // initialize the descriptor from the reflection method
-        $this->descriptor->fromReflectionMethod($reflectionMethod);
+        $this->assertSame($this->descriptor, $this->descriptor->fromReflectionMethod($reflectionMethod));
 
         // check that the descriptor has been initialized successfully
         $this->assertSame('SampleProcessor', $this->descriptor->getName());
