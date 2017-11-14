@@ -21,6 +21,11 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Description\Api\Node\BeanNode;
+use AppserverIo\Lang\Reflection\ReflectionClass;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\Inject;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
 
 /**
  * Test implementation for the BeanDescriptor class implementation.
@@ -30,6 +35,8 @@ use AppserverIo\Description\Api\Node\BeanNode;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
+ *
+ * @Inject
  */
 class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
 {
@@ -66,11 +73,147 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
      * Initializes the method we wan to test.
      *
      * @return void
-     * @see PHPUnit_Framework_TestCase::setUp()
+     * @see \PHPUnit_Framework_TestCase::setUp()
      */
     protected function setUp()
     {
-        $this->descriptor = $this->getMockForAbstractClass('AppserverIo\Description\BeanDescriptor');
+        $this->descriptor = new BeanDescriptor();
+    }
+
+    /**
+     * Injects the dummy bean instance.
+     *
+     * @param mixed $dummyEnterpriseBean The dummy bean
+     *
+     * @return void
+     * @EnterpriseBean(name="SessionBean")
+     */
+    public function injectDummyEnterpriseBean($dummyEnterpriseBean)
+    {
+        $this->dummyEnterpriseBean = $dummyEnterpriseBean;
+    }
+
+    /**
+     * Injects the dummy resource instance.
+     *
+     * @param mixed $dummyResource The dummy resource
+     *
+     * @return void
+     * @Resource(name="Application")
+     */
+    public function injectDummyResource($dummyResource)
+    {
+        $this->dummyResource = $dummyResource;
+    }
+
+    /**
+     * Injects the dummy persistence unit instance.
+     *
+     * @param mixed $dummyPersistenceUnit The dummy persistence unit
+     *
+     * @return void
+     * @PersistenceUnit(name="PersistenceUnit")
+     */
+    public function injectDummyPersistenceUnit($dummyPersistenceUnit)
+    {
+        $this->dummyPersistenceUnit = $dummyPersistenceUnit;
+    }
+
+    /**
+     * Tests the setter/getter for the EPB references.
+     *
+     * @return void
+     */
+    public function testSetGetEpbReferences()
+    {
+        $this->descriptor->setEpbReferences($epbReferences = array(new \stdClass()));
+        $this->assertSame($epbReferences, $this->descriptor->getEpbReferences());
+    }
+
+    /**
+     * Tests the setter/getter for the resource references.
+     *
+     * @return void
+     */
+    public function testSetGetResReferences()
+    {
+        $this->descriptor->setResReferences($resReferences = array(new \stdClass()));
+        $this->assertSame($resReferences, $this->descriptor->getResReferences());
+    }
+
+    /**
+     * Tests the setter/getter for the persistence unit references.
+     *
+     * @return void
+     */
+    public function testSetGetPersistenceUnitReferences()
+    {
+        $this->descriptor->setPersistenceUnitReferences($persistenceUnitReferences = array(new \stdClass()));
+        $this->assertSame($persistenceUnitReferences, $this->descriptor->getPersistenceUnitReferences());
+    }
+
+    /**
+     * Tests if the deployment initialization from a reflection class with a bean annotation
+     * containing the name attribute works as expected.
+     *
+     * @return void
+     */
+    public function testFromReflectionClassWithAnnotationContainingNameAttribute()
+    {
+
+        // initialize the annotation aliases
+        $aliases = array(
+            Inject::ANNOTATION => Inject::__getClass(),
+            Resource::ANNOTATION => Resource::__getClass(),
+            EnterpriseBean::ANNOTATION => EnterpriseBean::__getClass(),
+            PersistenceUnit::ANNOTATION => PersistenceUnit::__getClass()
+        );
+
+        // create a reflection class
+        $reflectionClass = new ReflectionClass(__CLASS__, array(), $aliases);
+
+        // initialize the descriptor instance
+        $this->descriptor->fromReflectionClass($reflectionClass);
+
+        // check the name parsed from the reflection class
+        $this->assertSame(__CLASS__, $this->descriptor->getClassName());
+        $this->assertSame('BeanDescriptorTest', $this->descriptor->getName());
+        $this->assertCount(1, $this->descriptor->getEpbReferences());
+        $this->assertCount(1, $this->descriptor->getResReferences());
+        $this->assertCount(1, $this->descriptor->getPersistenceUnitReferences());
+        $this->assertCount(3, $this->descriptor->getReferences());
+    }
+
+    /**
+     * Tests if the deployment initialization from a reflection class with a bean annotation
+     * without the name attribute works as expected.
+     *
+     * @return void
+     */
+    public function testFromReflectionClassWithAnnotationWithoutNameAttribute()
+    {
+
+        // initialize the annotation aliases
+        $aliases = array(
+            Inject::ANNOTATION => Inject::__getClass(),
+            Resource::ANNOTATION => Resource::__getClass(),
+            EnterpriseBean::ANNOTATION => EnterpriseBean::__getClass(),
+            PersistenceUnit::ANNOTATION => PersistenceUnit::__getClass()
+        );
+
+        // create a reflection class
+        $reflectionClass = new ReflectionClass(__CLASS__, array(), $aliases);
+
+        // initialize the descriptor instance
+        $this->descriptor->fromReflectionClass($reflectionClass);
+
+        // check the name parsed from the reflection class
+        $this->assertSame(__CLASS__, $this->descriptor->getClassName());
+        $this->assertSame('BeanDescriptorTest', $this->descriptor->getName());
+        $this->assertCount(1, $this->descriptor->getEpbReferences());
+        $this->assertCount(1, $this->descriptor->getResReferences());
+        $this->assertCount(1, $this->descriptor->getPersistenceUnitReferences());
+        $this->assertCount(3, $this->descriptor->getReferences());
     }
 
     /**

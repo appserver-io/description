@@ -38,7 +38,7 @@ use AppserverIo\Psr\EnterpriseBeans\Description\FactoryDescriptorInterface;
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-class BeanDescriptor implements BeanDescriptorInterface, DescriptorInterface
+class BeanDescriptor extends AbstractReferenceDescriptor implements BeanDescriptorInterface, DescriptorInterface
 {
 
     /**
@@ -270,24 +270,7 @@ class BeanDescriptor implements BeanDescriptorInterface, DescriptorInterface
             $this->setFactory($factory);
         }
 
-        // merge the bean references
-        foreach ($beanDescriptor->getBeanReferences() as $beanReference){
-            $this->addBeanReference($beanReference);
-        }
-
-        // merge the EPB references
-        foreach ($beanDescriptor->getEpbReferences() as $epbReference) {
-            $this->addEpbReference($epbReference);
-        }
-
-        // merge the resource references
-        foreach ($beanDescriptor->getResReferences() as $resReference) {
-            $this->addResReference($resReference);
-        }
-
-        // merge the persistence unit references
-        foreach ($beanDescriptor->getPersistenceUnitReferences() as $persistenceUnitReference) {
-            $this->addPersistenceUnitReference($persistenceUnitReference);
-        }
+        // merge the references
+        $this->mergeReferences($beanDescriptor);
     }
 }

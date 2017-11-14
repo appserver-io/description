@@ -35,6 +35,13 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
 {
 
     /**
+     * The trait providing the reference information.
+     *
+     * @var \AppserverIo\Description\Api\Node\ReferencesNodeTrait
+     */
+    use ReferencesNodeTrait;
+
+    /**
      * The session bean type information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
@@ -137,38 +144,6 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
      * @AS\Mapping(nodeName="local", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $local;
-
-    /**
-     * The enterprise bean reference information.
-     *
-     * @var array
-     * @AS\Mapping(nodeName="epb-ref", nodeType="array", elementType="AppserverIo\Description\Api\Node\EpbRefNode")
-     */
-    protected $epbRefs = array();
-
-    /**
-     * The resource reference information.
-     *
-     * @var array
-     * @AS\Mapping(nodeName="res-ref", nodeType="array", elementType="AppserverIo\Description\Api\Node\ResRefNode")
-     */
-    protected $resRefs = array();
-
-    /**
-     * The bean reference information.
-     *
-     * @var array
-     * @AS\Mapping(nodeName="bean-ref", nodeType="array", elementType="AppserverIo\Description\Api\Node\BeanRefNode")
-     */
-    protected $beanRefs = array();
-
-    /**
-     * The persistence unit reference information.
-     *
-     * @var array
-     * @AS\Mapping(nodeName="persistence-unit-ref", nodeType="array", elementType="AppserverIo\Description\Api\Node\PersistenceUnitRefNode")
-     */
-    protected $persistenceUnitRefs = array();
 
     /**
      * Return's the session bean type information.
@@ -298,45 +273,5 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
     public function getLocal()
     {
         return $this->local;
-    }
-
-    /**
-     * Return's the enterprise bean reference information.
-     *
-     * @return array The enterprise bean reference information
-     */
-    public function getEpbRefs()
-    {
-        return $this->epbRefs;
-    }
-
-    /**
-     * Return's the resource reference information.
-     *
-     * @return array The resource reference information
-     */
-    public function getResRefs()
-    {
-        return $this->resRefs;
-    }
-
-    /**
-     * Return's the bean reference information.
-     *
-     * @return array The bean reference information
-     */
-    public function getBeanRefs()
-    {
-        return $this->beanRefs;
-    }
-
-    /**
-     * Return's the persistence unit reference information.
-     *
-     * @return array The persistence unit reference information
-     */
-    public function getPersistenceUnitRefs()
-    {
-        return $this->persistenceUnitRefs;
     }
 }

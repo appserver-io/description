@@ -35,6 +35,13 @@ class BeanNode extends AbstractNode implements BeanConfigurationInterface
 {
 
     /**
+     * The trait providing the reference information.
+     *
+     * @var \AppserverIo\Description\Api\Node\ReferencesNodeTrait
+     */
+    use ReferencesNodeTrait;
+
+    /**
      * The bean name information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
@@ -59,38 +66,6 @@ class BeanNode extends AbstractNode implements BeanConfigurationInterface
     protected $factory;
 
     /**
-     * The enterprise bean reference information.
-     *
-     * @var array
-     * @AS\Mapping(nodeName="epb-ref", nodeType="array", elementType="AppserverIo\Description\Api\Node\EpbRefNode")
-     */
-    protected $epbRefs = array();
-
-    /**
-     * The resource reference information.
-     *
-     * @var array
-     * @AS\Mapping(nodeName="res-ref", nodeType="array", elementType="AppserverIo\Description\Api\Node\ResRefNode")
-     */
-    protected $resRefs = array();
-
-    /**
-     * The bean reference information.
-     *
-     * @var array
-     * @AS\Mapping(nodeName="bean-ref", nodeType="array", elementType="AppserverIo\Description\Api\Node\BeanRefNode")
-     */
-    protected $beanRefs = array();
-
-    /**
-     * The persistence unit reference information.
-     *
-     * @var array
-     * @AS\Mapping(nodeName="persistence-unit-ref", nodeType="array", elementType="AppserverIo\Description\Api\Node\PersistenceUnitRefNode")
-     */
-    protected $persistenceUnitRefs = array();
-
-    /**
      * Return's the bean name information.
      *
      * @return \AppserverIo\Description\Api\Node\ValueNode The bean name information
@@ -113,50 +88,10 @@ class BeanNode extends AbstractNode implements BeanConfigurationInterface
     /**
      * Return's the bean factory information.
      *
-     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
+     * @return \AppserverIo\Description\Configuration\FactoryConfigurationInterface
      */
     public function getFactory()
     {
         return $this->factory;
-    }
-
-    /**
-     * Return's the enterprise bean reference information.
-     *
-     * @return array The enterprise bean reference information
-     */
-    public function getEpbRefs()
-    {
-        return $this->epbRefs;
-    }
-
-    /**
-     * Return's the resource reference information.
-     *
-     * @return array The resource reference information
-     */
-    public function getResRefs()
-    {
-        return $this->resRefs;
-    }
-
-    /**
-     * Return's the bean reference information.
-     *
-     * @return array The bean reference information
-     */
-    public function getBeanRefs()
-    {
-        return $this->beanRefs;
-    }
-
-    /**
-     * Return's the persistence unit reference information.
-     *
-     * @return array The persistence unit reference information
-     */
-    public function getPersistenceUnitRefs()
-    {
-        return $this->persistenceUnitRefs;
     }
 }

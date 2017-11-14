@@ -21,10 +21,8 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ReflectionClass;
-use AppserverIo\Lang\Reflection\ReflectionMethod;
-use AppserverIo\Lang\Reflection\ReflectionProperty;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
 use AppserverIo\Description\Api\Node\ResRefNode;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
 
 /**
  * Test implementation for the ResReferenceDescriptorTest class implementation.
@@ -63,7 +61,7 @@ class ResReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
      * Initializes the descriptor instance we want to test.
      *
      * @return void
-     * @see PHPUnit_Framework_TestCase::setUp()
+     * @see \PHPUnit_Framework_TestCase::setUp()
      */
     protected function setUp()
     {
@@ -201,7 +199,8 @@ class ResReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->descriptor->fromReflectionProperty($reflectionProperty);
 
         // check that the descriptor has been initialized successfully
-        $this->assertSame('env/DummyResource', $this->descriptor->getName());
+        $this->assertSame('DummyResource', $this->descriptor->getName());
+        $this->assertSame('env/DummyResource', $this->descriptor->getRefName());
         $this->assertSame('Reference to a timer service', $this->descriptor->getDescription());
         $this->assertSame('php:global/example/TimerServiceContextInterface', $this->descriptor->getLookup());
         $this->assertSame('AppserverIo\Psr\Timer\TimerServiceContextInterface', $this->descriptor->getType());
@@ -272,11 +271,11 @@ class ResReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
             ->with(Resource::ANNOTATION)
             ->will($this->returnValue($annotation));
         $reflectionMethod
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(3))
             ->method('getClassName')
             ->will($this->returnValue(__CLASS__));
         $reflectionMethod
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(3))
             ->method('getMethodName')
             ->will($this->returnValue('injectDummyResource'));
 
@@ -284,7 +283,8 @@ class ResReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->descriptor->fromReflectionMethod($reflectionMethod);
 
         // check that the descriptor has been initialized successfully
-        $this->assertSame('env/DummyResource', $this->descriptor->getName());
+        $this->assertSame('DummyResource', $this->descriptor->getName());
+        $this->assertSame('env/DummyResource', $this->descriptor->getRefName());
         $this->assertNull($this->descriptor->getDescription());
         $this->assertNull($this->descriptor->getLookup());
     }
@@ -358,11 +358,11 @@ class ResReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
             ->with(Resource::ANNOTATION)
             ->will($this->returnValue($annotation));
         $reflectionMethod
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(3))
             ->method('getClassName')
             ->will($this->returnValue(__CLASS__));
         $reflectionMethod
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(3))
             ->method('getMethodName')
             ->will($this->returnValue('injectDummyResource'));
 
@@ -370,7 +370,8 @@ class ResReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->descriptor->fromReflectionMethod($reflectionMethod);
 
         // check that the descriptor has been initialized successfully
-        $this->assertSame('env/DummyResource', $this->descriptor->getName());
+        $this->assertSame('DummyResource', $this->descriptor->getName());
+        $this->assertSame('env/DummyResource', $this->descriptor->getRefName());
         $this->assertSame('Reference to a timer service', $this->descriptor->getDescription());
         $this->assertSame('php:global/example/TimerServiceContextInterface', $this->descriptor->getLookup());
         $this->assertSame('AppserverIo\Psr\Timer\TimerServiceContextInterface', $this->descriptor->getType());
@@ -392,7 +393,8 @@ class ResReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->descriptor->fromConfiguration($node);
 
         // check if all values have been initialized
-        $this->assertSame('env/TimerServiceContextInterface', $this->descriptor->getName());
+        $this->assertSame('TimerServiceContextInterface', $this->descriptor->getName());
+        $this->assertSame('env/TimerServiceContextInterface', $this->descriptor->getRefName());
         $this->assertSame('php:global/example/TimerServiceContextInterface', $this->descriptor->getLookup());
         $this->assertSame('AppserverIo\Psr\Timer\TimerServiceContextInterface', $this->descriptor->getType());
         $this->assertSame('Reference to a timer service', $this->descriptor->getDescription());
@@ -426,7 +428,8 @@ class ResReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->descriptor->merge($descriptorToMerge);
 
         // check if all values have been initialized
-        $this->assertSame('env/MyTimerServiceContextInterface', $this->descriptor->getName());
+        $this->assertSame('MyTimerServiceContextInterface', $this->descriptor->getName());
+        $this->assertSame('env/MyTimerServiceContextInterface', $this->descriptor->getRefName());
         $this->assertSame('Another reference to a timer service', $this->descriptor->getDescription());
         $this->assertSame('php:global/example/MyTimerServiceContextInterface', $this->descriptor->getLookup());
         $this->assertSame('AppserverIo\Psr\Timer\MyTimerServiceContextInterface', $this->descriptor->getType());

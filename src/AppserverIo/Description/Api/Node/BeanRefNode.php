@@ -69,7 +69,7 @@ class BeanRefNode extends AbstractNode implements BeanRefConfigurationInterface
     /**
      * Return's the bean reference name information.
      *
-     * @return \AppserverIo\Description\Api\Node\ValueNode The bean reference name information
+     * @return \AppserverIo\Description\Api\Node\ValueNode The enterprise bean reference name information
      */
     public function getBeanRefName()
     {
@@ -79,7 +79,7 @@ class BeanRefNode extends AbstractNode implements BeanRefConfigurationInterface
     /**
      * Return's the bean reference type information.
      *
-     * @return \AppserverIo\Description\Api\Node\ValueNode The bean reference type information
+     * @return \AppserverIo\Description\Api\Node\ValueNode The enterprise bean reference type information
      */
     public function getBeanRefType()
     {
@@ -89,7 +89,7 @@ class BeanRefNode extends AbstractNode implements BeanRefConfigurationInterface
     /**
      * Return's the bean description information.
      *
-     * @return \AppserverIo\Description\Api\Node\ValueNode The bean description information
+     * @return \AppserverIo\Description\Api\Node\ValueNode The enterprise bean description information
      */
     public function getDescription()
     {
@@ -99,7 +99,7 @@ class BeanRefNode extends AbstractNode implements BeanRefConfigurationInterface
     /**
      * Return's the bean injection target information.
      *
-     * @return \AppserverIo\Description\Api\Node\InjectionTargetNode The bean injection target information
+     * @return \AppserverIo\Description\Api\Node\InjectionTargetNode The enterprise bean injection target information
      */
     public function getInjectionTarget()
     {

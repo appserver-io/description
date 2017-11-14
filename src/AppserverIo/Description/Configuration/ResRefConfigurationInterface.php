@@ -63,7 +63,7 @@ interface ResRefConfigurationInterface
     /**
      * Return's the resource injection target information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\InjectionTargetConfiguration
+     * @return \AppserverIo\Description\Configuration\InjectionTargetConfigurationInterface
      */
     public function getInjectionTarget();
 }

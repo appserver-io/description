@@ -41,7 +41,8 @@ class MessageDrivenBeanDescriptor extends EnterpriseBeanDescriptor implements Me
     /**
      * Returns a new descriptor instance.
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\MessageDrivenBeanDescriptorInterface The descriptor instance
+     * @return \AppserverIo\Psr\EnterpriseBeans\Description\MessageDrivenBeanDescriptorInterface
+     *     The descriptor instance
      */
     public static function newDescriptorInstance()
     {

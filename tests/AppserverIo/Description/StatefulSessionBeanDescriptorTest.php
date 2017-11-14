@@ -54,7 +54,7 @@ class StatefulSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
      * Initializes the descriptor instance we want to test.
      *
      * @return void
-     * @see PHPUnit_Framework_TestCase::setUp()
+     * @see \PHPUnit_Framework_TestCase::setUp()
      */
     protected function setUp()
     {

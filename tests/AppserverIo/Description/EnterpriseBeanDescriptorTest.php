@@ -21,10 +21,10 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ReflectionClass;
+use AppserverIo\Description\Api\Node\SessionNode;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
-use AppserverIo\Description\Api\Node\SessionNode;
 
 /**
  * Test implementation for the BeanDescriptor class implementation.
@@ -70,7 +70,7 @@ class EnterpriseBeanDescriptorTest extends \PHPUnit_Framework_TestCase
      * Initializes the method we wan to test.
      *
      * @return void
-     * @see PHPUnit_Framework_TestCase::setUp()
+     * @see \PHPUnit_Framework_TestCase::setUp()
      */
     protected function setUp()
     {
@@ -159,7 +159,7 @@ class EnterpriseBeanDescriptorTest extends \PHPUnit_Framework_TestCase
     {
 
         // prepare the annotation values
-        $values = array('name' => 'BeanDescriptorTest');
+        $values = array('name' => 'EnterpriseBeanDescriptorTest');
 
         // create a mock annotation implementation
         $beanAnnotation = $this->getMockBuilder('AppserverIo\Psr\EnterpriseBeans\Annotations\AbstractBeanAnnotation')
@@ -208,7 +208,7 @@ class EnterpriseBeanDescriptorTest extends \PHPUnit_Framework_TestCase
 
         // check the name parsed from the reflection class
         $this->assertSame(__CLASS__, $this->descriptor->getClassName());
-        $this->assertSame('BeanDescriptorTest', $this->descriptor->getName());
+        $this->assertSame('EnterpriseBeanDescriptorTest', $this->descriptor->getName());
         $this->assertCount(1, $this->descriptor->getEpbReferences());
         $this->assertCount(1, $this->descriptor->getResReferences());
         $this->assertCount(1, $this->descriptor->getPersistenceUnitReferences());

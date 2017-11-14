@@ -435,19 +435,7 @@ class ServletDescriptor implements ServletDescriptorInterface, DescriptorInterfa
             $this->addInitParam($paramKey, $paramValue);
         }
 
-        // merge the EPB references
-        foreach ($servletDescriptor->getEpbReferences() as $epbReference) {
-            $this->addEpbReference($epbReference);
-        }
-
-        // merge the resource references
-        foreach ($servletDescriptor->getResReferences() as $resReference) {
-            $this->addResReference($resReference);
-        }
-
-        // merge the persistence unit references
-        foreach ($servletDescriptor->getPersistenceUnitReferences() as $persistenceUnitReference) {
-            $this->addPersistenceUnitReference($persistenceUnitReference);
-        }
+        // merge the references
+        $this->mergeReferences($servletDescriptor);
     }
 }

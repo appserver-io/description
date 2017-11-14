@@ -26,7 +26,6 @@ use AppserverIo\Psr\EnterpriseBeans\Annotations\Factory;
 use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
 use AppserverIo\Psr\EnterpriseBeans\Description\FactoryDescriptorInterface;
 use AppserverIo\Description\Configuration\ConfigurationInterface;
-use AppserverIo\Description\Configuration\BeanConfigurationInterface;
 use AppserverIo\Description\Configuration\FactoryConfigurationInterface;
 
 /**
@@ -123,7 +122,7 @@ class FactoryDescriptor implements FactoryDescriptorInterface
     /**
      * Sets the factory method that creates the bean.
      *
-     * @param string $factory The factory method
+     * @param string $method The factory method
      *
      * @return void
      */
@@ -280,7 +279,7 @@ class FactoryDescriptor implements FactoryDescriptorInterface
         }
 
         // merge the bean references
-        foreach ($factoryDescriptor->getBeanReferences() as $beanReference){
+        foreach ($factoryDescriptor->getBeanReferences() as $beanReference) {
             $this->addBeanReference($beanReference);
         }
 

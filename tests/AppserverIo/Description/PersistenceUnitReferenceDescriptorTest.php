@@ -21,10 +21,8 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ReflectionClass;
-use AppserverIo\Lang\Reflection\ReflectionMethod;
-use AppserverIo\Lang\Reflection\ReflectionProperty;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
 use AppserverIo\Description\Api\Node\PersistenceUnitRefNode;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
 
 /**
  * Test implementation for the ResReferenceDescriptorTest class implementation.
@@ -63,7 +61,7 @@ class PersistenceUnitReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
      * Initializes the descriptor instance we want to test.
      *
      * @return void
-     * @see PHPUnit_Framework_TestCase::setUp()
+     * @see \PHPUnit_Framework_TestCase::setUp()
      */
     protected function setUp()
     {
@@ -200,7 +198,8 @@ class PersistenceUnitReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->descriptor->fromReflectionProperty($reflectionProperty);
 
         // check that the descriptor has been initialized successfully
-        $this->assertSame('env/persistence/ReferenceToMyPersistenceUnit', $this->descriptor->getName());
+        $this->assertSame('ReferenceToMyPersistenceUnit', $this->descriptor->getName());
+        $this->assertSame('env/ReferenceToMyPersistenceUnit', $this->descriptor->getRefName());
         $this->assertSame('MyPersistenceUnit', $this->descriptor->getUnitName());
     }
 
@@ -281,7 +280,8 @@ class PersistenceUnitReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->descriptor->fromReflectionProperty($reflectionProperty);
 
         // check that the descriptor has been initialized successfully
-        $this->assertSame('env/persistence/DummyPersistenceUnit', $this->descriptor->getName());
+        $this->assertSame('DummyPersistenceUnit', $this->descriptor->getName());
+        $this->assertSame('env/DummyPersistenceUnit', $this->descriptor->getRefName());
         $this->assertSame('DummyPersistenceUnit', $this->descriptor->getUnitName());
     }
 
@@ -350,11 +350,11 @@ class PersistenceUnitReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
             ->with(PersistenceUnit::ANNOTATION)
             ->will($this->returnValue($annotation));
         $reflectionMethod
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(3))
             ->method('getClassName')
             ->will($this->returnValue(__CLASS__));
         $reflectionMethod
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(3))
             ->method('getMethodName')
             ->will($this->returnValue('injectDummyPersistenceUnit'));
 
@@ -362,7 +362,8 @@ class PersistenceUnitReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->descriptor->fromReflectionMethod($reflectionMethod);
 
         // check that the descriptor has been initialized successfully
-        $this->assertSame('env/persistence/DummyPersistenceUnit', $this->descriptor->getName());
+        $this->assertSame('DummyPersistenceUnit', $this->descriptor->getName());
+        $this->assertSame('env/DummyPersistenceUnit', $this->descriptor->getRefName());
         $this->assertSame('DummyPersistenceUnit', $this->descriptor->getUnitName());
     }
 
@@ -434,11 +435,11 @@ class PersistenceUnitReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
             ->with(PersistenceUnit::ANNOTATION)
             ->will($this->returnValue($annotation));
         $reflectionMethod
-            ->expects($this->once())
+            ->expects($this->exactly(2))
             ->method('getClassName')
             ->will($this->returnValue(__CLASS__));
         $reflectionMethod
-            ->expects($this->once())
+            ->expects($this->exactly(2))
             ->method('getMethodName')
             ->will($this->returnValue('injectDummyPersistenceUnit'));
 
@@ -446,7 +447,8 @@ class PersistenceUnitReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->descriptor->fromReflectionMethod($reflectionMethod);
 
         // check that the descriptor has been initialized successfully
-        $this->assertSame('env/persistence/ReferenceToMyPersistenceUnit', $this->descriptor->getName());
+        $this->assertSame('ReferenceToMyPersistenceUnit', $this->descriptor->getName());
+        $this->assertSame('env/ReferenceToMyPersistenceUnit', $this->descriptor->getRefName());
         $this->assertSame('MyPersistenceUnit', $this->descriptor->getUnitName());
     }
 
@@ -466,7 +468,8 @@ class PersistenceUnitReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->descriptor->fromConfiguration($node);
 
         // check that the descriptor has been initialized successfully
-        $this->assertSame('env/persistence/ReferenceToMyPersistenceUnit', $this->descriptor->getName());
+        $this->assertSame('ReferenceToMyPersistenceUnit', $this->descriptor->getName());
+        $this->assertSame('env/ReferenceToMyPersistenceUnit', $this->descriptor->getRefName());
         $this->assertSame('MyPersistenceUnit', $this->descriptor->getUnitName());
         $this->assertInstanceOf('AppserverIo\Description\InjectionTargetDescriptor', $this->descriptor->getInjectionTarget());
     }
@@ -498,7 +501,8 @@ class PersistenceUnitReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->descriptor->merge($descriptorToMerge);
 
         // check if all values have been initialized
-        $this->assertSame('env/persistence/ReferenceToMyNewPersistenceUnit', $this->descriptor->getName());
+        $this->assertSame('ReferenceToMyNewPersistenceUnit', $this->descriptor->getName());
+        $this->assertSame('env/ReferenceToMyNewPersistenceUnit', $this->descriptor->getRefName());
         $this->assertSame('MyNewPersistenceUnit', $this->descriptor->getUnitName());
         $this->assertInstanceOf('AppserverIo\Description\InjectionTargetDescriptor', $injectTarget = $this->descriptor->getInjectionTarget());
         $this->assertSame('AppserverIo\Apps\Example\Services\NewSampleProcessor', $injectTarget->getTargetClass());

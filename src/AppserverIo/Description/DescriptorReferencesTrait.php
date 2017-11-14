@@ -21,6 +21,7 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ClassInterface;
+use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\BeanReferenceDescriptorInterface;
@@ -303,6 +304,37 @@ trait DescriptorReferencesTrait
             if ($persistenceUnitReference = PersistenceUnitReferenceDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
                 $this->addPersistenceUnitReference($persistenceUnitReference);
             }
+        }
+    }
+
+    /**
+     * Merge the refrerences of the passed descriptor into the actual one.
+     *
+     * @param \AppserverIo\Psr\Deployment\DescriptorInterface $descriptor The descriptor to merge the references with
+     *
+     * @return void
+     */
+    public function mergeReferences(DescriptorInterface $descriptor)
+    {
+
+        // merge the bean references
+        foreach ($descriptor->getBeanReferences() as $beanReference) {
+            $this->addBeanReference($beanReference);
+        }
+
+        // merge the EPB references
+        foreach ($descriptor->getEpbReferences() as $epbReference) {
+            $this->addEpbReference($epbReference);
+        }
+
+        // merge the resource references
+        foreach ($descriptor->getResReferences() as $resReference) {
+            $this->addResReference($resReference);
+        }
+
+        // merge the persistence unit references
+        foreach ($descriptor->getPersistenceUnitReferences() as $persistenceUnitReference) {
+            $this->addPersistenceUnitReference($persistenceUnitReference);
         }
     }
 }
