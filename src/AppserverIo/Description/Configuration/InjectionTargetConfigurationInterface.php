@@ -47,6 +47,13 @@ interface InjectionTargetConfigurationInterface
     public function getInjectionTargetMethod();
 
     /**
+     * Return's the enterprise bean injection target method parameter name information.
+     *
+     * @return \AppserverIo\Description\Api\Node\ValueNode The enterprise bean injection target method parameter name information
+     */
+    public function getInjectionTargetMethodParameterName();
+
+    /**
      * Return's the enterprise bean injection target property information.
      *
      * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface

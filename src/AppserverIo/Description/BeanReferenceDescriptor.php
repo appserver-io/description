@@ -26,7 +26,6 @@ use AppserverIo\Lang\Reflection\PropertyInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Inject;
 use AppserverIo\Description\Configuration\BeanRefConfigurationInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\BeanReferenceDescriptorInterface;
-use AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface;
 
 /**
  * Utility class that stores a bean reference configuration.
@@ -48,20 +47,6 @@ class BeanReferenceDescriptor extends AbstractReferenceDescriptor implements Bea
     protected $type;
 
     /**
-     * The class description.
-     *
-     * @var string
-     */
-    protected $description;
-
-    /**
-     * The injection target.
-     *
-     * @var \AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface
-     */
-    protected $injectionTarget;
-
-    /**
      * Sets the class type.
      *
      * @param string $type The class type
@@ -81,50 +66,6 @@ class BeanReferenceDescriptor extends AbstractReferenceDescriptor implements Bea
     public function getType()
     {
         return $this->type;
-    }
-
-    /**
-     * Sets the class description.
-     *
-     * @param string $description The class description
-     *
-     * @return void
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
-
-    /**
-     * Returns the class description.
-     *
-     * @return string The class description
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * Sets the injection target specification.
-     *
-     * @param \AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface $injectionTarget The injection target specification
-     *
-     * @return void
-     */
-    public function setInjectionTarget(InjectionTargetDescriptorInterface $injectionTarget)
-    {
-        $this->injectionTarget = $injectionTarget;
-    }
-
-    /**
-     * Returns the injection target specification.
-     *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface The injection target specification
-     */
-    public function getInjectionTarget()
-    {
-        return $this->injectionTarget;
     }
 
     /**
@@ -228,7 +169,7 @@ class BeanReferenceDescriptor extends AbstractReferenceDescriptor implements Bea
         } else {
             // use the name of the first parameter
             foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-                $this->setName(ucfirst($reflectionParameter->getParameterName()));
+                $this->setName($name = ucfirst($reflectionParameter->getParameterName()));
                 break;
             }
         }
@@ -251,6 +192,15 @@ class BeanReferenceDescriptor extends AbstractReferenceDescriptor implements Bea
 
         // load the injection target data
         if ($injectionTarget = InjectionTargetDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
+            $this->setInjectionTarget($injectionTarget);
+        } else {
+            // initialize a default injection target, which is the constructor
+            // and assume that the parameter name equals the reference name
+            $injectionTarget = InjectionTargetDescriptor::newDescriptorInstance();
+            $injectionTarget->setTargetMethod('__construct');
+            $injectionTarget->setTargetMethodParameterName(lcfirst($name));
+
+            // set the default injection target
             $this->setInjectionTarget($injectionTarget);
         }
 
@@ -287,6 +237,15 @@ class BeanReferenceDescriptor extends AbstractReferenceDescriptor implements Bea
         // load the injection target data
         if ($injectionTarget = $configuration->getInjectionTarget()) {
             $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromConfiguration($injectionTarget));
+        } else {
+            // initialize a default injection target, which is the constructor
+            // and assume that the parameter name equals the reference name
+            $injectionTarget = InjectionTargetDescriptor::newDescriptorInstance();
+            $injectionTarget->setTargetMethod('__construct');
+            $injectionTarget->setTargetMethodParameterName(lcfirst($name));
+
+            // set the default injection target
+            $this->setInjectionTarget($injectionTarget);
         }
 
         // return the instance

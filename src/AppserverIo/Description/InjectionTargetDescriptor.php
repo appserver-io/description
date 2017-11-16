@@ -61,6 +61,13 @@ class InjectionTargetDescriptor implements InjectionTargetDescriptorInterface, D
     protected $targetMethod;
 
     /**
+     * The target method parameter name we want use for injection.
+     *
+     * @var string
+     */
+    protected $targetMethodParameterName;
+
+    /**
      * Sets the target class we want to inject to.
      *
      * @param string $targetClass The target class we want to inject to
@@ -127,6 +134,28 @@ class InjectionTargetDescriptor implements InjectionTargetDescriptorInterface, D
     }
 
     /**
+     * Sets the target method parameter name we want to use for injection.
+     *
+     * @param string $targetMethodParameterName The target method parameter name used for injection
+     *
+     * @return void
+     */
+    public function setTargetMethodParameterName($targetMethodParameterName)
+    {
+        $this->targetMethodParameterName = $targetMethodParameterName;
+    }
+
+    /**
+     * Returns the target method parameter name we want use for injection.
+     *
+     * @return string The target method parameter name used for injection
+     */
+    public function getTargetMethodParameterName()
+    {
+        return $this->targetMethodParameterName;
+    }
+
+    /**
      * Returns a new descriptor instance.
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface The descriptor instance
@@ -178,14 +207,33 @@ class InjectionTargetDescriptor implements InjectionTargetDescriptorInterface, D
     public function fromReflectionMethod(MethodInterface $reflectionMethod)
     {
 
+        // load the native PHP ReflectionMethod instance
+        $phpReflectionMethod = $reflectionMethod->toPhpReflectionMethod();
+
         // do nothing, if the passed method IS the constructor
-        if ($reflectionMethod->toPhpReflectionMethod()->isConstructor()) {
+        if ($phpReflectionMethod->isConstructor()) {
             return;
+        }
+
+        // a setter method MUST exactly have ONE parameter
+        if (($numberOfParameters = $phpReflectionMethod->getNumberOfParameters()) !== 1) {
+            throw new \Exception(
+                sprintf(
+                    'Setter method MUST have exactly ONE parameter, but method "%s" has exactly "%d"',
+                    $reflectionMethod->getMethodName(),
+                    $numberOfParameters
+                )
+            );
         }
 
         // initialize the injection target from the passed method
         $this->setTargetClass($reflectionMethod->getClassName());
         $this->setTargetMethod($reflectionMethod->getMethodName());
+
+        // initialize the method's parameter name
+        foreach ($phpReflectionMethod->getParameters() as $reflectionParameter) {
+            $this->setTargetMethodParameterName($reflectionParameter->getName());
+        }
 
         // return the instance
         return $this;
@@ -217,6 +265,11 @@ class InjectionTargetDescriptor implements InjectionTargetDescriptorInterface, D
             $this->setTargetMethod($targetMethod);
         }
 
+        // query for the target method parameter name we want to use for injection
+        if ($targetMethodParameterName = (string) $configuration->getInjectionTargetMethodParameterName()) {
+            $this->setTargetMethodParameterName($targetMethodParameterName);
+        }
+
         // return the instance
         return $this;
     }
@@ -245,6 +298,11 @@ class InjectionTargetDescriptor implements InjectionTargetDescriptorInterface, D
         // merge the injection target method
         if ($targetMethod = $injectionTargetDescriptor->getTargetMethod()) {
             $this->setTargetMethod($targetMethod);
+        }
+
+        // merge the injection target method
+        if ($targetMethodParameterName = $injectionTargetDescriptor->getTargetMethodParameterName()) {
+            $this->setTargetMethodParameterName($targetMethodParameterName);
         }
     }
 }

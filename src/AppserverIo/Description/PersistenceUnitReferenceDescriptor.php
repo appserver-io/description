@@ -23,10 +23,9 @@ namespace AppserverIo\Description;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\MethodInterface;
 use AppserverIo\Lang\Reflection\PropertyInterface;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
-use AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface;
-use AppserverIo\Psr\EnterpriseBeans\Description\PersistenceUnitReferenceDescriptorInterface;
 use AppserverIo\Description\Configuration\PersistenceUnitRefConfigurationInterface;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
+use AppserverIo\Psr\EnterpriseBeans\Description\PersistenceUnitReferenceDescriptorInterface;
 
 /**
  * Utility class that stores a persistence unit reference configuration.
@@ -48,13 +47,6 @@ class PersistenceUnitReferenceDescriptor extends AbstractReferenceDescriptor imp
     protected $unitName;
 
     /**
-     * The injection target specification.
-     *
-     * @var \AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface
-     */
-    protected $injectionTarget;
-
-    /**
      * Sets the persistence unit name.
      *
      * @param string $unitName The persistence unit name
@@ -74,28 +66,6 @@ class PersistenceUnitReferenceDescriptor extends AbstractReferenceDescriptor imp
     public function getUnitName()
     {
         return $this->unitName;
-    }
-
-    /**
-     * Sets the injection target specification.
-     *
-     * @param \AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface $injectionTarget The injection target specification
-     *
-     * @return void
-     */
-    public function setInjectionTarget(InjectionTargetDescriptorInterface $injectionTarget)
-    {
-        $this->injectionTarget = $injectionTarget;
-    }
-
-    /**
-     * Returns the injection target specification.
-     *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface The injection target specification
-     */
-    public function getInjectionTarget()
-    {
-        return $this->injectionTarget;
     }
 
     /**
@@ -196,7 +166,7 @@ class PersistenceUnitReferenceDescriptor extends AbstractReferenceDescriptor imp
         } else {
             // use the name of the first parameter
             foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-                $this->setName(ucfirst($reflectionParameter->getParameterName()));
+                $this->setName($name = ucfirst($reflectionParameter->getParameterName()));
                 break;
             }
         }
@@ -214,6 +184,15 @@ class PersistenceUnitReferenceDescriptor extends AbstractReferenceDescriptor imp
 
         // load the injection target data
         if ($injectionTarget = InjectionTargetDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
+            $this->setInjectionTarget($injectionTarget);
+        } else {
+            // initialize a default injection target, which is the constructor
+            // and assume that the parameter name equals the reference name
+            $injectionTarget = InjectionTargetDescriptor::newDescriptorInstance();
+            $injectionTarget->setTargetMethod('__construct');
+            $injectionTarget->setTargetMethodParameterName(lcfirst($name));
+
+            // set the default injection target
             $this->setInjectionTarget($injectionTarget);
         }
 
@@ -245,6 +224,15 @@ class PersistenceUnitReferenceDescriptor extends AbstractReferenceDescriptor imp
         // load the injection target data
         if ($injectionTarget = $configuration->getInjectionTarget()) {
             $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromConfiguration($injectionTarget));
+        } else {
+            // initialize a default injection target, which is the constructor
+            // and assume that the parameter name equals the reference name
+            $injectionTarget = InjectionTargetDescriptor::newDescriptorInstance();
+            $injectionTarget->setTargetMethod('__construct');
+            $injectionTarget->setTargetMethodParameterName(lcfirst($name));
+
+            // set the default injection target
+            $this->setInjectionTarget($injectionTarget);
         }
 
         // return the instance
