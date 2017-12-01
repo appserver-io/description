@@ -205,7 +205,7 @@ class ResReferenceDescriptor extends AbstractReferenceDescriptor implements ResR
         } else {
             // use the name of the first parameter
             foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-                $this->setName($name = ucfirst($reflectionParameter->getParameterName()));
+                $this->setName(ucfirst($name = $reflectionParameter->getParameterName()));
                 break;
             }
         }

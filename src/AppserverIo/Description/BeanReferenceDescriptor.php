@@ -124,8 +124,6 @@ class BeanReferenceDescriptor extends AbstractReferenceDescriptor implements Bea
         // load the class type defined as @Inject(type=****)
         if ($type = $annotationInstance->getType()) {
             $this->setType($type);
-        } else {
-            $this->setType(ucfirst($reflectionProperty->getPropertyName()));
         }
 
         // load the class description defined as @Inject(description=****)
@@ -177,12 +175,6 @@ class BeanReferenceDescriptor extends AbstractReferenceDescriptor implements Bea
         // load the class type defined as @Inject(type=****)
         if ($type = $annotationInstance->getType()) {
             $this->setType($type);
-        } else {
-            // use the name of the first parameter as local business interface
-            foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-                $this->setType(ucfirst($reflectionParameter->getParameterName()));
-                break;
-            }
         }
 
         // load the class description defined as @Inject(description=****)
