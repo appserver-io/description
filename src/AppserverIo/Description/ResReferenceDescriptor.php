@@ -100,11 +100,13 @@ class ResReferenceDescriptor extends AbstractReferenceDescriptor implements ResR
     /**
      * Returns a new descriptor instance.
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface The descriptor instance
+     * @param \AppserverIo\Description\NameAwareDescriptorInterface $parent The parent descriptor instance
+     *
+     * @return \AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface The descriptor instance
      */
-    public static function newDescriptorInstance()
+    public static function newDescriptorInstance(NameAwareDescriptorInterface $parent)
     {
-        return new ResReferenceDescriptor();
+        return new ResReferenceDescriptor($parent);
     }
 
     /**

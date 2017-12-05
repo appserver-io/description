@@ -23,7 +23,6 @@ namespace AppserverIo\Description;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\MethodInterface;
 use AppserverIo\Lang\Reflection\PropertyInterface;
-use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface;
 use AppserverIo\Description\Configuration\InjectionTargetConfigurationInterface;
 
@@ -36,7 +35,7 @@ use AppserverIo\Description\Configuration\InjectionTargetConfigurationInterface;
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-class InjectionTargetDescriptor implements InjectionTargetDescriptorInterface, DescriptorInterface
+class InjectionTargetDescriptor extends AbstractDescriptor implements InjectionTargetDescriptorInterface
 {
 
     /**

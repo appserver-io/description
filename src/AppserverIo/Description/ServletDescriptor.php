@@ -23,7 +23,6 @@ namespace AppserverIo\Description;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Psr\Servlet\ServletException;
 use AppserverIo\Psr\Servlet\Annotations\Route;
-use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\Servlet\Description\ServletDescriptorInterface;
 use AppserverIo\Description\Configuration\ServletConfigurationInterface;
 use AppserverIo\Description\Configuration\ConfigurationInterface;
@@ -37,7 +36,7 @@ use AppserverIo\Description\Configuration\ConfigurationInterface;
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-class ServletDescriptor implements ServletDescriptorInterface, DescriptorInterface
+class ServletDescriptor extends AbstractNameAwareDescriptor implements ServletDescriptorInterface
 {
 
     /**
@@ -48,25 +47,11 @@ class ServletDescriptor implements ServletDescriptorInterface, DescriptorInterfa
     use DescriptorReferencesTrait;
 
     /**
-     * The servlet name.
-     *
-     * @var string
-     */
-    protected $name;
-
-    /**
      * The servlets class name.
      *
      * @var string
      */
     protected $className;
-
-    /**
-     * The servlets description.
-     *
-     * @var string
-     */
-    protected $description;
 
     /**
      * The servlets display name.
@@ -90,28 +75,6 @@ class ServletDescriptor implements ServletDescriptorInterface, DescriptorInterfa
     protected $urlPatterns = array();
 
     /**
-     * Sets the servlet name.
-     *
-     * @param string $name The servlet name
-     *
-     * @return void
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * Returns the servlet name.
-     *
-     * @return string The servlet name
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
      * Sets the servlets class name.
      *
      * @param string $className The servlets class name
@@ -131,28 +94,6 @@ class ServletDescriptor implements ServletDescriptorInterface, DescriptorInterfa
     public function getClassName()
     {
         return $this->className;
-    }
-
-    /**
-     * Sets the servlets description.
-     *
-     * @param string $description The servlets description
-     *
-     * @return void
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
-
-    /**
-     * Returns the servlets description.
-     *
-     * @return string The servlets description
-     */
-    public function getDescription()
-    {
-        return $this->description;
     }
 
     /**

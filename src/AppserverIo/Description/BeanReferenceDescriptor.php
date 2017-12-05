@@ -23,8 +23,8 @@ namespace AppserverIo\Description;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\MethodInterface;
 use AppserverIo\Lang\Reflection\PropertyInterface;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Inject;
 use AppserverIo\Description\Configuration\BeanRefConfigurationInterface;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\Inject;
 use AppserverIo\Psr\EnterpriseBeans\Description\BeanReferenceDescriptorInterface;
 
 /**
@@ -71,11 +71,13 @@ class BeanReferenceDescriptor extends AbstractReferenceDescriptor implements Bea
     /**
      * Returns a new descriptor instance.
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\BeanReferenceDescriptorInterface The descriptor instance
+     * @param \AppserverIo\Description\NameAwareDescriptorInterface $parent The parent descriptor instance
+     *
+     * @return \AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface The descriptor instance
      */
-    public static function newDescriptorInstance()
+    public static function newDescriptorInstance(NameAwareDescriptorInterface $parent)
     {
-        return new BeanReferenceDescriptor();
+        return new BeanReferenceDescriptor($parent);
     }
 
     /**

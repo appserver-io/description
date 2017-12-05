@@ -71,11 +71,13 @@ class PersistenceUnitReferenceDescriptor extends AbstractReferenceDescriptor imp
     /**
      * Returns a new descriptor instance.
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\PersistenceUnitReferenceDescriptorInterface The descriptor instance
+     * @param \AppserverIo\Description\NameAwareDescriptorInterface $parent The parent descriptor instance
+     *
+     * @return \AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface The descriptor instance
      */
-    public static function newDescriptorInstance()
+    public static function newDescriptorInstance(NameAwareDescriptorInterface $parent)
     {
-        return new PersistenceUnitReferenceDescriptor();
+        return new PersistenceUnitReferenceDescriptor($parent);
     }
 
     /**

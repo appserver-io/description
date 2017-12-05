@@ -14,7 +14,7 @@
         "appserver-io/configuration": "2.0.*",
         "appserver-io-psr/epb": "dev-di as 4.0.0",
         "appserver-io-psr/servlet": "dev-di as 3.0.0",
-        "appserver-io-psr/deployment": "1.1.*"
+        "appserver-io-psr/deployment": "dev-di as 1.1.0"
     },
     "autoload": {
         "psr-0": {

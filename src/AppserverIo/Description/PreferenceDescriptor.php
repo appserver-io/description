@@ -35,7 +35,7 @@ use AppserverIo\Description\Configuration\PreferenceConfigurationInterface;
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-class PreferenceDescriptor implements DescriptorInterface
+class PreferenceDescriptor extends AbstractDescriptor
 {
 
     /**

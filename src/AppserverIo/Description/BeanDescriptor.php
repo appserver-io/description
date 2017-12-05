@@ -23,7 +23,6 @@ namespace AppserverIo\Description;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Description\Configuration\ConfigurationInterface;
 use AppserverIo\Description\Configuration\BeanConfigurationInterface;
-use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Inject;
 use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
 use AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface;
@@ -38,7 +37,7 @@ use AppserverIo\Psr\EnterpriseBeans\Description\FactoryDescriptorInterface;
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-class BeanDescriptor extends AbstractReferenceDescriptor implements BeanDescriptorInterface, DescriptorInterface
+class BeanDescriptor extends AbstractNameAwareDescriptor implements BeanDescriptorInterface
 {
 
     /**
@@ -47,13 +46,6 @@ class BeanDescriptor extends AbstractReferenceDescriptor implements BeanDescript
      * @var AppserverIo\Description\DescriptorReferencesTrait
      */
     use DescriptorReferencesTrait;
-
-    /**
-     * The bean name.
-     *
-     * @var string
-     */
-    protected $name;
 
     /**
      * The beans class name.
@@ -68,28 +60,6 @@ class BeanDescriptor extends AbstractReferenceDescriptor implements BeanDescript
      * @var \AppserverIo\Psr\EnterpriseBeans\Description\FactoryDescriptorInterface
      */
     protected $factory;
-
-    /**
-     * Sets the bean name.
-     *
-     * @param string $name The bean name
-     *
-     * @return void
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * Returns the bean name.
-     *
-     * @return string The bean name
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
 
     /**
      * Sets the beans class name.

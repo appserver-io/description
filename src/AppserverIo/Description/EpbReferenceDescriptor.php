@@ -129,11 +129,13 @@ class EpbReferenceDescriptor extends AbstractReferenceDescriptor implements EpbR
     /**
      * Returns a new descriptor instance.
      *
+     * @param \AppserverIo\Description\NameAwareDescriptorInterface $parent The parent descriptor instance
+     *
      * @return \AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface The descriptor instance
      */
-    public static function newDescriptorInstance()
+    public static function newDescriptorInstance(NameAwareDescriptorInterface $parent)
     {
-        return new EpbReferenceDescriptor();
+        return new EpbReferenceDescriptor($parent);
     }
 
     /**

@@ -21,10 +21,9 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ClassInterface;
+use AppserverIo\Description\Configuration\ConfigurationInterface;
 use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
 use AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface;
-use AppserverIo\Description\Configuration\ConfigurationInterface;
-use AppserverIo\Psr\Deployment\DescriptorInterface;
 
 /**
  * Abstract class for all enterprise bean descriptors.
@@ -35,7 +34,7 @@ use AppserverIo\Psr\Deployment\DescriptorInterface;
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-abstract class EnterpriseBeanDescriptor implements BeanDescriptorInterface, DescriptorInterface
+abstract class EnterpriseBeanDescriptor extends AbstractNameAwareDescriptor implements BeanDescriptorInterface
 {
 
     /**
@@ -46,40 +45,11 @@ abstract class EnterpriseBeanDescriptor implements BeanDescriptorInterface, Desc
     use DescriptorReferencesTrait;
 
     /**
-     * The bean name.
-     *
-     * @var string
-     */
-    protected $name;
-
-    /**
      * The beans class name.
      *
      * @var string
      */
     protected $className;
-
-    /**
-     * Sets the bean name.
-     *
-     * @param string $name The bean name
-     *
-     * @return void
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * Returns the bean name.
-     *
-     * @return string The bean name
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
 
     /**
      * Sets the beans class name.

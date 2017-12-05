@@ -231,22 +231,22 @@ trait DescriptorReferencesTrait
 
         // initialize the enterprise bean references
         foreach ($configuration->getEpbRefs() as $epbReference) {
-            $this->addEpbReference(EpbReferenceDescriptor::newDescriptorInstance()->fromConfiguration($epbReference));
+            $this->addEpbReference(EpbReferenceDescriptor::newDescriptorInstance($this)->fromConfiguration($epbReference));
         }
 
         // initialize the resource references
         foreach ($configuration->getResRefs() as $resReference) {
-            $this->addResReference(ResReferenceDescriptor::newDescriptorInstance()->fromConfiguration($resReference));
+            $this->addResReference(ResReferenceDescriptor::newDescriptorInstance($this)->fromConfiguration($resReference));
         }
 
         // initialize the bean references
         foreach ($configuration->getBeanRefs() as $beanReference) {
-            $this->addBeanReference(BeanReferenceDescriptor::newDescriptorInstance()->fromConfiguration($beanReference));
+            $this->addBeanReference(BeanReferenceDescriptor::newDescriptorInstance($this)->fromConfiguration($beanReference));
         }
 
         // initialize the resource references
         foreach ($configuration->getPersistenceUnitRefs() as $persistenceUnitReference) {
-            $this->addPersistenceUnitReference(PersistenceUnitReferenceDescriptor::newDescriptorInstance()->fromConfiguration($persistenceUnitReference));
+            $this->addPersistenceUnitReference(PersistenceUnitReferenceDescriptor::newDescriptorInstance($this)->fromConfiguration($persistenceUnitReference));
         }
     }
 
@@ -263,22 +263,22 @@ trait DescriptorReferencesTrait
         // we've to check for property annotations that references EPB or resources
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
             // load the EPB references
-            if ($epbReference = EpbReferenceDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty)) {
+            if ($epbReference = EpbReferenceDescriptor::newDescriptorInstance($this)->fromReflectionProperty($reflectionProperty)) {
                 $this->addEpbReference($epbReference);
             }
 
             // load the resource references
-            if ($resReference = ResReferenceDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty)) {
+            if ($resReference = ResReferenceDescriptor::newDescriptorInstance($this)->fromReflectionProperty($reflectionProperty)) {
                 $this->addResReference($resReference);
             }
 
             // load the bean references
-            if ($beanReference = BeanReferenceDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty)) {
+            if ($beanReference = BeanReferenceDescriptor::newDescriptorInstance($this)->fromReflectionProperty($reflectionProperty)) {
                 $this->addBeanReference($beanReference);
             }
 
             // load the persistence unit references
-            if ($persistenceUnitReference = PersistenceUnitReferenceDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty)) {
+            if ($persistenceUnitReference = PersistenceUnitReferenceDescriptor::newDescriptorInstance($this)->fromReflectionProperty($reflectionProperty)) {
                 $this->addPersistenceUnitReference($persistenceUnitReference);
             }
         }
@@ -286,22 +286,22 @@ trait DescriptorReferencesTrait
         // we've to check for method annotations that references EPB or resources
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
             // load the EPB references
-            if ($epbReference = EpbReferenceDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
+            if ($epbReference = EpbReferenceDescriptor::newDescriptorInstance($this)->fromReflectionMethod($reflectionMethod)) {
                 $this->addEpbReference($epbReference);
             }
 
             // load the resource references
-            if ($resReference = ResReferenceDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
+            if ($resReference = ResReferenceDescriptor::newDescriptorInstance($this)->fromReflectionMethod($reflectionMethod)) {
                 $this->addResReference($resReference);
             }
 
             // load the bean references
-            if ($beanReference = BeanReferenceDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
+            if ($beanReference = BeanReferenceDescriptor::newDescriptorInstance($this)->fromReflectionMethod($reflectionMethod)) {
                 $this->addBeanReference($beanReference);
             }
 
             // load the persistence unit references
-            if ($persistenceUnitReference = PersistenceUnitReferenceDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
+            if ($persistenceUnitReference = PersistenceUnitReferenceDescriptor::newDescriptorInstance($this)->fromReflectionMethod($reflectionMethod)) {
                 $this->addPersistenceUnitReference($persistenceUnitReference);
             }
         }
