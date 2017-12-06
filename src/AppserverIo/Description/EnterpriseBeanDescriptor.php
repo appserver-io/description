@@ -154,7 +154,7 @@ abstract class EnterpriseBeanDescriptor extends AbstractNameAwareDescriptor impl
         // check if the classes are equal
         if ($this->getClassName() !== $beanDescriptor->getClassName()) {
             throw new EnterpriseBeansException(
-                sprintf('You try to merge a bean configuration for % with %s', $beanDescriptor->getClassName(), $this->getClassName())
+                sprintf('You try to merge a bean configuration for "%s" with "%s"', $beanDescriptor->getClassName(), $this->getClassName())
             );
         }
 

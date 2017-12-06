@@ -40,11 +40,40 @@ class BeanReferenceDescriptor extends AbstractReferenceDescriptor implements Bea
 {
 
     /**
+     * The configurable bean name.
+     *
+     * @var string
+     */
+    protected $beanName;
+
+    /**
      * The class type.
      *
      * @var string
      */
     protected $type;
+
+    /**
+     * Sets the configurable bean name.
+     *
+     * @param string $beanName The configurable bean name
+     *
+     * @return void
+     */
+    public function setBeanName($beanName)
+    {
+        $this->beanName = $beanName;
+    }
+
+    /**
+     * Returns the configurable bean name.
+     *
+     * @return string The configurable bean name
+     */
+    public function getBeanName()
+    {
+        return $this->beanName;
+    }
 
     /**
      * Sets the class type.
@@ -123,6 +152,13 @@ class BeanReferenceDescriptor extends AbstractReferenceDescriptor implements Bea
             $this->setName(ucfirst($reflectionProperty->getPropertyName()));
         }
 
+        // register the bean with the name defined as @Inject(beanName=****)
+        if ($beanNameAttribute = $annotationInstance->getBeanName()) {
+            $this->setBeanName($beanNameAttribute);
+        } else {
+            $this->setBeanName(ucfirst($this->getName()));
+        }
+
         // load the class type defined as @Inject(type=****)
         if ($type = $annotationInstance->getType()) {
             $this->setType($type);
@@ -174,6 +210,13 @@ class BeanReferenceDescriptor extends AbstractReferenceDescriptor implements Bea
             }
         }
 
+        // register the bean with the name defined as @Inject(beanName=****)
+        if ($beanNameAttribute = $annotationInstance->getBeanName()) {
+            $this->setBeanName($beanNameAttribute);
+        } else {
+            $this->setBeanName(ucfirst($this->getName()));
+        }
+
         // load the class type defined as @Inject(type=****)
         if ($type = $annotationInstance->getType()) {
             $this->setType($type);
@@ -218,6 +261,13 @@ class BeanReferenceDescriptor extends AbstractReferenceDescriptor implements Bea
             $this->setName($name);
         }
 
+        // query for the bean name and set it
+        if ($beanName = (string) $configuration->getBeanLink()) {
+            $this->setBeanName($beanName);
+        } else {
+            $this->setBeanName($this->getName());
+        }
+
         // query for the reference type
         if ($type = (string) $configuration->getBeanRefType()) {
             $this->setType($type);
@@ -260,6 +310,11 @@ class BeanReferenceDescriptor extends AbstractReferenceDescriptor implements Bea
         // merge the reference name
         if ($name = $beanReferenceDescriptor->getName()) {
             $this->setName($name);
+        }
+
+        // merge the bean name
+        if ($beanName = $beanReferenceDescriptor->getBeanName()) {
+            $this->setBeanName($beanName);
         }
 
         // merge the reference type

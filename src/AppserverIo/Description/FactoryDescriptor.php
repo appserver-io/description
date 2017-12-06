@@ -264,7 +264,7 @@ class FactoryDescriptor implements FactoryDescriptorInterface
         // check if the classes are equal
         if ($this->getName() !== $factoryDescriptor->getName()) {
             throw new EnterpriseBeansException(
-                sprintf('You try to merge a bean configuration for % with %s', $factoryDescriptor->getName(), $this->getName())
+                sprintf('You try to merge a bean configuration for "%s" with "%s"', $factoryDescriptor->getName(), $this->getName())
             );
         }
 

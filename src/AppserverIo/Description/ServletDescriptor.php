@@ -347,7 +347,7 @@ class ServletDescriptor extends AbstractNameAwareDescriptor implements ServletDe
         // check if the classes are equal
         if ($this->getClassName() !== $servletDescriptor->getClassName()) {
             throw new ServletException(
-                sprintf('You try to merge a servlet descriptor for % with %s', $servletDescriptor->getClassName(), $servletDescriptor->getClassName())
+                sprintf('You try to merge a servlet descriptor for "%s" with "%s"', $servletDescriptor->getClassName(), $servletDescriptor->getClassName())
             );
         }
 

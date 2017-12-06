@@ -33,30 +33,37 @@ interface BeanRefConfigurationInterface
 {
 
     /**
-     * Return's the enterprise bean reference information.
+     * Return's the bean reference information.
      *
-     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface The enterprise bean reference name information
+     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface The bean reference name information
      */
     public function getBeanRefName();
 
     /**
-     * Return's the enterprise bean reference information.
+     * Return's the bean link information.
      *
-     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface The enterprise bean reference name information
+     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface The bean link information
+     */
+    public function getBeanLink();
+
+    /**
+     * Return's the bean reference information.
+     *
+     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface The bean reference name information
      */
     public function getBeanRefType();
 
     /**
-     * Return's the enterprise bean description information.
+     * Return's the bean description information.
      *
-     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface The enterprise bean description information
+     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface The bean description information
      */
     public function getDescription();
 
     /**
-     * Return's the enterprise bean injection target information.
+     * Return's the bean injection target information.
      *
-     * @return \AppserverIo\Description\Configuration\InjectionTargetConfigurationInterface The enterprise bean injection target information
+     * @return \AppserverIo\Description\Configuration\InjectionTargetConfigurationInterface The bean injection target information
      */
     public function getInjectionTarget();
 }

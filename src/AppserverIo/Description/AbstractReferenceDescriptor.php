@@ -45,16 +45,16 @@ abstract class AbstractReferenceDescriptor extends AbstractNameAwareDescriptor i
     /**
      * The injection target.
      *
-     * @var \AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface
+     * @var string
      */
     protected $injectionTarget;
 
     /**
-     * The parent descriptor instance.
+     * The name of the parent bean.
      *
      * @var \AppserverIo\Psr\Deployment\DescriptorInterface
      */
-    protected $parent;
+    protected $parentName;
 
     /**
      * Initializes the reference descriptor with the parent descriptor.
@@ -63,17 +63,17 @@ abstract class AbstractReferenceDescriptor extends AbstractNameAwareDescriptor i
      */
     public function __construct(NameAwareDescriptorInterface $parent)
     {
-        $this->parent = $parent;
+        $this->parentName = ltrim($parent->getName(), '/');
     }
 
     /**
-     * Return's the parent descriptor instance.
+     * Return's the name of the parent bean.
      *
-     * @return \AppserverIo\Psr\Deployment\DescriptorInterface
+     * @return string The name
      */
-    public function getParent()
+    public function getParentName()
     {
-        return $this->parent;
+        return $this->parentName;
     }
 
     /**
@@ -105,7 +105,7 @@ abstract class AbstractReferenceDescriptor extends AbstractNameAwareDescriptor i
      */
     public function getRefName()
     {
-        return sprintf('%s/%s/%s', $this->getParent()->getName(), self::REF_DIRECTORY, $this->getName());
+        return sprintf('%s/%s/%s', self::REF_DIRECTORY, $this->getParentName(), $this->getName());
     }
 
     /**

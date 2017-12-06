@@ -211,7 +211,7 @@ class PersistenceUnitReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
 
         // check that the descriptor has been initialized successfully
         $this->assertSame('ReferenceToMyPersistenceUnit', $this->descriptor->getName());
-        $this->assertSame('SomeBean/env/ReferenceToMyPersistenceUnit', $this->descriptor->getRefName());
+        $this->assertSame('env/SomeBean/ReferenceToMyPersistenceUnit', $this->descriptor->getRefName());
         $this->assertSame('MyPersistenceUnit', $this->descriptor->getUnitName());
     }
 
@@ -293,7 +293,7 @@ class PersistenceUnitReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
 
         // check that the descriptor has been initialized successfully
         $this->assertSame('DummyPersistenceUnit', $this->descriptor->getName());
-        $this->assertSame('SomeBean/env/DummyPersistenceUnit', $this->descriptor->getRefName());
+        $this->assertSame('env/SomeBean/DummyPersistenceUnit', $this->descriptor->getRefName());
         $this->assertSame('DummyPersistenceUnit', $this->descriptor->getUnitName());
     }
 
@@ -375,7 +375,7 @@ class PersistenceUnitReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
 
         // check that the descriptor has been initialized successfully
         $this->assertSame('DummyPersistenceUnit', $this->descriptor->getName());
-        $this->assertSame('SomeBean/env/DummyPersistenceUnit', $this->descriptor->getRefName());
+        $this->assertSame('env/SomeBean/DummyPersistenceUnit', $this->descriptor->getRefName());
         $this->assertSame('DummyPersistenceUnit', $this->descriptor->getUnitName());
     }
 
@@ -460,7 +460,7 @@ class PersistenceUnitReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
 
         // check that the descriptor has been initialized successfully
         $this->assertSame('ReferenceToMyPersistenceUnit', $this->descriptor->getName());
-        $this->assertSame('SomeBean/env/ReferenceToMyPersistenceUnit', $this->descriptor->getRefName());
+        $this->assertSame('env/SomeBean/ReferenceToMyPersistenceUnit', $this->descriptor->getRefName());
         $this->assertSame('MyPersistenceUnit', $this->descriptor->getUnitName());
     }
 
@@ -481,7 +481,7 @@ class PersistenceUnitReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
 
         // check that the descriptor has been initialized successfully
         $this->assertSame('ReferenceToMyPersistenceUnit', $this->descriptor->getName());
-        $this->assertSame('SomeBean/env/ReferenceToMyPersistenceUnit', $this->descriptor->getRefName());
+        $this->assertSame('env/SomeBean/ReferenceToMyPersistenceUnit', $this->descriptor->getRefName());
         $this->assertSame('MyPersistenceUnit', $this->descriptor->getUnitName());
         $this->assertInstanceOf('AppserverIo\Description\InjectionTargetDescriptor', $this->descriptor->getInjectionTarget());
     }
@@ -516,7 +516,7 @@ class PersistenceUnitReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
 
         // check if all values have been initialized
         $this->assertSame('ReferenceToMyNewPersistenceUnit', $this->descriptor->getName());
-        $this->assertSame('SomeBean/env/ReferenceToMyNewPersistenceUnit', $this->descriptor->getRefName());
+        $this->assertSame('env/SomeBean/ReferenceToMyNewPersistenceUnit', $this->descriptor->getRefName());
         $this->assertSame('MyNewPersistenceUnit', $this->descriptor->getUnitName());
         $this->assertInstanceOf('AppserverIo\Description\InjectionTargetDescriptor', $injectTarget = $this->descriptor->getInjectionTarget());
         $this->assertSame('AppserverIo\Apps\Example\Services\NewSampleProcessor', $injectTarget->getTargetClass());

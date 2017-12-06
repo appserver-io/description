@@ -226,7 +226,7 @@ class BeanDescriptor extends AbstractNameAwareDescriptor implements BeanDescript
         // check if the classes are equal
         if ($this->getName() !== $beanDescriptor->getName()) {
             throw new EnterpriseBeansException(
-                sprintf('You try to merge a bean configuration for % with %s', $beanDescriptor->getName(), $this->getName())
+                sprintf('You try to merge a bean configuration for "%s" with "%s"', $beanDescriptor->getName(), $this->getName())
             );
         }
 

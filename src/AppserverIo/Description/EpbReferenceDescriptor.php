@@ -311,6 +311,8 @@ class EpbReferenceDescriptor extends AbstractReferenceDescriptor implements EpbR
         // query for the bean name and set it
         if ($beanName = (string) $configuration->getEpbLink()) {
             $this->setBeanName($beanName);
+        } else {
+            $this->setBeanName($this->getName());
         }
 
         // query for the lookup name and set it

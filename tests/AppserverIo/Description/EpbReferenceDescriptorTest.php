@@ -207,7 +207,7 @@ class EpbReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
 
         // check that the descriptor has been initialized successfully
         $this->assertSame('SampleProcessor', $this->descriptor->getName());
-        $this->assertSame('SomeBean/env/SampleProcessor', $this->descriptor->getRefName());
+        $this->assertSame('env/SomeBean/SampleProcessor', $this->descriptor->getRefName());
         $this->assertSame('A Description', $this->descriptor->getDescription());
         $this->assertSame('SampleProcessorLocal', $this->descriptor->getBeanInterface());
         $this->assertSame('SampleProcessor', $this->descriptor->getBeanName());
@@ -293,7 +293,7 @@ class EpbReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
 
         // check that the descriptor has been initialized successfully
         $this->assertSame('DummyEnterpriseBean', $this->descriptor->getName());
-        $this->assertSame('SomeBean/env/DummyEnterpriseBean', $this->descriptor->getRefName());
+        $this->assertSame('env/SomeBean/DummyEnterpriseBean', $this->descriptor->getRefName());
         $this->assertSame('DummyEnterpriseBeanLocal', $this->descriptor->getBeanInterface());
         $this->assertSame('DummyEnterpriseBean', $this->descriptor->getBeanName());
         $this->assertNull($this->descriptor->getDescription());
@@ -384,7 +384,7 @@ class EpbReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
 
         // check that the descriptor has been initialized successfully
         $this->assertSame('DummyEnterpriseBean', $this->descriptor->getName());
-        $this->assertSame('SomeBean/env/DummyEnterpriseBean', $this->descriptor->getRefName());
+        $this->assertSame('env/SomeBean/DummyEnterpriseBean', $this->descriptor->getRefName());
         $this->assertSame('DummyEnterpriseBeanLocal', $this->descriptor->getBeanInterface());
         $this->assertSame('DummyEnterpriseBean', $this->descriptor->getBeanName());
         $this->assertSame('A Description', $this->descriptor->getDescription());
@@ -408,7 +408,7 @@ class EpbReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
 
         // check if all values have been initialized
         $this->assertSame('UserProcessor', $this->descriptor->getName());
-        $this->assertSame('SomeBean/env/UserProcessor', $this->descriptor->getRefName());
+        $this->assertSame('env/SomeBean/UserProcessor', $this->descriptor->getRefName());
         $this->assertSame('Some Description', $this->descriptor->getDescription());
         $this->assertSame('php:global/example/UserProcessor', $this->descriptor->getLookup());
         $this->assertSame('UserProcessorLocal', $this->descriptor->getBeanInterface());
@@ -446,7 +446,7 @@ class EpbReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
 
         // check if all values have been initialized
         $this->assertSame('MyUserProcessor', $this->descriptor->getName());
-        $this->assertSame('SomeBean/env/MyUserProcessor', $this->descriptor->getRefName());
+        $this->assertSame('env/SomeBean/MyUserProcessor', $this->descriptor->getRefName());
         $this->assertSame('Another Description', $this->descriptor->getDescription());
         $this->assertSame('php:global/example/MyUserProcessor', $this->descriptor->getLookup());
         $this->assertSame('MyUserProcessorLocal', $this->descriptor->getBeanInterface());

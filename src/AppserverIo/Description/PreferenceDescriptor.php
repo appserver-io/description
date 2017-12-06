@@ -160,7 +160,7 @@ class PreferenceDescriptor extends AbstractDescriptor
         // check if the interfaces are equal
         if ($this->getInterface() !== $descriptor->getInterface()) {
             throw new EnterpriseBeansException(
-                sprintf('You try to merge a preference configuration for % with %s', $descriptor->getInterface(), $this->getInterface())
+                sprintf('You try to merge a preference configuration for "%s" with "%s"', $descriptor->getInterface(), $this->getInterface())
             );
         }
 

@@ -336,4 +336,14 @@ class ResReferenceDescriptor extends AbstractReferenceDescriptor implements ResR
             $this->setInjectionTarget($injectionTarget);
         }
     }
+
+    /**
+     * Return's the unique reference name.
+     *
+     * @return string The unique reference name
+     */
+    public function getRefName()
+    {
+        return sprintf('%s/%s', self::REF_DIRECTORY, $this->getName());
+    }
 }
