@@ -212,7 +212,7 @@ class ResReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
 
         // check that the descriptor has been initialized successfully
         $this->assertSame('DummyResource', $this->descriptor->getName());
-        $this->assertSame('env/DummyResource', $this->descriptor->getRefName());
+        $this->assertSame('env/SomeBean/DummyResource', $this->descriptor->getRefName());
         $this->assertSame('Reference to a timer service', $this->descriptor->getDescription());
         $this->assertSame('php:global/example/TimerServiceContextInterface', $this->descriptor->getLookup());
         $this->assertSame('AppserverIo\Psr\Timer\TimerServiceContextInterface', $this->descriptor->getType());
@@ -296,7 +296,7 @@ class ResReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
 
         // check that the descriptor has been initialized successfully
         $this->assertSame('DummyResource', $this->descriptor->getName());
-        $this->assertSame('env/DummyResource', $this->descriptor->getRefName());
+        $this->assertSame('env/SomeBean/DummyResource', $this->descriptor->getRefName());
         $this->assertNull($this->descriptor->getDescription());
         $this->assertNull($this->descriptor->getLookup());
     }
@@ -383,7 +383,7 @@ class ResReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
 
         // check that the descriptor has been initialized successfully
         $this->assertSame('DummyResource', $this->descriptor->getName());
-        $this->assertSame('env/DummyResource', $this->descriptor->getRefName());
+        $this->assertSame('env/SomeBean/DummyResource', $this->descriptor->getRefName());
         $this->assertSame('Reference to a timer service', $this->descriptor->getDescription());
         $this->assertSame('php:global/example/TimerServiceContextInterface', $this->descriptor->getLookup());
         $this->assertSame('AppserverIo\Psr\Timer\TimerServiceContextInterface', $this->descriptor->getType());
@@ -406,7 +406,7 @@ class ResReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
 
         // check if all values have been initialized
         $this->assertSame('TimerServiceContextInterface', $this->descriptor->getName());
-        $this->assertSame('env/TimerServiceContextInterface', $this->descriptor->getRefName());
+        $this->assertSame('env/SomeBean/TimerServiceContextInterface', $this->descriptor->getRefName());
         $this->assertSame('php:global/example/TimerServiceContextInterface', $this->descriptor->getLookup());
         $this->assertSame('AppserverIo\Psr\Timer\TimerServiceContextInterface', $this->descriptor->getType());
         $this->assertSame('Reference to a timer service', $this->descriptor->getDescription());
@@ -443,7 +443,7 @@ class ResReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
 
         // check if all values have been initialized
         $this->assertSame('MyTimerServiceContextInterface', $this->descriptor->getName());
-        $this->assertSame('env/MyTimerServiceContextInterface', $this->descriptor->getRefName());
+        $this->assertSame('env/SomeBean/MyTimerServiceContextInterface', $this->descriptor->getRefName());
         $this->assertSame('Another reference to a timer service', $this->descriptor->getDescription());
         $this->assertSame('php:global/example/MyTimerServiceContextInterface', $this->descriptor->getLookup());
         $this->assertSame('AppserverIo\Psr\Timer\MyTimerServiceContextInterface', $this->descriptor->getType());
