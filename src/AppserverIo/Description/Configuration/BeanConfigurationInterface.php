@@ -52,4 +52,11 @@ interface BeanConfigurationInterface extends ConfigurationInterface, ReferencesC
      * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
      */
     public function getFactory();
+
+    /**
+     * Return's the bean shared information.
+     *
+     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
+     */
+    public function getShared();
 }

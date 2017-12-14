@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Description;
 
+use AppserverIo\Lang\String;
+use AppserverIo\Lang\Boolean;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Description\Configuration\ConfigurationInterface;
 use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
@@ -112,6 +114,9 @@ abstract class EnterpriseBeanDescriptor extends AbstractNameAwareDescriptor impl
             $this->setName($reflectionClass->getShortName());
         }
 
+        // initialize the shared flag @Annotation(shared=true)
+        $this->setShared($annotationInstance->getShared());
+
         // initialize references from the passed reflection class
         $this->referencesFromReflectionClass($reflectionClass);
     }
@@ -135,6 +140,9 @@ abstract class EnterpriseBeanDescriptor extends AbstractNameAwareDescriptor impl
         if ($name = (string) $configuration->getEpbName()) {
             $this->setName(DescriptorUtil::trim($name));
         }
+
+        // merge the shared flag
+        $this->setShared(Boolean::valueOf(new String($configuration->getShared()))->booleanValue());
 
         // initialize references from the passed deployment descriptor
         $this->referencesFromConfiguration($configuration);
@@ -162,6 +170,9 @@ abstract class EnterpriseBeanDescriptor extends AbstractNameAwareDescriptor impl
         if ($name = $beanDescriptor->getName()) {
             $this->setName($name);
         }
+
+        // merge the shared flag
+        $this->setShared($beanDescriptor->isShared());
 
         // merge the references
         $this->mergeReferences($beanDescriptor);

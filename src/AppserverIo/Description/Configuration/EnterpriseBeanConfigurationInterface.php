@@ -45,4 +45,11 @@ interface EnterpriseBeanConfigurationInterface extends ConfigurationInterface
      * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
      */
     public function getEpbClass();
+
+    /**
+     * Return's the enterprise bean shared information.
+     *
+     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
+     */
+    public function getShared();
 }

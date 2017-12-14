@@ -38,4 +38,11 @@ interface NameAwareDescriptorInterface
      * @return string The reference name
      */
     public function getName();
+
+    /**
+     * Return's the flag that marks a bean shared or not.
+     *
+     * @return boolean TRUE if the bean is shared, else FALSE
+     */
+    public function isShared();
 }

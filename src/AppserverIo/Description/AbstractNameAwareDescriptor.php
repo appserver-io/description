@@ -40,7 +40,14 @@ abstract class AbstractNameAwareDescriptor extends AbstractDescriptor implements
     protected $name;
 
     /**
-     * Sets the reference name.
+     * The flag to mark the bean shared or not.
+     *
+     * @var boolean
+     */
+    protected $shared = true;
+
+    /**
+     * Set's the reference name.
      *
      * @param string $name The reference name
      *
@@ -52,12 +59,34 @@ abstract class AbstractNameAwareDescriptor extends AbstractDescriptor implements
     }
 
     /**
-     * Returns the reference name.
+     * Return's the reference name.
      *
      * @return string The reference name
      */
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Set's the flag to mark the bean shared or not.
+     *
+     * @param boolean $shared TRUE if the bean has to be shared, else FALE
+     *
+     * @return void
+     */
+    public function setShared($shared = true)
+    {
+        $this->shared = $shared;
+    }
+
+    /**
+     * Return's the flag that marks a bean shared or not.
+     *
+     * @return boolean TRUE if the bean is shared, else FALSE
+     */
+    public function isShared()
+    {
+        return $this->shared;
     }
 }

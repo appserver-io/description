@@ -58,6 +58,14 @@ class MessageDrivenNode extends AbstractNode implements MessageDrivenConfigurati
     protected $epbClass;
 
     /**
+     * The bean shared information.
+     *
+     * @var \AppserverIo\Description\Api\Node\ValueNode
+     * @AS\Mapping(nodeName="shared", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     */
+    protected $shared;
+
+    /**
      * Return's the enterprise bean name information.
      *
      * @return \AppserverIo\Description\Api\Node\ValueNode The enterprise bean name information
@@ -75,5 +83,15 @@ class MessageDrivenNode extends AbstractNode implements MessageDrivenConfigurati
     public function getEpbClass()
     {
         return $this->epbClass;
+    }
+
+    /**
+     * Return's the bean shared information.
+     *
+     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
+     */
+    public function getShared()
+    {
+        return $this->shared;
     }
 }

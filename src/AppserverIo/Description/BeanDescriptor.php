@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Description;
 
+use AppserverIo\Lang\String;
+use AppserverIo\Lang\Boolean;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Description\Configuration\ConfigurationInterface;
 use AppserverIo\Description\Configuration\BeanConfigurationInterface;
@@ -163,6 +165,9 @@ class BeanDescriptor extends AbstractNameAwareDescriptor implements BeanDescript
             $this->setName($reflectionClass->getShortName());
         }
 
+        // initialize the shared flag @Inject(shared=true)
+        $this->setShared($annotationInstance->getShared());
+
         // initialize references from the passed reflection class
         $this->referencesFromReflectionClass($reflectionClass);
 
@@ -199,6 +204,9 @@ class BeanDescriptor extends AbstractNameAwareDescriptor implements BeanDescript
         if ($name = (string) $configuration->getName()) {
             $this->setName(DescriptorUtil::trim($name));
         }
+
+        // merge the shared flag
+        $this->setShared(Boolean::valueOf(new String($configuration->getShared()))->booleanValue());
 
         // initialize references from the passed deployment descriptor
         $this->referencesFromConfiguration($configuration);
@@ -239,6 +247,9 @@ class BeanDescriptor extends AbstractNameAwareDescriptor implements BeanDescript
         if ($factory = $beanDescriptor->getFactory()) {
             $this->setFactory($factory);
         }
+
+        // merge the shared flag
+        $this->setShared($beanDescriptor->isShared());
 
         // merge the references
         $this->mergeReferences($beanDescriptor);

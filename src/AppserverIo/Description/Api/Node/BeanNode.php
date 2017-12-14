@@ -66,6 +66,14 @@ class BeanNode extends AbstractNode implements BeanConfigurationInterface
     protected $factory;
 
     /**
+     * The bean shared information.
+     *
+     * @var \AppserverIo\Description\Api\Node\ValueNode
+     * @AS\Mapping(nodeName="shared", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     */
+    protected $shared;
+
+    /**
      * Return's the bean name information.
      *
      * @return \AppserverIo\Description\Api\Node\ValueNode The bean name information
@@ -93,5 +101,15 @@ class BeanNode extends AbstractNode implements BeanConfigurationInterface
     public function getFactory()
     {
         return $this->factory;
+    }
+
+    /**
+     * Return's the bean shared information.
+     *
+     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
+     */
+    public function getShared()
+    {
+        return $this->shared;
     }
 }
