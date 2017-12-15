@@ -2,8 +2,8 @@
 <servlet xmlns="http://www.appserver.io/appserver">
     <description>My dummy servlet implementation.</description>
     <display-name>My Dummy Servlet</display-name>
-    <servlet-name>myDummyServlet</servlet-name>
-    <servlet-class>AppserverIo\Example\DummyServlet</servlet-class>
+    <servlet-name>dummyServlet</servlet-name>
+    <servlet-class>AppserverIo\Example\MyDummyServlet</servlet-class>
     <init-param>
         <param-name>configurationFile</param-name>
         <param-value>WEB-INF/dummy.properties</param-value>

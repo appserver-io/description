@@ -234,8 +234,8 @@ class ServletDescriptor extends AbstractNameAwareDescriptor implements ServletDe
             return;
         }
 
-        // set the servlet name
-        $this->setName(lcfirst($reflectionClass->getShortName()));
+        // set the servlet name, strip the phrase 'Servlet' if appended
+        $this->setName(lcfirst(preg_replace('/Servlet$/', '', $reflectionClass->getShortName())));
 
         // set the class name
         $this->setClassName($reflectionClass->getName());
@@ -345,15 +345,15 @@ class ServletDescriptor extends AbstractNameAwareDescriptor implements ServletDe
     {
 
         // check if the classes are equal
-        if ($this->getClassName() !== $servletDescriptor->getClassName()) {
+        if ($this->getName() !== $servletDescriptor->getName()) {
             throw new ServletException(
-                sprintf('You try to merge a servlet descriptor for "%s" with "%s"', $servletDescriptor->getClassName(), $servletDescriptor->getClassName())
+                sprintf('You try to merge a servlet descriptor for "%s" with "%s"', $this->getName(), $servletDescriptor->getName())
             );
         }
 
         // merge the servlet name
-        if ($name = $servletDescriptor->getName()) {
-            $this->setName($name);
+        if ($className = $servletDescriptor->getClassName()) {
+            $this->setClassName($className);
         }
 
         // merge the servlet description

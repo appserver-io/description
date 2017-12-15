@@ -529,8 +529,8 @@ class ServletDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->descriptor->merge($descriptorToMerge);
 
         // check if all values have been merged
-        $this->assertSame('AppserverIo\Example\DummyServlet', $this->descriptor->getClassName());
-        $this->assertSame('myDummyServlet', $this->descriptor->getName());
+        $this->assertSame('AppserverIo\Example\MyDummyServlet', $this->descriptor->getClassName());
+        $this->assertSame('dummyServlet', $this->descriptor->getName());
         $this->assertSame('My dummy servlet implementation.', $this->descriptor->getDescription());
         $this->assertSame('My Dummy Servlet', $this->descriptor->getDisplayName());
         $this->assertCount(1, $this->descriptor->getUrlPatterns());
