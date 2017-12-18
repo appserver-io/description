@@ -39,7 +39,7 @@ use AppserverIo\Psr\EnterpriseBeans\Description\FactoryDescriptorInterface;
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-class BeanDescriptor extends AbstractNameAwareDescriptor implements BeanDescriptorInterface
+class BeanDescriptor extends AbstractNameAwareDescriptor implements BeanDescriptorInterface, FactoryAwareDescriptorInterface
 {
 
     /**
@@ -206,7 +206,9 @@ class BeanDescriptor extends AbstractNameAwareDescriptor implements BeanDescript
         }
 
         // merge the shared flag
-        $this->setShared(Boolean::valueOf(new String($configuration->getShared()))->booleanValue());
+        if ($shared = $configuration->getShared()) {
+            $this->setShared(Boolean::valueOf(new String($shared))->booleanValue());
+        }
 
         // initialize references from the passed deployment descriptor
         $this->referencesFromConfiguration($configuration);

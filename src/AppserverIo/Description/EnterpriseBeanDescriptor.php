@@ -142,7 +142,9 @@ abstract class EnterpriseBeanDescriptor extends AbstractNameAwareDescriptor impl
         }
 
         // merge the shared flag
-        $this->setShared(Boolean::valueOf(new String($configuration->getShared()))->booleanValue());
+        if ($shared = $configuration->getShared()) {
+            $this->setShared(Boolean::valueOf(new String($shared))->booleanValue());
+        }
 
         // initialize references from the passed deployment descriptor
         $this->referencesFromConfiguration($configuration);
