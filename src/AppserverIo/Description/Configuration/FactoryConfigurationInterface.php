@@ -29,7 +29,7 @@ namespace AppserverIo\Description\Configuration;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface FactoryConfigurationInterface extends ConfigurationInterface, ReferencesConfigurationInterface
+interface FactoryConfigurationInterface extends ConfigurationInterface
 {
 
     /**

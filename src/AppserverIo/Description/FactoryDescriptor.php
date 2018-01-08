@@ -22,7 +22,7 @@ namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Psr\Deployment\DescriptorInterface;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Factory;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\Inject;
 use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
 use AppserverIo\Psr\EnterpriseBeans\Description\FactoryDescriptorInterface;
 use AppserverIo\Description\Configuration\ConfigurationInterface;
@@ -37,7 +37,7 @@ use AppserverIo\Description\Configuration\FactoryConfigurationInterface;
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-class FactoryDescriptor implements FactoryDescriptorInterface
+class FactoryDescriptor extends AbstractNameAwareDescriptor implements FactoryDescriptorInterface
 {
 
     /**
@@ -46,20 +46,6 @@ class FactoryDescriptor implements FactoryDescriptorInterface
      * @var string
      */
     const DEFAULT_METHOD = 'factory';
-
-    /**
-     * Trait with functionality to handle bean, resource and persistence unit references.
-     *
-     * @var AppserverIo\Description\DescriptorReferencesTrait
-     */
-    use DescriptorReferencesTrait;
-
-    /**
-     * The bean name.
-     *
-     * @var string
-     */
-    protected $name;
 
     /**
      * The beans class name.
@@ -74,28 +60,6 @@ class FactoryDescriptor implements FactoryDescriptorInterface
      * @var string
      */
     protected $method;
-
-    /**
-     * Sets the bean name.
-     *
-     * @param string $name The bean name
-     *
-     * @return void
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * Returns the bean name.
-     *
-     * @return string The bean name
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
 
     /**
      * Sets the beans class name.
@@ -160,7 +124,7 @@ class FactoryDescriptor implements FactoryDescriptorInterface
      */
     protected function newAnnotationInstance(ClassInterface $reflectionClass)
     {
-        return $reflectionClass->getAnnotation(Factory::ANNOTATION);
+        return $reflectionClass->getAnnotation(Inject::ANNOTATION);
     }
 
     /**
@@ -173,8 +137,8 @@ class FactoryDescriptor implements FactoryDescriptorInterface
     public function fromReflectionClass(ClassInterface $reflectionClass)
     {
 
-        // query if we've an enterprise bean with a @Inject annotation
-        if ($reflectionClass->hasAnnotation(Factory::ANNOTATION) === false) {
+        // query if we've an enterprise bean with a @Factory annotation
+        if ($reflectionClass->hasAnnotation(Inject::ANNOTATION) === false) {
             // if not, do nothing
             return;
         }
@@ -182,32 +146,31 @@ class FactoryDescriptor implements FactoryDescriptorInterface
         // create a new annotation instance
         $reflectionAnnotation = $this->newAnnotationInstance($reflectionClass);
 
-        // load class name
-        $this->setClassName($reflectionClass->getName());
-
         // initialize the annotation instance
+        /** @var \AppserverIo\Psr\EnterpriseBeans\Annotations\Factory $annotationInstance */
         $annotationInstance = $reflectionAnnotation->newInstance(
             $reflectionAnnotation->getAnnotationName(),
             $reflectionAnnotation->getValues()
         );
 
-        // load the default name to register in naming directory
-        if ($name = $annotationInstance->getName()) {
+        // load the factory name to register in naming directory
+        if ($name = $annotationInstance->getFactory()) {
             $this->setName(DescriptorUtil::trim($name));
         } else {
-            // if @Annotation(name=****) is NOT set, we use the short class name by default
-            $this->setName($reflectionClass->getShortName());
+            return;
+        }
+
+        // load the class name to register in naming directory
+        if ($className = $annotationInstance->getFactoryType()) {
+            $this->setClassName(DescriptorUtil::trim($className));
         }
 
         // load the factory method or set the default factory method
-        if ($method = $annotationInstance->getMethod()) {
-            $this->setMethod($method);
+        if ($method = $annotationInstance->getFactoryMethod()) {
+            $this->setMethod(DescriptorUtil::trim($method));
         } else {
             $this->setMethod(FactoryDescriptor::DEFAULT_METHOD);
         }
-
-        // initialize references from the passed reflection class
-        $this->referencesFromReflectionClass($reflectionClass);
 
         // return the instance
         return $this;
@@ -243,9 +206,6 @@ class FactoryDescriptor implements FactoryDescriptorInterface
             $this->setMethod(DescriptorUtil::trim($method));
         }
 
-        // initialize references from the passed deployment descriptor
-        $this->referencesFromConfiguration($configuration);
-
         // return the instance
         return $this;
     }
@@ -276,26 +236,6 @@ class FactoryDescriptor implements FactoryDescriptorInterface
         // merge the method
         if ($method = $factoryDescriptor->getMethod()) {
             $this->setMethod($method);
-        }
-
-        // merge the bean references
-        foreach ($factoryDescriptor->getBeanReferences() as $beanReference) {
-            $this->addBeanReference($beanReference);
-        }
-
-        // merge the EPB references
-        foreach ($factoryDescriptor->getEpbReferences() as $epbReference) {
-            $this->addEpbReference($epbReference);
-        }
-
-        // merge the resource references
-        foreach ($factoryDescriptor->getResReferences() as $resReference) {
-            $this->addResReference($resReference);
-        }
-
-        // merge the persistence unit references
-        foreach ($factoryDescriptor->getPersistenceUnitReferences() as $persistenceUnitReference) {
-            $this->addPersistenceUnitReference($persistenceUnitReference);
         }
     }
 }
