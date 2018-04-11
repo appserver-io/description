@@ -35,7 +35,7 @@ use AppserverIo\Description\Configuration\MessageDrivenConfigurationInterface;
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-class MessageDrivenBeanDescriptor extends BeanDescriptor implements MessageDrivenBeanDescriptorInterface
+class MessageDrivenBeanDescriptor extends EnterpriseBeanDescriptor implements MessageDrivenBeanDescriptorInterface
 {
 
     /**

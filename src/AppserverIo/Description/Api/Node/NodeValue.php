@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Description\Api\Node\NodeValue
+ * AppserverIo\Description\Api\Node\NodeValue
  *
  * NOTICE OF LICENSE
  *
@@ -93,7 +93,7 @@ class NodeValue implements ValueInterface
      * Implements toString method
      *
      * @return string
-     * @see \AppserverIo\Appserver\Core\Api\Node\NodeValue::getValue()
+     * @see \AppserverIo\Description\Api\Node\NodeValue::getValue()
      */
     public function __toString()
     {

@@ -23,12 +23,9 @@ namespace AppserverIo\Description;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\MethodInterface;
 use AppserverIo\Lang\Reflection\PropertyInterface;
-use AppserverIo\Configuration\Interfaces\NodeInterface;
-use AppserverIo\Psr\Deployment\DescriptorInterface;
+use AppserverIo\Description\Configuration\EpbRefConfigurationInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
 use AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface;
-use AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface;
-use AppserverIo\Description\Configuration\EpbRefConfigurationInterface;
 
 /**
  * Utility class that stores a beans reference configuration.
@@ -39,29 +36,8 @@ use AppserverIo\Description\Configuration\EpbRefConfigurationInterface;
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface, DescriptorInterface
+class EpbReferenceDescriptor extends AbstractReferenceDescriptor implements EpbReferenceDescriptorInterface
 {
-
-    /**
-     * Prefix for EPB references.
-     *
-     * @var string
-     */
-    const REF_DIRECTORY = 'env';
-
-    /**
-     * The reference name.
-     *
-     * @var string
-     */
-    protected $name;
-
-    /**
-     * The beans description.
-     *
-     * @var string
-     */
-    protected $description;
 
     /**
      * The configurable bean name.
@@ -83,57 +59,6 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface, Descrip
      * @var string
      */
     protected $lookup;
-
-    /**
-     * The injection target specification.
-     *
-     * @var \AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface
-     */
-    protected $injectionTarget;
-
-    /**
-     * Sets the reference name.
-     *
-     * @param string $name The reference name
-     *
-     * @return void
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * Returns the reference name.
-     *
-     * @return string The reference name
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * Sets the beans description.
-     *
-     * @param string $description The beans description
-     *
-     * @return void
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
-
-    /**
-     * Returns the beans description.
-     *
-     * @return string The beans description
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
 
     /**
      * Sets the configurable bean name.
@@ -202,35 +127,15 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface, Descrip
     }
 
     /**
-     * Sets the injection target specification.
-     *
-     * @param \AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface $injectionTarget The injection target specification
-     *
-     * @return void
-     */
-    public function setInjectionTarget(InjectionTargetDescriptorInterface $injectionTarget)
-    {
-        $this->injectionTarget = $injectionTarget;
-    }
-
-    /**
-     * Returns the injection target specification.
-     *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface The injection target specification
-     */
-    public function getInjectionTarget()
-    {
-        return $this->injectionTarget;
-    }
-
-    /**
      * Returns a new descriptor instance.
+     *
+     * @param \AppserverIo\Description\NameAwareDescriptorInterface $parent The parent descriptor instance
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface The descriptor instance
      */
-    public static function newDescriptorInstance()
+    public static function newDescriptorInstance(NameAwareDescriptorInterface $parent)
     {
-        return new EpbReferenceDescriptor();
+        return new EpbReferenceDescriptor($parent);
     }
 
     /**
@@ -273,17 +178,17 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface, Descrip
 
         // load the reference name defined as @EnterpriseBean(name=****)
         if ($name = $annotationInstance->getName()) {
-            $this->setName(sprintf('%s/%s', EpbReferenceDescriptor::REF_DIRECTORY, $name));
+            $this->setName($name);
         } else {
             // use the property name
-            $this->setName(sprintf('%s/%s', EpbReferenceDescriptor::REF_DIRECTORY, ucfirst($reflectionProperty->getPropertyName())));
+            $this->setName(ucfirst($reflectionProperty->getPropertyName()));
         }
 
         // register the bean with the name defined as @EnterpriseBean(beanName=****)
         if ($beanNameAttribute = $annotationInstance->getBeanName()) {
             $this->setBeanName($beanNameAttribute);
         } else {
-            $this->setBeanName(ucfirst(str_replace(EpbReferenceDescriptor::REF_DIRECTORY . '/', '', $this->getName())));
+            $this->setBeanName(ucfirst($this->getName()));
         }
 
         // register the bean with the interface defined as @EnterpriseBean(beanInterface=****)
@@ -336,11 +241,11 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface, Descrip
 
         // load the reference name defined as @EnterpriseBean(name=****)
         if ($name = $annotationInstance->getName()) {
-            $this->setName(sprintf('%s/%s', EpbReferenceDescriptor::REF_DIRECTORY, $name));
+            $this->setName($name);
         } else {
             // use the name of the first parameter as local business interface
             foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-                $this->setName(sprintf('%s/%s', EpbReferenceDescriptor::REF_DIRECTORY, ucfirst($reflectionParameter->getParameterName())));
+                $this->setName($name = ucfirst($reflectionParameter->getParameterName()));
                 break;
             }
         }
@@ -349,7 +254,7 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface, Descrip
         if ($beanNameAttribute = $annotationInstance->getBeanName()) {
             $this->setBeanName($beanNameAttribute);
         } else {
-            $this->setBeanName(ucfirst(str_replace(EpbReferenceDescriptor::REF_DIRECTORY . '/', '', $this->getName())));
+            $this->setBeanName(ucfirst($this->getName()));
         }
 
         // register the bean with the interface defined as @EnterpriseBean(beanInterface=****)
@@ -370,7 +275,18 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface, Descrip
         }
 
         // load the injection target data
-        $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod));
+        if ($injectionTarget = InjectionTargetDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
+            $this->setInjectionTarget($injectionTarget);
+        } else {
+            // initialize a default injection target, which is the constructor
+            // and assume that the parameter name equals the reference name
+            $injectionTarget = InjectionTargetDescriptor::newDescriptorInstance();
+            $injectionTarget->setTargetMethod('__construct');
+            $injectionTarget->setTargetMethodParameterName(lcfirst($name));
+
+            // set the default injection target
+            $this->setInjectionTarget($injectionTarget);
+        }
 
         // return the instance
         return $this;
@@ -389,12 +305,14 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface, Descrip
 
         // query for the reference name
         if ($name = (string) $configuration->getEpbRefName()) {
-            $this->setName(sprintf('%s/%s', EpbReferenceDescriptor::REF_DIRECTORY, $name));
+            $this->setName($name);
         }
 
         // query for the bean name and set it
         if ($beanName = (string) $configuration->getEpbLink()) {
             $this->setBeanName($beanName);
+        } else {
+            $this->setBeanName($this->getName());
         }
 
         // query for the lookup name and set it
@@ -417,9 +335,18 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface, Descrip
             $this->setDescription($description);
         }
 
-        // query for the injection target
+        // load the injection target data
         if ($injectionTarget = $configuration->getInjectionTarget()) {
             $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromConfiguration($injectionTarget));
+        } else {
+            // initialize a default injection target, which is the constructor
+            // and assume that the parameter name equals the reference name
+            $injectionTarget = InjectionTargetDescriptor::newDescriptorInstance();
+            $injectionTarget->setTargetMethod('__construct');
+            $injectionTarget->setTargetMethodParameterName(lcfirst($name));
+
+            // set the default injection target
+            $this->setInjectionTarget($injectionTarget);
         }
 
         // return the instance

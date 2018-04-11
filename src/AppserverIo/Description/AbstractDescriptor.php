@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Description\DescriptorUtil
+ * AppserverIo\Description\AbstractDescriptor
  *
  * NOTICE OF LICENSE
  *
@@ -20,51 +20,46 @@
 
 namespace AppserverIo\Description;
 
+use AppserverIo\Psr\Deployment\DescriptorInterface;
+
 /**
- * Abstract class for all bean descriptors.
+ * The most basic descriptor implementation.
  *
  * @author    Tim Wagner <tw@appserver.io>
- * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @copyright 2017 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-class DescriptorUtil
+abstract class AbstractDescriptor implements DescriptorInterface
 {
 
     /**
-     * This is a utility class, so protect it against direct
-     * instantiation.
+     * The descriptor's description.
      *
-     * @codeCoverageIgnore
+     * @var string
      */
-    private function __construct()
-    {
-    }
+    protected $description;
 
     /**
-     * This is a utility class, so protect it against cloning.
+     * Sets the reference description.
+     *
+     * @param string $description The reference description
      *
      * @return void
-     * @codeCoverageIgnore
      */
-    private function __clone()
+    public function setDescription($description)
     {
+        $this->description = $description;
     }
 
     /**
-     * Trims and returns the passed value.
+     * Returns the reference description.
      *
-     * @param string $value The value to trim
-     *
-     * @return string The trimmed value
-     * @throws \Exception Is thrown if the passed value is not of type string
+     * @return string The reference description
      */
-    public static function trim($value)
+    public function getDescription()
     {
-        if (is_string($value) === false) {
-            throw new \Exception('Passed value is not of type string');
-        }
-        return trim($value);
+        return $this->description;
     }
 }

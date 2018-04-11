@@ -35,49 +35,49 @@ interface EpbRefConfigurationInterface
     /**
      * Return's the enterprise bean reference information.
      *
-     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
+     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface The enterprise bean reference name information
      */
     public function getEpbRefName();
 
     /**
      * Return's the enterprise bean description information.
      *
-     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
+     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface The enterprise bean description information
      */
     public function getDescription();
 
     /**
      * Return's the enterprise bean link information.
      *
-     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
+     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface The enterprise bean link information
      */
     public function getEpbLink();
 
     /**
      * Return's the enterprise bean lookup name information.
      *
-     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
+     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface The enterprise bean lookup name information
      */
     public function getLookupName();
 
     /**
      * Return's the enterprise bean remote interface information.
      *
-     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
+     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface The enterprise bean remote interface information
      */
     public function getRemote();
 
     /**
      * Return's the enterprise bean local interface information.
      *
-     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
+     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface The enterprise bean local interface information
      */
     public function getLocal();
 
     /**
      * Return's the enterprise bean injection target information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\InjectionTargetConfiguration
+     * @return \AppserverIo\Description\Configuration\InjectionTargetConfigurationInterface The enterprise bean injection target information
      */
     public function getInjectionTarget();
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Description\Configuration\MessageDrivenConfigurationInterface
+ * AppserverIo\Description\NameAwareDescriptorInterface
  *
  * NOTICE OF LICENSE
  *
@@ -14,21 +14,35 @@
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/appserver-io/appserver
+ * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Description\Configuration;
+namespace AppserverIo\Description;
 
 /**
- * Interface for the message driven bean node information.
+ * Interface for name aware descriptors.
  *
  * @author    Tim Wagner <tw@appserver.io>
- * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @copyright 2017 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/appserver-io/appserver
+ * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-interface MessageDrivenConfigurationInterface extends EnterpriseBeanConfigurationInterface, ReferencesConfigurationInterface
+interface NameAwareDescriptorInterface
 {
+
+    /**
+     * Returns the reference name.
+     *
+     * @return string The reference name
+     */
+    public function getName();
+
+    /**
+     * Return's the flag that marks a bean shared or not.
+     *
+     * @return boolean TRUE if the bean is shared, else FALSE
+     */
+    public function isShared();
 }

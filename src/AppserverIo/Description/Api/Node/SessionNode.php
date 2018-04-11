@@ -35,6 +35,13 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
 {
 
     /**
+     * The trait providing the reference information.
+     *
+     * @var \AppserverIo\Description\Api\Node\ReferencesNodeTrait
+     */
+    use ReferencesNodeTrait;
+
+    /**
      * The session bean type information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
@@ -139,28 +146,12 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
     protected $local;
 
     /**
-     * The enterprise bean reference information.
+     * The bean shared information.
      *
-     * @var array
-     * @AS\Mapping(nodeName="epb-ref", nodeType="array", elementType="AppserverIo\Description\Api\Node\EpbRefNode")
+     * @var \AppserverIo\Description\Api\Node\ValueNode
+     * @AS\Mapping(nodeName="shared", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
-    protected $epbRefs = array();
-
-    /**
-     * The resource reference information.
-     *
-     * @var array
-     * @AS\Mapping(nodeName="res-ref", nodeType="array", elementType="AppserverIo\Description\Api\Node\ResRefNode")
-     */
-    protected $resRefs = array();
-
-    /**
-     * The persistence unit reference information.
-     *
-     * @var array
-     * @AS\Mapping(nodeName="persistence-unit-ref", nodeType="array", elementType="AppserverIo\Description\Api\Node\PersistenceUnitRefNode")
-     */
-    protected $persistenceUnitRefs = array();
+    protected $shared;
 
     /**
      * Return's the session bean type information.
@@ -245,7 +236,7 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
     /**
      * Return's the post activate information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\PostActivateNode
+     * @return \AppserverIo\Description\Api\Node\ValueNode
      */
     public function getPostActivate()
     {
@@ -255,7 +246,7 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
     /**
      * Return's the pre passivate information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\PrePassivateNode
+     * @return \AppserverIo\Description\Api\Node\ValueNode
      */
     public function getPrePassivate()
     {
@@ -275,7 +266,7 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
     /**
      * Return's the enterprise bean remote interface information.
      *
-     * @return \AppserverIo\Description\Api\Node\RemoteNode The enterprise bean remote interface information
+     * @return \AppserverIo\Description\Api\Node\ValueNode The enterprise bean remote interface information
      */
     public function getRemote()
     {
@@ -285,7 +276,7 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
     /**
      * Return's the enterprise bean local interface information.
      *
-     * @return \AppserverIo\Description\Api\Node\LocalNode The enterprise bean local interface information
+     * @return \AppserverIo\Description\Api\Node\ValueNode The enterprise bean local interface information
      */
     public function getLocal()
     {
@@ -293,32 +284,12 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
     }
 
     /**
-     * Return's the enterprise bean reference information.
+     * Return's the bean shared information.
      *
-     * @return array The enterprise bean reference information
+     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
      */
-    public function getEpbRefs()
+    public function getShared()
     {
-        return $this->epbRefs;
-    }
-
-    /**
-     * Return's the resource reference information.
-     *
-     * @return array The resource reference information
-     */
-    public function getResRefs()
-    {
-        return $this->resRefs;
-    }
-
-    /**
-     * Return's the persistence unit reference information.
-     *
-     * @return array The persistence unit reference information
-     */
-    public function getPersistenceUnitRefs()
-    {
-        return $this->persistenceUnitRefs;
+        return $this->shared;
     }
 }

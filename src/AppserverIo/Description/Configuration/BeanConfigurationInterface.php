@@ -29,20 +29,34 @@ namespace AppserverIo\Description\Configuration;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface BeanConfigurationInterface extends ConfigurationInterface
+interface BeanConfigurationInterface extends ConfigurationInterface, ReferencesConfigurationInterface
 {
 
     /**
-     * Return's the enterprise bean name information.
+     * Return's the bean name information.
      *
      * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
      */
-    public function getEpbName();
+    public function getName();
 
     /**
-     * Return's the enterprise bean class information.
+     * Return's the bean class information.
      *
      * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
      */
-    public function getEpbClass();
+    public function getClass();
+
+    /**
+     * Return's the bean factory information.
+     *
+     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
+     */
+    public function getFactory();
+
+    /**
+     * Return's the bean shared information.
+     *
+     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
+     */
+    public function getShared();
 }

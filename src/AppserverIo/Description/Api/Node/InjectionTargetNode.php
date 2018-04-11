@@ -51,6 +51,14 @@ class InjectionTargetNode extends AbstractNode implements InjectionTargetConfigu
     protected $injectionTargetMethod;
 
     /**
+     * The enterprise bean injection target method parameter name information.
+     *
+     * @var \AppserverIo\Description\Api\Node\ValueNode
+     * @AS\Mapping(nodeName="injection-target-method-parameter-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     */
+    protected $injectionTargetMethodParameterName;
+
+    /**
      * The enterprise bean injection target property information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
@@ -76,6 +84,16 @@ class InjectionTargetNode extends AbstractNode implements InjectionTargetConfigu
     public function getInjectionTargetMethod()
     {
         return $this->injectionTargetMethod;
+    }
+
+    /**
+     * Return's the enterprise bean injection target method parameter name information.
+     *
+     * @return \AppserverIo\Description\Api\Node\ValueNode The enterprise bean injection target method parameter name information
+     */
+    public function getInjectionTargetMethodParameterName()
+    {
+        return $this->injectionTargetMethodParameterName;
     }
 
     /**

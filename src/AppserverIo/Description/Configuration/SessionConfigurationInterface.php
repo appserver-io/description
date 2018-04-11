@@ -29,7 +29,7 @@ namespace AppserverIo\Description\Configuration;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface SessionConfigurationInterface extends BeanConfigurationInterface, ReferencesConfigurationInterface
+interface SessionConfigurationInterface extends EnterpriseBeanConfigurationInterface, ReferencesConfigurationInterface
 {
 
     /**
@@ -56,35 +56,35 @@ interface SessionConfigurationInterface extends BeanConfigurationInterface, Refe
     /**
      * Return's the pre destroy information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\PreDestroyNode
+     * @return \AppserverIo\Description\Configuration\PreDestroyConfigurationInterface
      */
     public function getPreDestroy();
 
     /**
      * Return's the post detach information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\PostDetachNode
+     * @return \AppserverIo\Description\Configuration\PostDetachConfigurationInterface
      */
     public function getPostDetach();
 
     /**
      * Return's the pre attach information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\PreAttachNode
+     * @return \AppserverIo\Description\Configuration\PreAttachConfigurationInterface
      */
     public function getPreAttach();
 
     /**
      * Return's the post activate information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\PostActivateNode
+     * @return \AppserverIo\Description\Configuration\PostActivateConfigurationInterface
      */
     public function getPostActivate();
 
     /**
      * Return's the pre passivate information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\PrePassivateNode
+     * @return \AppserverIo\Description\Configuration\PrePassivateConfigurationInterface
      */
     public function getPrePassivate();
 

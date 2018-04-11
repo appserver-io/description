@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Description\ResReferenceDescriptor
+ * AppserverIo\Description\BeanReferenceDescriptor
  *
  * NOTICE OF LICENSE
  *
@@ -23,12 +23,12 @@ namespace AppserverIo\Description;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\MethodInterface;
 use AppserverIo\Lang\Reflection\PropertyInterface;
-use AppserverIo\Description\Configuration\ResRefConfigurationInterface;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
-use AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface;
+use AppserverIo\Description\Configuration\BeanRefConfigurationInterface;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\Inject;
+use AppserverIo\Psr\EnterpriseBeans\Description\BeanReferenceDescriptorInterface;
 
 /**
- * Utility class that stores a resource reference configuration.
+ * Utility class that stores a bean reference configuration.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -36,27 +36,49 @@ use AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface;
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-class ResReferenceDescriptor extends AbstractReferenceDescriptor implements ResReferenceDescriptorInterface
+class BeanReferenceDescriptor extends AbstractReferenceDescriptor implements BeanReferenceDescriptorInterface
 {
 
     /**
-     * The resource type.
+     * The configurable bean name.
+     *
+     * @var string
+     */
+    protected $beanName;
+
+    /**
+     * The class type.
      *
      * @var string
      */
     protected $type;
 
     /**
-     * The lookup name.
+     * Sets the configurable bean name.
      *
-     * @var string
+     * @param string $beanName The configurable bean name
+     *
+     * @return void
      */
-    protected $lookup;
+    public function setBeanName($beanName)
+    {
+        $this->beanName = $beanName;
+    }
 
     /**
-     * Sets the resource type.
+     * Returns the configurable bean name.
      *
-     * @param string $type The resource type
+     * @return string The configurable bean name
+     */
+    public function getBeanName()
+    {
+        return $this->beanName;
+    }
+
+    /**
+     * Sets the class type.
+     *
+     * @param string $type The class type
      *
      * @return void
      */
@@ -66,35 +88,13 @@ class ResReferenceDescriptor extends AbstractReferenceDescriptor implements ResR
     }
 
     /**
-     * Returns the resource type.
+     * Returns the class type.
      *
-     * @return string The resource type
+     * @return string The class type
      */
     public function getType()
     {
         return $this->type;
-    }
-
-    /**
-     * Sets the lookup name.
-     *
-     * @param string $lookup The lookup name
-     *
-     * @return void
-     */
-    public function setLookup($lookup)
-    {
-        $this->lookup = $lookup;
-    }
-
-    /**
-     * Returns the lookup name.
-     *
-     * @return string The lookup name
-     */
-    public function getLookup()
-    {
-        return $this->lookup;
     }
 
     /**
@@ -106,7 +106,7 @@ class ResReferenceDescriptor extends AbstractReferenceDescriptor implements ResR
      */
     public static function newDescriptorInstance(NameAwareDescriptorInterface $parent)
     {
-        return new ResReferenceDescriptor($parent);
+        return new BeanReferenceDescriptor($parent);
     }
 
     /**
@@ -115,7 +115,7 @@ class ResReferenceDescriptor extends AbstractReferenceDescriptor implements ResR
      *
      * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the beans reference configuration
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface|null The initialized descriptor instance
+     * @return \AppserverIo\Psr\EnterpriseBeans\Description\BeanReferenceDescriptorInterface|null The initialized descriptor instance
      */
     public function fromReflectionClass(ClassInterface $reflectionClass)
     {
@@ -128,51 +128,49 @@ class ResReferenceDescriptor extends AbstractReferenceDescriptor implements ResR
      *
      * @param \AppserverIo\Lang\Reflection\PropertyInterface $reflectionProperty The reflection property with the beans reference configuration
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface|null The initialized descriptor instance
+     * @return \AppserverIo\Psr\EnterpriseBeans\Description\BeanReferenceDescriptorInterface|null The initialized descriptor instance
      */
     public function fromReflectionProperty(PropertyInterface $reflectionProperty)
     {
 
-        // if we found a @Resource annotation, load the annotation instance
-        if ($reflectionProperty->hasAnnotation(Resource::ANNOTATION) === false) {
+        // if we found a @Inject annotation, load the annotation instance
+        if ($reflectionProperty->hasAnnotation(Inject::ANNOTATION) === false) {
             // if not, do nothing
             return;
         }
 
         // initialize the annotation instance
-        $annotation = $reflectionProperty->getAnnotation(Resource::ANNOTATION);
+        $annotation = $reflectionProperty->getAnnotation(Inject::ANNOTATION);
 
         // load the annotation instance
         $annotationInstance = $annotation->newInstance($annotation->getAnnotationName(), $annotation->getValues());
 
-        // load the reference name defined as @Resource(name=****)
+        // load the reference name defined as @Inject(name=****)
         if ($name = $annotationInstance->getName()) {
             $this->setName($name);
         } else {
             $this->setName(ucfirst($reflectionProperty->getPropertyName()));
         }
 
-        // load the resource type defined as @Resource(type=****)
+        // register the bean with the name defined as @Inject(beanName=****)
+        if ($beanNameAttribute = $annotationInstance->getBeanName()) {
+            $this->setBeanName($beanNameAttribute);
+        } else {
+            $this->setBeanName(ucfirst($this->getName()));
+        }
+
+        // load the class type defined as @Inject(type=****)
         if ($type = $annotationInstance->getType()) {
             $this->setType($type);
-        } else {
-            $this->setType(ucfirst($reflectionProperty->getPropertyName()));
         }
 
-        // load the lookup defined as @Resource(lookup=****)
-        if ($lookup = $annotationInstance->getLookup()) {
-            $this->setLookup($lookup);
-        }
-
-        // load the resource description defined as @Resource(description=****)
+        // load the class description defined as @Inject(description=****)
         if ($description = $annotationInstance->getDescription()) {
             $this->setDescription($description);
         }
 
         // load the injection target data
-        if ($injectionTarget = InjectionTargetDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty)) {
-            $this->setInjectionTarget($injectionTarget);
-        }
+        $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty));
 
         // return the instance
         return $this;
@@ -189,46 +187,42 @@ class ResReferenceDescriptor extends AbstractReferenceDescriptor implements ResR
     public function fromReflectionMethod(MethodInterface $reflectionMethod)
     {
 
-        // if we found a @Resource annotation, load the annotation instance
-        if ($reflectionMethod->hasAnnotation(Resource::ANNOTATION) === false) {
+        // if we found a @Inject annotation, load the annotation instance
+        if ($reflectionMethod->hasAnnotation(Inject::ANNOTATION) === false) {
             // if not, do nothing
             return;
         }
 
         // initialize the annotation instance
-        $annotation = $reflectionMethod->getAnnotation(Resource::ANNOTATION);
+        $annotation = $reflectionMethod->getAnnotation(Inject::ANNOTATION);
 
         // load the annotation instance
         $annotationInstance = $annotation->newInstance($annotation->getAnnotationName(), $annotation->getValues());
 
-        // load the reference name defined as @Resource(name=****)
+        // load the reference name defined as @Inject(name=****)
         if ($name = $annotationInstance->getName()) {
             $this->setName($name);
         } else {
             // use the name of the first parameter
             foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-                $this->setName(ucfirst($name = $reflectionParameter->getParameterName()));
+                $this->setName($name = ucfirst($reflectionParameter->getParameterName()));
                 break;
             }
         }
 
-        // load the resource type defined as @Resource(type=****)
+        // register the bean with the name defined as @Inject(beanName=****)
+        if ($beanNameAttribute = $annotationInstance->getBeanName()) {
+            $this->setBeanName($beanNameAttribute);
+        } else {
+            $this->setBeanName(ucfirst($this->getName()));
+        }
+
+        // load the class type defined as @Inject(type=****)
         if ($type = $annotationInstance->getType()) {
             $this->setType($type);
-        } else {
-            // use the name of the first parameter as local business interface
-            foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-                $this->setType(ucfirst($reflectionParameter->getParameterName()));
-                break;
-            }
         }
 
-        // load the lookup defined as @Resource(lookup=****)
-        if ($lookup = $annotationInstance->getLookup()) {
-            $this->setLookup($lookup);
-        }
-
-        // load the resource description defined as @Resource(description=****)
+        // load the class description defined as @Inject(description=****)
         if ($description = $annotationInstance->getDescription()) {
             $this->setDescription($description);
         }
@@ -255,31 +249,33 @@ class ResReferenceDescriptor extends AbstractReferenceDescriptor implements ResR
      * Creates and initializes a beans reference configuration instance from the passed
      * configuration node.
      *
-     * @param \AppserverIo\Description\Configuration\ResRefConfigurationInterface $configuration The configuration node with the beans reference configuration
+     * @param \AppserverIo\Description\Configuration\BeanRefConfigurationInterface $configuration The configuration node with the class reference configuration
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface|null The initialized descriptor instance
+     * @return \AppserverIo\Psr\EnterpriseBeans\Description\BeanReferenceDescriptorInterface|null The initialized descriptor instance
      */
-    public function fromConfiguration(ResRefConfigurationInterface $configuration)
+    public function fromConfiguration(BeanRefConfigurationInterface $configuration)
     {
 
         // query for the reference name
-        if ($name = (string) $configuration->getResRefName()) {
+        if ($name = (string) $configuration->getBeanRefName()) {
             $this->setName($name);
         }
 
+        // query for the bean name and set it
+        if ($beanName = (string) $configuration->getBeanLink()) {
+            $this->setBeanName($beanName);
+        } else {
+            $this->setBeanName($this->getName());
+        }
+
         // query for the reference type
-        if ($type = (string) $configuration->getResRefType()) {
+        if ($type = (string) $configuration->getBeanRefType()) {
             $this->setType($type);
         }
 
         // query for the description and set it
         if ($description = (string) $configuration->getDescription()) {
             $this->setDescription($description);
-        }
-
-        // query for the lookup name and set it
-        if ($lookup = (string) $configuration->getLookupName()) {
-            $this->setLookup($lookup);
         }
 
         // load the injection target data
@@ -304,35 +300,35 @@ class ResReferenceDescriptor extends AbstractReferenceDescriptor implements ResR
      * Merges the passed configuration into this one. Configuration values
      * of the passed configuration will overwrite the this one.
      *
-     * @param \AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface $resReferenceDescriptor The configuration to merge
+     * @param \AppserverIo\Psr\EnterpriseBeans\Description\BeanReferenceDescriptorInterface $beanReferenceDescriptor The configuration to merge
      *
      * @return void
      */
-    public function merge(ResReferenceDescriptorInterface $resReferenceDescriptor)
+    public function merge(BeanReferenceDescriptorInterface $beanReferenceDescriptor)
     {
 
         // merge the reference name
-        if ($name = $resReferenceDescriptor->getName()) {
+        if ($name = $beanReferenceDescriptor->getName()) {
             $this->setName($name);
         }
 
+        // merge the bean name
+        if ($beanName = $beanReferenceDescriptor->getBeanName()) {
+            $this->setBeanName($beanName);
+        }
+
         // merge the reference type
-        if ($type = $resReferenceDescriptor->getType()) {
+        if ($type = $beanReferenceDescriptor->getType()) {
             $this->setType($type);
         }
 
-        // merge the lookup name
-        if ($lookup = $resReferenceDescriptor->getLookup()) {
-            $this->setLookup($lookup);
-        }
-
         // merge the description
-        if ($description = $resReferenceDescriptor->getDescription()) {
+        if ($description = $beanReferenceDescriptor->getDescription()) {
             $this->setDescription($description);
         }
 
         // merge the injection target
-        if ($injectionTarget = $resReferenceDescriptor->getInjectionTarget()) {
+        if ($injectionTarget = $beanReferenceDescriptor->getInjectionTarget()) {
             $this->setInjectionTarget($injectionTarget);
         }
     }

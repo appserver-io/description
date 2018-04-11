@@ -23,11 +23,9 @@ namespace AppserverIo\Description;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\MethodInterface;
 use AppserverIo\Lang\Reflection\PropertyInterface;
-use AppserverIo\Psr\Deployment\DescriptorInterface;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
-use AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface;
-use AppserverIo\Psr\EnterpriseBeans\Description\PersistenceUnitReferenceDescriptorInterface;
 use AppserverIo\Description\Configuration\PersistenceUnitRefConfigurationInterface;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
+use AppserverIo\Psr\EnterpriseBeans\Description\PersistenceUnitReferenceDescriptorInterface;
 
 /**
  * Utility class that stores a persistence unit reference configuration.
@@ -38,22 +36,8 @@ use AppserverIo\Description\Configuration\PersistenceUnitRefConfigurationInterfa
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-class PersistenceUnitReferenceDescriptor implements PersistenceUnitReferenceDescriptorInterface, DescriptorInterface
+class PersistenceUnitReferenceDescriptor extends AbstractReferenceDescriptor implements PersistenceUnitReferenceDescriptorInterface
 {
-
-    /**
-     * Prefix for resource references.
-     *
-     * @var string
-     */
-    const REF_DIRECTORY = 'env/persistence';
-
-    /**
-     * The reference name.
-     *
-     * @var string
-     */
-    protected $name;
 
     /**
      * The persistence unit name.
@@ -61,28 +45,6 @@ class PersistenceUnitReferenceDescriptor implements PersistenceUnitReferenceDesc
      * @var string
      */
     protected $unitName;
-
-    /**
-     * Sets the reference name.
-     *
-     * @param string $name The reference name
-     *
-     * @return void
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * Returns the reference name.
-     *
-     * @return string The reference name
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
 
     /**
      * Sets the persistence unit name.
@@ -107,35 +69,15 @@ class PersistenceUnitReferenceDescriptor implements PersistenceUnitReferenceDesc
     }
 
     /**
-     * Sets the injection target specification.
-     *
-     * @param \AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface $injectionTarget The injection target specification
-     *
-     * @return void
-     */
-    public function setInjectionTarget(InjectionTargetDescriptorInterface $injectionTarget)
-    {
-        $this->injectionTarget = $injectionTarget;
-    }
-
-    /**
-     * Returns the injection target specification.
-     *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface The injection target specification
-     */
-    public function getInjectionTarget()
-    {
-        return $this->injectionTarget;
-    }
-
-    /**
      * Returns a new descriptor instance.
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\PersistenceUnitReferenceDescriptorInterface The descriptor instance
+     * @param \AppserverIo\Description\NameAwareDescriptorInterface $parent The parent descriptor instance
+     *
+     * @return \AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface The descriptor instance
      */
-    public static function newDescriptorInstance()
+    public static function newDescriptorInstance(NameAwareDescriptorInterface $parent)
     {
-        return new PersistenceUnitReferenceDescriptor();
+        return new PersistenceUnitReferenceDescriptor($parent);
     }
 
     /**
@@ -176,9 +118,9 @@ class PersistenceUnitReferenceDescriptor implements PersistenceUnitReferenceDesc
 
         // load the reference name defined as @PersistenceUnit(name=****)
         if ($name = $annotationInstance->getName()) {
-            $this->setName(sprintf('%s/%s', PersistenceUnitReferenceDescriptor::REF_DIRECTORY, $name));
+            $this->setName($name);
         } else {
-            $this->setName(sprintf('%s/%s', PersistenceUnitReferenceDescriptor::REF_DIRECTORY, ucfirst($reflectionProperty->getPropertyName())));
+            $this->setName(ucfirst($reflectionProperty->getPropertyName()));
         }
 
         // load the resource type defined as @PersistenceUnit(unitName=****)
@@ -189,7 +131,9 @@ class PersistenceUnitReferenceDescriptor implements PersistenceUnitReferenceDesc
         }
 
         // load the injection target data
-        $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty));
+        if ($injectionTarget = InjectionTargetDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty)) {
+            $this->setInjectionTarget($injectionTarget);
+        }
 
         // return the instance
         return $this;
@@ -220,11 +164,11 @@ class PersistenceUnitReferenceDescriptor implements PersistenceUnitReferenceDesc
 
         // load the reference name defined as @PersistenceUnit(name=****)
         if ($name = $annotationInstance->getName()) {
-            $this->setName(sprintf('%s/%s', PersistenceUnitReferenceDescriptor::REF_DIRECTORY, $name));
+            $this->setName($name);
         } else {
             // use the name of the first parameter
             foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-                $this->setName(sprintf('%s/%s', PersistenceUnitReferenceDescriptor::REF_DIRECTORY, ucfirst($reflectionParameter->getParameterName())));
+                $this->setName($name = ucfirst($reflectionParameter->getParameterName()));
                 break;
             }
         }
@@ -241,7 +185,18 @@ class PersistenceUnitReferenceDescriptor implements PersistenceUnitReferenceDesc
         }
 
         // load the injection target data
-        $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod));
+        if ($injectionTarget = InjectionTargetDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
+            $this->setInjectionTarget($injectionTarget);
+        } else {
+            // initialize a default injection target, which is the constructor
+            // and assume that the parameter name equals the reference name
+            $injectionTarget = InjectionTargetDescriptor::newDescriptorInstance();
+            $injectionTarget->setTargetMethod('__construct');
+            $injectionTarget->setTargetMethodParameterName(lcfirst($name));
+
+            // set the default injection target
+            $this->setInjectionTarget($injectionTarget);
+        }
 
         // return the instance
         return $this;
@@ -260,7 +215,7 @@ class PersistenceUnitReferenceDescriptor implements PersistenceUnitReferenceDesc
 
         // query for the reference name
         if ($name = (string) $configuration->getPersistenceUnitRefName()) {
-            $this->setName(sprintf('%s/%s', PersistenceUnitReferenceDescriptor::REF_DIRECTORY, $name));
+            $this->setName($name);
         }
 
         // query for the reference type
@@ -268,9 +223,18 @@ class PersistenceUnitReferenceDescriptor implements PersistenceUnitReferenceDesc
             $this->setUnitName($unitName);
         }
 
-        // query for the injection target
+        // load the injection target data
         if ($injectionTarget = $configuration->getInjectionTarget()) {
             $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromConfiguration($injectionTarget));
+        } else {
+            // initialize a default injection target, which is the constructor
+            // and assume that the parameter name equals the reference name
+            $injectionTarget = InjectionTargetDescriptor::newDescriptorInstance();
+            $injectionTarget->setTargetMethod('__construct');
+            $injectionTarget->setTargetMethodParameterName(lcfirst($name));
+
+            // set the default injection target
+            $this->setInjectionTarget($injectionTarget);
         }
 
         // return the instance

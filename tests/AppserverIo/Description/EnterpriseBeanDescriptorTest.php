@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Description\BeanDescriptorTest
+ * AppserverIo\Description\EnterpriseBeanDescriptorTest
  *
  * NOTICE OF LICENSE
  *
@@ -20,9 +20,8 @@
 
 namespace AppserverIo\Description;
 
-use AppserverIo\Description\Api\Node\BeanNode;
 use AppserverIo\Lang\Reflection\ReflectionClass;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Inject;
+use AppserverIo\Description\Api\Node\SessionNode;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
@@ -35,16 +34,14 @@ use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
- *
- * @Inject
  */
-class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
+class EnterpriseBeanDescriptorTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
      * The descriptor instance we want to test.
      *
-     * @var \AppserverIo\Description\BeanDescriptor
+     * @var \AppserverIo\Description\EnterpriseBeanDescriptor
      */
     protected $descriptor;
 
@@ -77,7 +74,7 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->descriptor = new BeanDescriptor();
+        $this->descriptor = $this->getMockForAbstractClass('AppserverIo\Description\EnterpriseBeanDescriptor');
     }
 
     /**
@@ -161,9 +158,36 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
     public function testFromReflectionClassWithAnnotationContainingNameAttribute()
     {
 
+        // prepare the annotation values
+        $values = array('name' => 'EnterpriseBeanDescriptorTest');
+
+        // create a mock annotation implementation
+        $beanAnnotation = $this->getMockBuilder('AppserverIo\Psr\EnterpriseBeans\Annotations\AbstractBeanAnnotation')
+                               ->setConstructorArgs(array('Stateless', $values))
+                               ->getMockForAbstractClass();
+
+        // create a mock annotation
+        $annotation = $this->getMockBuilder('AppserverIo\Lang\Reflection\ReflectionAnnotation')
+                           ->setMethods(array('getAnnotationName', 'getValues', 'newInstance'))
+                           ->setConstructorArgs(array('Stateless', $values))
+                           ->getMock();
+
+        // mock the ReflectionAnnotation methods
+        $annotation
+            ->expects($this->once())
+            ->method('getAnnotationName')
+            ->will($this->returnValue('Stateless'));
+        $annotation
+            ->expects($this->once())
+            ->method('getValues')
+            ->will($this->returnValue($values));
+        $annotation
+            ->expects($this->once())
+            ->method('newInstance')
+            ->will($this->returnValue($beanAnnotation));
+
         // initialize the annotation aliases
         $aliases = array(
-            Inject::ANNOTATION => Inject::__getClass(),
             Resource::ANNOTATION => Resource::__getClass(),
             EnterpriseBean::ANNOTATION => EnterpriseBean::__getClass(),
             PersistenceUnit::ANNOTATION => PersistenceUnit::__getClass()
@@ -172,12 +196,19 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
         // create a reflection class
         $reflectionClass = new ReflectionClass(__CLASS__, array(), $aliases);
 
+        // mock the methods
+        $this->descriptor
+            ->expects($this->once())
+            ->method('newAnnotationInstance')
+            ->with($reflectionClass)
+            ->will($this->returnValue($annotation));
+
         // initialize the descriptor instance
         $this->descriptor->fromReflectionClass($reflectionClass);
 
         // check the name parsed from the reflection class
         $this->assertSame(__CLASS__, $this->descriptor->getClassName());
-        $this->assertSame('BeanDescriptorTest', $this->descriptor->getName());
+        $this->assertSame('EnterpriseBeanDescriptorTest', $this->descriptor->getName());
         $this->assertCount(1, $this->descriptor->getEpbReferences());
         $this->assertCount(1, $this->descriptor->getResReferences());
         $this->assertCount(1, $this->descriptor->getPersistenceUnitReferences());
@@ -193,9 +224,36 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
     public function testFromReflectionClassWithAnnotationWithoutNameAttribute()
     {
 
+        // prepare the annotation values
+        $values = array();
+
+        // create a mock annotation implementation
+        $beanAnnotation = $this->getMockBuilder('AppserverIo\Psr\EnterpriseBeans\Annotations\AbstractBeanAnnotation')
+                               ->setConstructorArgs(array('Stateless', $values))
+                               ->getMockForAbstractClass();
+
+        // create a mock annotation
+        $annotation = $this->getMockBuilder('AppserverIo\Lang\Reflection\ReflectionAnnotation')
+                           ->setMethods(array('getAnnotationName', 'getValues', 'newInstance'))
+                           ->setConstructorArgs(array('Stateless', $values))
+                           ->getMock();
+
+        // mock the ReflectionAnnotation methods
+        $annotation
+            ->expects($this->once())
+            ->method('getAnnotationName')
+            ->will($this->returnValue('Stateless'));
+        $annotation
+            ->expects($this->once())
+            ->method('getValues')
+            ->will($this->returnValue($values));
+        $annotation
+            ->expects($this->once())
+            ->method('newInstance')
+            ->will($this->returnValue($beanAnnotation));
+
         // initialize the annotation aliases
         $aliases = array(
-            Inject::ANNOTATION => Inject::__getClass(),
             Resource::ANNOTATION => Resource::__getClass(),
             EnterpriseBean::ANNOTATION => EnterpriseBean::__getClass(),
             PersistenceUnit::ANNOTATION => PersistenceUnit::__getClass()
@@ -204,12 +262,19 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
         // create a reflection class
         $reflectionClass = new ReflectionClass(__CLASS__, array(), $aliases);
 
+        // mock the methods
+        $this->descriptor
+            ->expects($this->once())
+            ->method('newAnnotationInstance')
+            ->with($reflectionClass)
+            ->will($this->returnValue($annotation));
+
         // initialize the descriptor instance
         $this->descriptor->fromReflectionClass($reflectionClass);
 
         // check the name parsed from the reflection class
         $this->assertSame(__CLASS__, $this->descriptor->getClassName());
-        $this->assertSame('BeanDescriptorTest', $this->descriptor->getName());
+        $this->assertSame('EnterpriseBeanDescriptorTest', $this->descriptor->getName());
         $this->assertCount(1, $this->descriptor->getEpbReferences());
         $this->assertCount(1, $this->descriptor->getResReferences());
         $this->assertCount(1, $this->descriptor->getPersistenceUnitReferences());
@@ -226,15 +291,19 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
     {
 
         // initialize the configuration
-        $node = new BeanNode();
-        $node->initFromFile(__DIR__ . '/_files/dd-bean.xml');
+        $node = new SessionNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-sessionbean.xml');
 
         // initialize the descriptor from the nodes data
         $this->descriptor->fromConfiguration($node);
 
         // check if all values have been initialized
-        $this->assertSame('Randomizer', $this->descriptor->getName());
-        $this->assertSame('AppserverIo\Apps\Example\Services\Randomizer', $this->descriptor->getClassName());
+        $this->assertSame('SampleProcessor', $this->descriptor->getName());
+        $this->assertSame('AppserverIo\Apps\Example\Services\SampleProcessor', $this->descriptor->getClassName());
+        $this->assertCount(2, $this->descriptor->getEpbReferences());
+        $this->assertCount(2, $this->descriptor->getResReferences());
+        $this->assertCount(1, $this->descriptor->getPersistenceUnitReferences());
+        $this->assertCount(5, $this->descriptor->getReferences());
     }
 
     /**
@@ -246,26 +315,30 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
     {
 
         // initialize the configuration
-        $node = new BeanNode();
-        $node->initFromFile(__DIR__ . '/_files/dd-bean.xml');
+        $node = new SessionNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-sessionbean.xml');
 
         // initialize the descriptor from the nodes data
         $this->descriptor->fromConfiguration($node);
 
         // initialize the descriptor to merge
-        $descriptorToMerge = $this->getMockForAbstractClass('AppserverIo\Description\BeanDescriptor');
+        $descriptorToMerge = $this->getMockForAbstractClass('AppserverIo\Description\SessionBeanDescriptor');
 
         // initialize the configuration of the descriptor to be merged
-        $nodeToMerge = new BeanNode();
-        $nodeToMerge->initFromFile(__DIR__ . '/_files/dd-bean-to-merge.xml');
+        $nodeToMerge = new SessionNode();
+        $nodeToMerge->initFromFile(__DIR__ . '/_files/dd-sessionbean-to-merge.xml');
         $descriptorToMerge->fromConfiguration($nodeToMerge);
 
         // merge the descriptors
         $this->descriptor->merge($descriptorToMerge);
 
         // check if all values have been merged
-        $this->assertSame('Randomizer', $this->descriptor->getName());
-        $this->assertSame('AppserverIo\Apps\Example\Services\RandomizerNew', $this->descriptor->getClassName());
+        $this->assertSame('SampleProcessor', $this->descriptor->getName());
+        $this->assertSame('AppserverIo\Apps\Example\Services\SampleProcessor', $this->descriptor->getClassName());
+        $this->assertCount(2, $this->descriptor->getEpbReferences());
+        $this->assertCount(3, $this->descriptor->getResReferences());
+        $this->assertCount(2, $this->descriptor->getPersistenceUnitReferences());
+        $this->assertCount(7, $this->descriptor->getReferences());
     }
 
     /**
@@ -279,18 +352,18 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
     {
 
         // initialize the configuration
-        $node = new BeanNode();
-        $node->initFromFile(__DIR__ . '/_files/dd-bean.xml');
+        $node = new SessionNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-sessionbean.xml');
 
         // initialize the descriptor from the nodes data
         $this->descriptor->fromConfiguration($node);
 
         // initialize the descriptor to merge
-        $descriptorToMerge = $this->getMockForAbstractClass('AppserverIo\Description\BeanDescriptor');
+        $descriptorToMerge = $this->getMockForAbstractClass('AppserverIo\Description\SessionBeanDescriptor');
 
         // initialize the configuration of the descriptor to be merged
-        $nodeToMerge = new BeanNode();
-        $nodeToMerge->initFromFile(__DIR__ . '/_files/dd-bean-to-merge-with-exception.xml');
+        $nodeToMerge = new SessionNode();
+        $nodeToMerge->initFromFile(__DIR__ . '/_files/dd-sessionbean-to-merge-with-exception.xml');
         $descriptorToMerge->fromConfiguration($nodeToMerge);
 
         // merge the descriptors

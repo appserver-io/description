@@ -21,10 +21,8 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ReflectionClass;
-use AppserverIo\Lang\Reflection\ReflectionMethod;
-use AppserverIo\Lang\Reflection\ReflectionProperty;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
 use AppserverIo\Description\Api\Node\EpbRefNode;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
 
 /**
  * Test implementation for the EpbReferenceDescriptor class implementation.
@@ -63,11 +61,23 @@ class EpbReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
      * Initializes the descriptor instance we want to test.
      *
      * @return void
-     * @see PHPUnit_Framework_TestCase::setUp()
+     * @see \PHPUnit_Framework_TestCase::setUp()
      */
     protected function setUp()
     {
-        $this->descriptor = new EpbReferenceDescriptor();
+
+        // create a mock object for the parent instance
+        $parent = $this->getMockBuilder($nameAwareInterface = 'AppserverIo\Description\NameAwareDescriptorInterface')
+                       ->setMethods(get_class_methods($nameAwareInterface))
+                       ->getMock();
+
+        // mock the getName() method
+        $parent->expects($this->any())
+               ->method('getName')
+               ->willReturn('SomeBean');
+
+        // initialize the descriptor
+        $this->descriptor = new EpbReferenceDescriptor($parent);
     }
 
     /**
@@ -105,7 +115,7 @@ class EpbReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertInstanceOf(
             'AppserverIo\Description\EpbReferenceDescriptor',
-            EpbReferenceDescriptor::newDescriptorInstance()
+            EpbReferenceDescriptor::newDescriptorInstance($this->getMock('AppserverIo\Description\NameAwareDescriptorInterface'))
         );
     }
 
@@ -163,14 +173,13 @@ class EpbReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
             ->method('newInstance')
             ->will($this->returnValue($beanAnnotation));
 
-
         // initialize the annotation aliases
         $aliases = array(EnterpriseBean::ANNOTATION => EnterpriseBean::__getClass());
 
         // initialize the reflection method
         $reflectionMethod = $this->getMockBuilder('AppserverIo\Lang\Reflection\ReflectionMethod')
                                  ->setConstructorArgs(array(__CLASS__, array(), $aliases))
-                                 ->setMethods(array('hasAnnotation', 'getAnnotation'))
+                                 ->setMethods(array('hasAnnotation', 'getAnnotation', 'getClassName', 'getMethodName'))
                                  ->getMock();
 
         // mock the methods
@@ -184,12 +193,21 @@ class EpbReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
             ->method('getAnnotation')
             ->with(EnterpriseBean::ANNOTATION)
             ->will($this->returnValue($annotation));
+        $reflectionMethod
+            ->expects($this->exactly(2))
+            ->method('getClassName')
+            ->will($this->returnValue(__CLASS__));
+        $reflectionMethod
+            ->expects($this->exactly(2))
+            ->method('getMethodName')
+            ->will($this->returnValue('injectDummyEnterpriseBean'));
 
         // initialize the descriptor from the reflection method
-        $this->descriptor->fromReflectionMethod($reflectionMethod);
+        $this->assertSame($this->descriptor, $this->descriptor->fromReflectionMethod($reflectionMethod));
 
         // check that the descriptor has been initialized successfully
-        $this->assertSame('env/SampleProcessor', $this->descriptor->getName());
+        $this->assertSame('SampleProcessor', $this->descriptor->getName());
+        $this->assertSame('env/SomeBean/SampleProcessor', $this->descriptor->getRefName());
         $this->assertSame('A Description', $this->descriptor->getDescription());
         $this->assertSame('SampleProcessorLocal', $this->descriptor->getBeanInterface());
         $this->assertSame('SampleProcessor', $this->descriptor->getBeanName());
@@ -262,11 +280,11 @@ class EpbReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
             ->with(EnterpriseBean::ANNOTATION)
             ->will($this->returnValue($annotation));
         $reflectionMethod
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(3))
             ->method('getClassName')
             ->will($this->returnValue(__CLASS__));
         $reflectionMethod
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(3))
             ->method('getMethodName')
             ->will($this->returnValue('injectDummyEnterpriseBean'));
 
@@ -274,7 +292,8 @@ class EpbReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->descriptor->fromReflectionMethod($reflectionMethod);
 
         // check that the descriptor has been initialized successfully
-        $this->assertSame('env/DummyEnterpriseBean', $this->descriptor->getName());
+        $this->assertSame('DummyEnterpriseBean', $this->descriptor->getName());
+        $this->assertSame('env/SomeBean/DummyEnterpriseBean', $this->descriptor->getRefName());
         $this->assertSame('DummyEnterpriseBeanLocal', $this->descriptor->getBeanInterface());
         $this->assertSame('DummyEnterpriseBean', $this->descriptor->getBeanName());
         $this->assertNull($this->descriptor->getDescription());
@@ -364,7 +383,8 @@ class EpbReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->descriptor->fromReflectionProperty($reflectionProperty);
 
         // check that the descriptor has been initialized successfully
-        $this->assertSame('env/DummyEnterpriseBean', $this->descriptor->getName());
+        $this->assertSame('DummyEnterpriseBean', $this->descriptor->getName());
+        $this->assertSame('env/SomeBean/DummyEnterpriseBean', $this->descriptor->getRefName());
         $this->assertSame('DummyEnterpriseBeanLocal', $this->descriptor->getBeanInterface());
         $this->assertSame('DummyEnterpriseBean', $this->descriptor->getBeanName());
         $this->assertSame('A Description', $this->descriptor->getDescription());
@@ -387,7 +407,8 @@ class EpbReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->descriptor->fromConfiguration($node);
 
         // check if all values have been initialized
-        $this->assertSame('env/UserProcessor', $this->descriptor->getName());
+        $this->assertSame('UserProcessor', $this->descriptor->getName());
+        $this->assertSame('env/SomeBean/UserProcessor', $this->descriptor->getRefName());
         $this->assertSame('Some Description', $this->descriptor->getDescription());
         $this->assertSame('php:global/example/UserProcessor', $this->descriptor->getLookup());
         $this->assertSame('UserProcessorLocal', $this->descriptor->getBeanInterface());
@@ -411,7 +432,9 @@ class EpbReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->descriptor->fromConfiguration($node);
 
         // initialize the descriptor to merge
-        $descriptorToMerge = $this->getMockForAbstractClass('AppserverIo\Description\EpbReferenceDescriptor');
+        $descriptorToMerge = $this->getMockBuilder('AppserverIo\Description\EpbReferenceDescriptor')
+                                  ->disableOriginalConstructor()
+                                  ->getMockForAbstractClass();
 
         // initialize the configuration of the descriptor to be merged
         $nodeToMerge = new EpbRefNode();
@@ -422,7 +445,8 @@ class EpbReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->descriptor->merge($descriptorToMerge);
 
         // check if all values have been initialized
-        $this->assertSame('env/MyUserProcessor', $this->descriptor->getName());
+        $this->assertSame('MyUserProcessor', $this->descriptor->getName());
+        $this->assertSame('env/SomeBean/MyUserProcessor', $this->descriptor->getRefName());
         $this->assertSame('Another Description', $this->descriptor->getDescription());
         $this->assertSame('php:global/example/MyUserProcessor', $this->descriptor->getLookup());
         $this->assertSame('MyUserProcessorLocal', $this->descriptor->getBeanInterface());

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Description\Api\Node\MessageDrivenNode
+ * \AppserverIo\Description\Api\Node\BeanNode
  *
  * NOTICE OF LICENSE
  *
@@ -20,10 +20,10 @@
 
 namespace AppserverIo\Description\Api\Node;
 
-use AppserverIo\Description\Configuration\MessageDrivenConfigurationInterface;
+use AppserverIo\Description\Configuration\BeanConfigurationInterface;
 
 /**
- * DTO to transfer a message driven bean information.
+ * DTO to transfer a bean configuration.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -31,7 +31,7 @@ use AppserverIo\Description\Configuration\MessageDrivenConfigurationInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class MessageDrivenNode extends AbstractNode implements MessageDrivenConfigurationInterface
+class BeanNode extends AbstractNode implements BeanConfigurationInterface
 {
 
     /**
@@ -42,20 +42,28 @@ class MessageDrivenNode extends AbstractNode implements MessageDrivenConfigurati
     use ReferencesNodeTrait;
 
     /**
-     * The enterprise bean name information.
+     * The bean name information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="epb-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @AS\Mapping(nodeName="name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
-    protected $epbName;
+    protected $name;
 
     /**
-     * The enterprise bean class information.
+     * The bean class information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="epb-class", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @AS\Mapping(nodeName="class", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
-    protected $epbClass;
+    protected $class;
+
+    /**
+     * The bean factory information.
+     *
+     * @var \AppserverIo\Description\Api\Node\ValueNode
+     * @AS\Mapping(nodeName="factory", nodeType="AppserverIo\Description\Api\Node\FactoryNode")
+     */
+    protected $factory;
 
     /**
      * The bean shared information.
@@ -66,23 +74,33 @@ class MessageDrivenNode extends AbstractNode implements MessageDrivenConfigurati
     protected $shared;
 
     /**
-     * Return's the enterprise bean name information.
+     * Return's the bean name information.
      *
-     * @return \AppserverIo\Description\Api\Node\ValueNode The enterprise bean name information
+     * @return \AppserverIo\Description\Api\Node\ValueNode The bean name information
      */
-    public function getEpbName()
+    public function getName()
     {
-        return $this->epbName;
+        return $this->name;
     }
 
     /**
-     * Return's the enterprise bean class information.
+     * Return's the bean class information.
      *
-     * @return \AppserverIo\Description\Api\Node\ValueNode The enterprise bean class information
+     * @return \AppserverIo\Description\Api\Node\ValueNode The bean class information
      */
-    public function getEpbClass()
+    public function getClass()
     {
-        return $this->epbClass;
+        return $this->class;
+    }
+
+    /**
+     * Return's the bean factory information.
+     *
+     * @return \AppserverIo\Description\Configuration\FactoryConfigurationInterface
+     */
+    public function getFactory()
+    {
+        return $this->factory;
     }
 
     /**

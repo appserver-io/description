@@ -21,8 +21,10 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ClassInterface;
+use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface;
+use AppserverIo\Psr\EnterpriseBeans\Description\BeanReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\PersistenceUnitReferenceDescriptorInterface;
 use AppserverIo\Description\Configuration\ReferencesConfigurationInterface;
 
@@ -51,6 +53,13 @@ trait DescriptorReferencesTrait
      * @var array
      */
     protected $resReferences = array();
+
+    /**
+     * The array with the class references.
+     *
+     * @var array
+     */
+    protected $beanReferences = array();
 
     /**
      * The array with the persistence unit references.
@@ -128,6 +137,40 @@ trait DescriptorReferencesTrait
     }
 
     /**
+     * Adds a bean reference configuration.
+     *
+     * @param \AppserverIo\Psr\EnterpriseBeans\Description\BeanReferenceDescriptorInterface $beanReference The bean reference configuration
+     *
+     * @return void
+     */
+    public function addBeanReference(BeanReferenceDescriptorInterface $beanReference)
+    {
+        $this->beanReferences[$beanReference->getName()] = $beanReference;
+    }
+
+    /**
+     * Sets the array with the bean references.
+     *
+     * @param array $beanReference The bean references
+     *
+     * @return void
+     */
+    public function setBeanReferences(array $beanReference)
+    {
+        $this->beanReferences = $beanReference;
+    }
+
+    /**
+     * The array with the bean references.
+     *
+     * @return array The bean references
+     */
+    public function getBeanReferences()
+    {
+        return $this->beanReferences;
+    }
+
+    /**
      * Adds a persistence unit reference configuration.
      *
      * @param \AppserverIo\Psr\EnterpriseBeans\Description\PersistenceUnitReferenceDescriptorInterface $persistenceUnitReference The persistence unit reference configuration
@@ -168,7 +211,12 @@ trait DescriptorReferencesTrait
      */
     public function getReferences()
     {
-        return array_merge($this->epbReferences, $this->resReferences, $this->persistenceUnitReferences);
+        return array_merge(
+            $this->epbReferences,
+            $this->resReferences,
+            $this->beanReferences,
+            $this->persistenceUnitReferences
+        );
     }
 
     /**
@@ -183,17 +231,22 @@ trait DescriptorReferencesTrait
 
         // initialize the enterprise bean references
         foreach ($configuration->getEpbRefs() as $epbReference) {
-            $this->addEpbReference(EpbReferenceDescriptor::newDescriptorInstance()->fromConfiguration($epbReference));
+            $this->addEpbReference(EpbReferenceDescriptor::newDescriptorInstance($this)->fromConfiguration($epbReference));
         }
 
         // initialize the resource references
         foreach ($configuration->getResRefs() as $resReference) {
-            $this->addResReference(ResReferenceDescriptor::newDescriptorInstance()->fromConfiguration($resReference));
+            $this->addResReference(ResReferenceDescriptor::newDescriptorInstance($this)->fromConfiguration($resReference));
+        }
+
+        // initialize the bean references
+        foreach ($configuration->getBeanRefs() as $beanReference) {
+            $this->addBeanReference(BeanReferenceDescriptor::newDescriptorInstance($this)->fromConfiguration($beanReference));
         }
 
         // initialize the resource references
         foreach ($configuration->getPersistenceUnitRefs() as $persistenceUnitReference) {
-            $this->addPersistenceUnitReference(PersistenceUnitReferenceDescriptor::newDescriptorInstance()->fromConfiguration($persistenceUnitReference));
+            $this->addPersistenceUnitReference(PersistenceUnitReferenceDescriptor::newDescriptorInstance($this)->fromConfiguration($persistenceUnitReference));
         }
     }
 
@@ -210,17 +263,22 @@ trait DescriptorReferencesTrait
         // we've to check for property annotations that references EPB or resources
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
             // load the EPB references
-            if ($epbReference = EpbReferenceDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty)) {
+            if ($epbReference = EpbReferenceDescriptor::newDescriptorInstance($this)->fromReflectionProperty($reflectionProperty)) {
                 $this->addEpbReference($epbReference);
             }
 
             // load the resource references
-            if ($resReference = ResReferenceDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty)) {
+            if ($resReference = ResReferenceDescriptor::newDescriptorInstance($this)->fromReflectionProperty($reflectionProperty)) {
                 $this->addResReference($resReference);
             }
 
+            // load the bean references
+            if ($beanReference = BeanReferenceDescriptor::newDescriptorInstance($this)->fromReflectionProperty($reflectionProperty)) {
+                $this->addBeanReference($beanReference);
+            }
+
             // load the persistence unit references
-            if ($persistenceUnitReference = PersistenceUnitReferenceDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty)) {
+            if ($persistenceUnitReference = PersistenceUnitReferenceDescriptor::newDescriptorInstance($this)->fromReflectionProperty($reflectionProperty)) {
                 $this->addPersistenceUnitReference($persistenceUnitReference);
             }
         }
@@ -228,19 +286,55 @@ trait DescriptorReferencesTrait
         // we've to check for method annotations that references EPB or resources
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
             // load the EPB references
-            if ($epbReference = EpbReferenceDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
+            if ($epbReference = EpbReferenceDescriptor::newDescriptorInstance($this)->fromReflectionMethod($reflectionMethod)) {
                 $this->addEpbReference($epbReference);
             }
 
             // load the resource references
-            if ($resReference = ResReferenceDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
+            if ($resReference = ResReferenceDescriptor::newDescriptorInstance($this)->fromReflectionMethod($reflectionMethod)) {
                 $this->addResReference($resReference);
             }
 
+            // load the bean references
+            if ($beanReference = BeanReferenceDescriptor::newDescriptorInstance($this)->fromReflectionMethod($reflectionMethod)) {
+                $this->addBeanReference($beanReference);
+            }
+
             // load the persistence unit references
-            if ($persistenceUnitReference = PersistenceUnitReferenceDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
+            if ($persistenceUnitReference = PersistenceUnitReferenceDescriptor::newDescriptorInstance($this)->fromReflectionMethod($reflectionMethod)) {
                 $this->addPersistenceUnitReference($persistenceUnitReference);
             }
+        }
+    }
+
+    /**
+     * Merge the refrerences of the passed descriptor into the actual one.
+     *
+     * @param \AppserverIo\Psr\Deployment\DescriptorInterface $descriptor The descriptor to merge the references with
+     *
+     * @return void
+     */
+    public function mergeReferences(DescriptorInterface $descriptor)
+    {
+
+        // merge the bean references
+        foreach ($descriptor->getBeanReferences() as $beanReference) {
+            $this->addBeanReference($beanReference);
+        }
+
+        // merge the EPB references
+        foreach ($descriptor->getEpbReferences() as $epbReference) {
+            $this->addEpbReference($epbReference);
+        }
+
+        // merge the resource references
+        foreach ($descriptor->getResReferences() as $resReference) {
+            $this->addResReference($resReference);
+        }
+
+        // merge the persistence unit references
+        foreach ($descriptor->getPersistenceUnitReferences() as $persistenceUnitReference) {
+            $this->addPersistenceUnitReference($persistenceUnitReference);
         }
     }
 }

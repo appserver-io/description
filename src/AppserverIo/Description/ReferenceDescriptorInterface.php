@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Description\DescriptorUtil
+ * AppserverIo\Description\ReferenceDescriptorInterface
  *
  * NOTICE OF LICENSE
  *
@@ -20,8 +20,10 @@
 
 namespace AppserverIo\Description;
 
+use AppserverIo\Psr\Deployment\DescriptorInterface;
+
 /**
- * Abstract class for all bean descriptors.
+ * The interface for all reference descriptor implementations.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -29,42 +31,29 @@ namespace AppserverIo\Description;
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-class DescriptorUtil
+interface ReferenceDescriptorInterface extends DescriptorInterface
 {
 
     /**
-     * This is a utility class, so protect it against direct
-     * instantiation.
+     * Sets the reference name.
      *
-     * @codeCoverageIgnore
-     */
-    private function __construct()
-    {
-    }
-
-    /**
-     * This is a utility class, so protect it against cloning.
+     * @param string $name The reference name
      *
      * @return void
-     * @codeCoverageIgnore
      */
-    private function __clone()
-    {
-    }
+    public function setName($name);
 
     /**
-     * Trims and returns the passed value.
+     * Returns the reference name.
      *
-     * @param string $value The value to trim
-     *
-     * @return string The trimmed value
-     * @throws \Exception Is thrown if the passed value is not of type string
+     * @return string The reference name
      */
-    public static function trim($value)
-    {
-        if (is_string($value) === false) {
-            throw new \Exception('Passed value is not of type string');
-        }
-        return trim($value);
-    }
+    public function getName();
+
+    /**
+     * Return's the unique reference name.
+     *
+     * @return string The unique reference name
+     */
+    public function getRefName();
 }

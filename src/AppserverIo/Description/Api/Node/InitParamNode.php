@@ -55,7 +55,7 @@ class InitParamNode extends AbstractNode implements InitParamConfigurationInterf
     /**
      * Return's the parameter name information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\ParamNameNode The parameter name information
+     * @return \AppserverIo\Description\Api\Node\ValueNode The parameter name information
      */
     public function getParamName()
     {
@@ -65,7 +65,7 @@ class InitParamNode extends AbstractNode implements InitParamConfigurationInterf
     /**
      * Return's the parameter value information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\ParamNameNode The parameter value information
+     * @return \AppserverIo\Description\Api\Node\ValueNode The parameter value information
      */
     public function getParamValue()
     {

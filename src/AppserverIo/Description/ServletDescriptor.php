@@ -23,7 +23,6 @@ namespace AppserverIo\Description;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Psr\Servlet\ServletException;
 use AppserverIo\Psr\Servlet\Annotations\Route;
-use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\Servlet\Description\ServletDescriptorInterface;
 use AppserverIo\Description\Configuration\ServletConfigurationInterface;
 use AppserverIo\Description\Configuration\ConfigurationInterface;
@@ -37,7 +36,7 @@ use AppserverIo\Description\Configuration\ConfigurationInterface;
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-class ServletDescriptor implements ServletDescriptorInterface, DescriptorInterface
+class ServletDescriptor extends AbstractNameAwareDescriptor implements ServletDescriptorInterface
 {
 
     /**
@@ -48,25 +47,11 @@ class ServletDescriptor implements ServletDescriptorInterface, DescriptorInterfa
     use DescriptorReferencesTrait;
 
     /**
-     * The servlet name.
-     *
-     * @var string
-     */
-    protected $name;
-
-    /**
      * The servlets class name.
      *
      * @var string
      */
     protected $className;
-
-    /**
-     * The servlets description.
-     *
-     * @var string
-     */
-    protected $description;
 
     /**
      * The servlets display name.
@@ -90,28 +75,6 @@ class ServletDescriptor implements ServletDescriptorInterface, DescriptorInterfa
     protected $urlPatterns = array();
 
     /**
-     * Sets the servlet name.
-     *
-     * @param string $name The servlet name
-     *
-     * @return void
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * Returns the servlet name.
-     *
-     * @return string The servlet name
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
      * Sets the servlets class name.
      *
      * @param string $className The servlets class name
@@ -131,28 +94,6 @@ class ServletDescriptor implements ServletDescriptorInterface, DescriptorInterfa
     public function getClassName()
     {
         return $this->className;
-    }
-
-    /**
-     * Sets the servlets description.
-     *
-     * @param string $description The servlets description
-     *
-     * @return void
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
-
-    /**
-     * Returns the servlets description.
-     *
-     * @return string The servlets description
-     */
-    public function getDescription()
-    {
-        return $this->description;
     }
 
     /**
@@ -275,7 +216,7 @@ class ServletDescriptor implements ServletDescriptorInterface, DescriptorInterfa
      *
      * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the servlet description
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\ServletDescriptorInterface|null The initialized descriptor instance
+     * @return \AppserverIo\Description\Configuration\ServletConfigurationInterface|null The initialized descriptor instance
      */
     public function fromReflectionClass(ClassInterface $reflectionClass)
     {
@@ -293,8 +234,8 @@ class ServletDescriptor implements ServletDescriptorInterface, DescriptorInterfa
             return;
         }
 
-        // set the servlet name
-        $this->setName(lcfirst($reflectionClass->getShortName()));
+        // set the servlet name, strip the phrase 'Servlet' if appended
+        $this->setName(lcfirst(preg_replace('/Servlet$/', '', $reflectionClass->getShortName())));
 
         // set the class name
         $this->setClassName($reflectionClass->getName());
@@ -349,7 +290,7 @@ class ServletDescriptor implements ServletDescriptorInterface, DescriptorInterfa
      *
      * @param \AppserverIo\Description\Configuration\ConfigurationInterface $configuration The servlet configuration
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\ServletDescriptorInterface|null The initialized descriptor instance
+     * @return \AppserverIo\Description\Configuration\ServletConfigurationInterface|null The initialized descriptor instance
      */
     public function fromConfiguration(ConfigurationInterface $configuration)
     {
@@ -395,7 +336,7 @@ class ServletDescriptor implements ServletDescriptorInterface, DescriptorInterfa
      * Merges the passed configuration into this one. Configuration values
      * of the passed configuration will overwrite the this one.
      *
-     * @param \AppserverIo\Psr\EnterpriseBeans\Description\ServletDescriptorInterface $servletDescriptor The descriptor to merge
+     * @param \AppserverIo\Description\Configuration\ServletConfigurationInterface $servletDescriptor The descriptor to merge
      *
      * @return void
      * @throws \AppserverIo\Psr\Servlet\ServletException Is thrown if you try to merge a servlet descriptor with a different class name
@@ -404,15 +345,15 @@ class ServletDescriptor implements ServletDescriptorInterface, DescriptorInterfa
     {
 
         // check if the classes are equal
-        if ($this->getClassName() !== $servletDescriptor->getClassName()) {
+        if ($this->getName() !== $servletDescriptor->getName()) {
             throw new ServletException(
-                sprintf('You try to merge a servlet descriptor for % with %s', $servletDescriptor->getClassName(), $servletDescriptor->getClassName())
+                sprintf('You try to merge a servlet descriptor for "%s" with "%s"', $this->getName(), $servletDescriptor->getName())
             );
         }
 
         // merge the servlet name
-        if ($name = $servletDescriptor->getName()) {
-            $this->setName($name);
+        if ($className = $servletDescriptor->getClassName()) {
+            $this->setClassName($className);
         }
 
         // merge the servlet description
@@ -435,19 +376,7 @@ class ServletDescriptor implements ServletDescriptorInterface, DescriptorInterfa
             $this->addInitParam($paramKey, $paramValue);
         }
 
-        // merge the EPB references
-        foreach ($servletDescriptor->getEpbReferences() as $epbReference) {
-            $this->addEpbReference($epbReference);
-        }
-
-        // merge the resource references
-        foreach ($servletDescriptor->getResReferences() as $resReference) {
-            $this->addResReference($resReference);
-        }
-
-        // merge the persistence unit references
-        foreach ($servletDescriptor->getPersistenceUnitReferences() as $persistenceUnitReference) {
-            $this->addPersistenceUnitReference($persistenceUnitReference);
-        }
+        // merge the references
+        $this->mergeReferences($servletDescriptor);
     }
 }
