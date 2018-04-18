@@ -29,7 +29,7 @@ use AppserverIo\Description\Configuration\ConfigurationInterface;
 use AppserverIo\Description\Configuration\FactoryConfigurationInterface;
 
 /**
- * Abstract class for all producer descriptors.
+ * Implementation of a factory method descriptor.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>

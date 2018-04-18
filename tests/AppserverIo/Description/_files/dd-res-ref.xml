@@ -7,5 +7,6 @@
     <injection-target>
         <injection-target-class>AppserverIo\Apps\Example\Services\SampleProcessor</injection-target-class>
         <injection-target-method>injectTimerService</injection-target-method>
+            <injection-target-method-parameter-name>timerService</injection-target-method-parameter-name>
     </injection-target>
 </res-ref>

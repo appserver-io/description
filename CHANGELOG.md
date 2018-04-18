@@ -1,3 +1,13 @@
+# Version 8.0.1
+
+## Bugfixes
+
+* Fixed error with missing method parameter name when initializing a InjectionTargetDescriptor from configuration
+
+## Features
+
+* None
+
 # Version 8.0.0
 
 ## Bugfixes
