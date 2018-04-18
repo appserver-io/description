@@ -5,5 +5,6 @@
     <injection-target>
         <injection-target-class>AppserverIo\Apps\Example\Services\NewSampleProcessor</injection-target-class>
         <injection-target-method>injectMyNewPersistenceUnit</injection-target-method>
+            <injection-target-method-parameter-name>myNewPersistenceUnit</injection-target-method-parameter-name>
     </injection-target>
 </persistence-unit-ref>

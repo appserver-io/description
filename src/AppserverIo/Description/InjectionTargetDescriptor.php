@@ -25,6 +25,7 @@ use AppserverIo\Lang\Reflection\MethodInterface;
 use AppserverIo\Lang\Reflection\PropertyInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface;
 use AppserverIo\Description\Configuration\InjectionTargetConfigurationInterface;
+use AppserverIo\Lang\Reflection\ReflectionClass;
 
 /**
  * Utility class that stores a beans injection target configuration.
@@ -261,12 +262,23 @@ class InjectionTargetDescriptor extends AbstractDescriptor implements InjectionT
 
         // query for the target method we want to use for injection
         if ($targetMethod = (string) $configuration->getInjectionTargetMethod()) {
+            // set the target method
             $this->setTargetMethod($targetMethod);
-        }
 
-        // query for the target method parameter name we want to use for injection
-        if ($targetMethodParameterName = (string) $configuration->getInjectionTargetMethodParameterName()) {
-            $this->setTargetMethodParameterName($targetMethodParameterName);
+            // query for the target method parameter name we want to use for injection
+            if ($targetMethodParameterName = (string) $configuration->getInjectionTargetMethodParameterName()) {
+                $this->setTargetMethodParameterName($targetMethodParameterName);
+            } else {
+                // initialize the reflection class and load the reflection method
+                $reflectionClass = new ReflectionClass($targetClass);
+                $reflectionMethod = $reflectionClass->getMethod($targetMethod);
+
+                // set the name of the first parameter by default
+                foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+                    $this->setTargetMethodParameterName($reflectionParameter->getParameterName());
+                    break;
+                }
+            }
         }
 
         // return the instance
