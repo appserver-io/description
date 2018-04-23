@@ -21,6 +21,7 @@
 namespace AppserverIo\Description\Api\Node;
 
 use AppserverIo\Description\Configuration\EpbRefConfigurationInterface;
+use AppserverIo\Description\Configuration\PositionAwareConfigurationInterface;
 
 /**
  * DTO to transfer enterprise bean reference information.
@@ -31,8 +32,15 @@ use AppserverIo\Description\Configuration\EpbRefConfigurationInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class EpbRefNode extends AbstractNode implements EpbRefConfigurationInterface
+class EpbRefNode extends AbstractNode implements EpbRefConfigurationInterface, PositionAwareConfigurationInterface
 {
+
+    /**
+     * The trait to handle node positions.
+     *
+     * @var \AppserverIo\Description\Api\Node\PositionNodeTrait
+     */
+    use PositionNodeTrait;
 
     /**
      * The enterprise bean reference name information.

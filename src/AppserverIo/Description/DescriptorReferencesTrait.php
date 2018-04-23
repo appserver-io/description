@@ -211,12 +211,32 @@ trait DescriptorReferencesTrait
      */
     public function getReferences()
     {
-        return array_merge(
+
+        // initialize the references
+        $references = array_merge(
             $this->epbReferences,
             $this->resReferences,
             $this->beanReferences,
             $this->persistenceUnitReferences
         );
+
+        // sort the references
+        usort($references, function ($a, $b) {
+            // load the positions
+            $posA = $a->getPosition();
+            $posB = $b->getPosition();
+
+            // return 0 if positions are equal
+            if ($posA  === $posB) {
+                return 0;
+            }
+
+            // else return -1 or 1 depending on which position is higher
+            return ($posA < $posB) ? -1 : 1;
+        });
+
+        // return the sorted references
+        return $references;
     }
 
     /**

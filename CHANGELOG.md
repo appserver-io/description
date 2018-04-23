@@ -1,3 +1,13 @@
+# Version 9.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add new configuration + descriptors for DI method invocation
+
 # Version 8.0.1
 
 ## Bugfixes

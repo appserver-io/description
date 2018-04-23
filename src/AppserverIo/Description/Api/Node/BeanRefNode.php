@@ -21,6 +21,7 @@
 namespace AppserverIo\Description\Api\Node;
 
 use AppserverIo\Description\Configuration\BeanRefConfigurationInterface;
+use AppserverIo\Description\Configuration\PositionAwareConfigurationInterface;
 
 /**
  * DTO to transfer bean reference information.
@@ -31,8 +32,15 @@ use AppserverIo\Description\Configuration\BeanRefConfigurationInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class BeanRefNode extends AbstractNode implements BeanRefConfigurationInterface
+class BeanRefNode extends AbstractNode implements BeanRefConfigurationInterface, PositionAwareConfigurationInterface
 {
+
+    /**
+     * The trait to handle node positions.
+     *
+     * @var \AppserverIo\Description\Api\Node\PositionNodeTrait
+     */
+    use PositionNodeTrait;
 
     /**
      * The bean reference name information.

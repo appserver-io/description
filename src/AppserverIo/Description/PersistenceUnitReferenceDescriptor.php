@@ -223,6 +223,11 @@ class PersistenceUnitReferenceDescriptor extends AbstractReferenceDescriptor imp
             $this->setUnitName($unitName);
         }
 
+        // query for the reference position
+        if ($position = (integer) $configuration->getPosition()) {
+            $this->setPosition($position);
+        }
+
         // load the injection target data
         if ($injectionTarget = $configuration->getInjectionTarget()) {
             $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromConfiguration($injectionTarget));
