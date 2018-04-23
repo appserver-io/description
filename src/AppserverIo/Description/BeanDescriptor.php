@@ -39,7 +39,7 @@ use AppserverIo\Psr\EnterpriseBeans\Description\FactoryDescriptorInterface;
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-class BeanDescriptor extends AbstractNameAwareDescriptor implements BeanDescriptorInterface, FactoryAwareDescriptorInterface
+class BeanDescriptor extends AbstractNameAwareDescriptor implements BeanDescriptorInterface, FactoryAwareDescriptorInterface, MethodInvocationAwareDescriptorInterface
 {
 
     /**
@@ -62,6 +62,13 @@ class BeanDescriptor extends AbstractNameAwareDescriptor implements BeanDescript
      * @var \AppserverIo\Psr\EnterpriseBeans\Description\FactoryDescriptorInterface
      */
     protected $factory;
+
+    /**
+     * The method invocations that'll be invoked after the instance has been created.
+     *
+     * @var array
+     */
+    protected $methodInvocations = array();
 
     /**
      * Sets the beans class name.
@@ -108,6 +115,30 @@ class BeanDescriptor extends AbstractNameAwareDescriptor implements BeanDescript
     }
 
     /**
+     * Add's the passed method invaction to the method invocations that'll be invoked when the
+     * instance has been created.
+     *
+     * @param \AppserverIo\Description\MethodInvocationDescriptorInterface $methodInvocation The method descriptor to add
+     *
+     * @return void
+     */
+    public function addMethodInvocation(MethodInvocationDescriptorInterface $methodInvocation)
+    {
+        $this->methodInvocations[] = $methodInvocation;
+    }
+
+    /**
+     * Returns the array with the methods that'll be invoked when the
+     * instance has been created.
+     *
+     * @return array The array with the methods descriptors
+     */
+    public function getMethodInvocations()
+    {
+        return $this->methodInvocations;
+    }
+
+    /**
      * Returns a new descriptor instance.
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface The descriptor instance
@@ -115,6 +146,16 @@ class BeanDescriptor extends AbstractNameAwareDescriptor implements BeanDescript
     public static function newDescriptorInstance()
     {
         return new BeanDescriptor();
+    }
+
+    /**
+     * Returns the annotation the bean uses.
+     *
+     * @return string The annotation name
+     */
+    protected function getAnnotationName()
+    {
+        return Inject::ANNOTATION;
     }
 
     /**
@@ -126,7 +167,7 @@ class BeanDescriptor extends AbstractNameAwareDescriptor implements BeanDescript
      */
     protected function newAnnotationInstance(ClassInterface $reflectionClass)
     {
-        return $reflectionClass->getAnnotation(Inject::ANNOTATION);
+        return $reflectionClass->getAnnotation($this->getAnnotationName());
     }
 
     /**
@@ -140,7 +181,7 @@ class BeanDescriptor extends AbstractNameAwareDescriptor implements BeanDescript
     {
 
         // query if we've an enterprise bean with a @Inject annotation
-        if ($reflectionClass->hasAnnotation(Inject::ANNOTATION) === false) {
+        if ($reflectionClass->hasAnnotation($this->getAnnotationName()) === false) {
             // if not, do nothing
             return;
         }
@@ -218,6 +259,11 @@ class BeanDescriptor extends AbstractNameAwareDescriptor implements BeanDescript
             $this->setFactory(FactoryDescriptor::newDescriptorInstance()->fromConfiguration($factory));
         }
 
+        // load the method invocations from the reflection class
+        foreach ($configuration->getMethodInvocations() as $methodInvocation) {
+            $this->addMethodInvocation(MethodInvocationDescriptor::newDescriptorInstance()->fromConfiguration($methodInvocation));
+        }
+
         // return the instance
         return $this;
     }
@@ -255,5 +301,10 @@ class BeanDescriptor extends AbstractNameAwareDescriptor implements BeanDescript
 
         // merge the references
         $this->mergeReferences($beanDescriptor);
+
+        // merge the method invocations
+        foreach ($beanDescriptor->getMethodInvocations() as $methodInvocation) {
+            $this->addMethodInvocation($methodInvocation);
+        }
     }
 }

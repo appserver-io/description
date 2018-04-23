@@ -74,6 +74,14 @@ class BeanNode extends AbstractNode implements BeanConfigurationInterface
     protected $shared;
 
     /**
+     * The enterprise bean method invocation information.
+     *
+     * @var array
+     * @AS\Mapping(nodeName="method-invocation", nodeType="array", elementType="AppserverIo\Description\Api\Node\MethodInvocationNode")
+     */
+    protected $methodInvocations = array();
+
+    /**
      * Return's the bean name information.
      *
      * @return \AppserverIo\Description\Api\Node\ValueNode The bean name information
@@ -111,5 +119,15 @@ class BeanNode extends AbstractNode implements BeanConfigurationInterface
     public function getShared()
     {
         return $this->shared;
+    }
+
+    /**
+     * Return's the bean method invocation information.
+     *
+     * @return array The method invocation information
+     */
+    public function getMethodInvocations()
+    {
+        return $this->methodInvocations;
     }
 }

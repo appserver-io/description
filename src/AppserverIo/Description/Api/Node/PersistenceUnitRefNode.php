@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Configuration\PositionAwareConfigurationInterface;
 use AppserverIo\Description\Configuration\PersistenceUnitRefConfigurationInterface;
 
 /**
@@ -31,8 +32,15 @@ use AppserverIo\Description\Configuration\PersistenceUnitRefConfigurationInterfa
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class PersistenceUnitRefNode extends AbstractNode implements PersistenceUnitRefConfigurationInterface
+class PersistenceUnitRefNode extends AbstractNode implements PersistenceUnitRefConfigurationInterface, PositionAwareConfigurationInterface
 {
+
+    /**
+     * The trait to handle node positions.
+     *
+     * @var \AppserverIo\Description\Api\Node\PositionNodeTrait
+     */
+    use PositionNodeTrait;
 
     /**
      * The persistence unit reference name information.

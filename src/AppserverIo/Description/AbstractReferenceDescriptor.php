@@ -32,7 +32,7 @@ use AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterfa
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  */
-abstract class AbstractReferenceDescriptor extends AbstractNameAwareDescriptor implements ReferenceDescriptorInterface
+abstract class AbstractReferenceDescriptor extends AbstractNameAwareDescriptor implements ReferenceDescriptorInterface, PositionAwareDescriptorInterface
 {
 
     /**
@@ -57,6 +57,13 @@ abstract class AbstractReferenceDescriptor extends AbstractNameAwareDescriptor i
     protected $parentName;
 
     /**
+     * The nodes position in the tree.
+     *
+     * @var integer
+     */
+    protected $position = 0;
+
+    /**
      * Initializes the reference descriptor with the parent descriptor.
      *
      * @param \AppserverIo\Description\NameAwareDescriptorInterface $parent The parent descriptor instance
@@ -64,6 +71,28 @@ abstract class AbstractReferenceDescriptor extends AbstractNameAwareDescriptor i
     public function __construct(NameAwareDescriptorInterface $parent)
     {
         $this->parentName = ltrim($parent->getName(), '/');
+    }
+
+    /**
+     * Return's the position of the node in the tree.
+     *
+     * @return integer The position
+     */
+    public function getPosition()
+    {
+        return $this->position;
+    }
+
+    /**
+     * Set's the passed position of the node in the tree.
+     *
+     * @param integer $position The position
+     *
+     * @return void
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
     }
 
     /**

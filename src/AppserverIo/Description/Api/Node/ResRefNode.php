@@ -21,6 +21,7 @@
 namespace AppserverIo\Description\Api\Node;
 
 use AppserverIo\Description\Configuration\ResRefConfigurationInterface;
+use AppserverIo\Description\Configuration\PositionAwareConfigurationInterface;
 
 /**
  * DTO to transfer resource reference information.
@@ -31,8 +32,15 @@ use AppserverIo\Description\Configuration\ResRefConfigurationInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class ResRefNode extends AbstractNode implements ResRefConfigurationInterface
+class ResRefNode extends AbstractNode implements ResRefConfigurationInterface, PositionAwareConfigurationInterface
 {
+
+    /**
+     * The trait to handle node positions.
+     *
+     * @var \AppserverIo\Description\Api\Node\PositionNodeTrait
+     */
+    use PositionNodeTrait;
 
     /**
      * The resource reference name information.

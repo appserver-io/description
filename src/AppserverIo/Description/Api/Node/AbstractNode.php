@@ -35,6 +35,7 @@ use AppserverIo\Properties\PropertiesUtil;
 use AppserverIo\Properties\PropertiesInterface;
 use AppserverIo\Properties\Filter\PropertyStreamFilterParams;
 use AppserverIo\Configuration\Interfaces\ValueInterface;
+use AppserverIo\Description\Configuration\PositionAwareConfigurationInterface;
 
 /**
  * Abstract node class.
@@ -367,7 +368,12 @@ abstract class AbstractNode implements NodeInterface
                 $newNode->initFromConfiguration($child);
                 $newNode->setParentUuid($this->getUuid());
 
-                // set the instance
+                // set the position of the node is position aware
+                if ($newNode instanceof PositionAwareConfigurationInterface) {
+                    $newNode->setPosition($child->getPosition());
+                }
+
+                // add the new node as child
                 $this->{$reflectionProperty->getName()} = $newNode;
             }
 
@@ -385,6 +391,11 @@ abstract class AbstractNode implements NodeInterface
                 $newNode = new $elementType();
                 $newNode->initFromConfiguration($child);
                 $newNode->setParentUuid($this->getUuid());
+
+                // set the position of the node is position aware
+                if ($newNode instanceof PositionAwareConfigurationInterface) {
+                    $newNode->setPosition($child->getPosition());
+                }
 
                 // add the value to the node
                 if ($pk = $newNode->getPrimaryKey()) {
