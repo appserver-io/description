@@ -1,3 +1,13 @@
+# Version 9.0.1
+
+## Bugfixes
+
+* Move appserver-io dependencies from require-dev to require
+
+## Features
+
+* None
+
 # Version 9.0.0
 
 ## Bugfixes
