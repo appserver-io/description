@@ -25,6 +25,7 @@ use AppserverIo\Lang\Reflection\MethodInterface;
 use AppserverIo\Lang\Reflection\PropertyInterface;
 use AppserverIo\Description\Configuration\EpbRefConfigurationInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
+use AppserverIo\Psr\EnterpriseBeans\Description\NameAwareDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface;
 
 /**
@@ -129,7 +130,7 @@ class EpbReferenceDescriptor extends AbstractReferenceDescriptor implements EpbR
     /**
      * Returns a new descriptor instance.
      *
-     * @param \AppserverIo\Description\NameAwareDescriptorInterface $parent The parent descriptor instance
+     * @param \AppserverIo\Psr\EnterpriseBeans\Description\NameAwareDescriptorInterface $parent The parent descriptor instance
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface The descriptor instance
      */

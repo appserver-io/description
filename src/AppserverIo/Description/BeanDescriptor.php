@@ -29,6 +29,9 @@ use AppserverIo\Psr\EnterpriseBeans\Annotations\Inject;
 use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
 use AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\FactoryDescriptorInterface;
+use AppserverIo\Psr\EnterpriseBeans\Description\FactoryAwareDescriptorInterface;
+use AppserverIo\Psr\EnterpriseBeans\Description\MethodInvocationDescriptorInterface;
+use AppserverIo\Psr\EnterpriseBeans\Description\MethodInvocationAwareDescriptorInterface;
 
 /**
  * Abstract class for all bean descriptors.
@@ -118,7 +121,7 @@ class BeanDescriptor extends AbstractNameAwareDescriptor implements BeanDescript
      * Add's the passed method invaction to the method invocations that'll be invoked when the
      * instance has been created.
      *
-     * @param \AppserverIo\Description\MethodInvocationDescriptorInterface $methodInvocation The method descriptor to add
+     * @param \AppserverIo\Psr\EnterpriseBeans\Description\MethodInvocationDescriptorInterface $methodInvocation The method descriptor to add
      *
      * @return void
      */
