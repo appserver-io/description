@@ -1,3 +1,14 @@
+# Version 10.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Move descriptor interfaces to appserver-io/epb
+* Add FixtureDescriptor and MigrationDescriptor implementation
+
 # Version 9.0.1
 
 ## Bugfixes

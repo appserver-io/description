@@ -21,7 +21,9 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ReflectionParameter;
+use AppserverIo\Psr\EnterpriseBeans\Description\ReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\NameAwareDescriptorInterface;
+use AppserverIo\Psr\EnterpriseBeans\Description\PositionAwareDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface;
 
 /**
