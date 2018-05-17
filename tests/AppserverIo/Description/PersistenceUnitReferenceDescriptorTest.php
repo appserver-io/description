@@ -67,7 +67,7 @@ class PersistenceUnitReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
     {
 
         // create a mock object for the parent instance
-        $parent = $this->getMockBuilder($nameAwareInterface = 'AppserverIo\Description\NameAwareDescriptorInterface')
+        $parent = $this->getMockBuilder($nameAwareInterface = 'AppserverIo\Psr\EnterpriseBeans\Description\NameAwareDescriptorInterface')
                        ->setMethods(get_class_methods($nameAwareInterface))
                        ->getMock();
 
@@ -115,7 +115,7 @@ class PersistenceUnitReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertInstanceOf(
             'AppserverIo\Description\PersistenceUnitReferenceDescriptor',
-            PersistenceUnitReferenceDescriptor::newDescriptorInstance($this->getMock('AppserverIo\Description\NameAwareDescriptorInterface'))
+            PersistenceUnitReferenceDescriptor::newDescriptorInstance($this->getMock('AppserverIo\Psr\EnterpriseBeans\Description\NameAwareDescriptorInterface'))
         );
     }
 

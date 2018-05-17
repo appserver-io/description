@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Description;
 
+use AppserverIo\Psr\EnterpriseBeans\Description\NameAwareDescriptorInterface;
+
 /**
  * Abstract descriptor implementation that provides a descriptor name.
  *

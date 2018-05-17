@@ -21,6 +21,9 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ReflectionParameter;
+use AppserverIo\Psr\EnterpriseBeans\Description\ReferenceDescriptorInterface;
+use AppserverIo\Psr\EnterpriseBeans\Description\NameAwareDescriptorInterface;
+use AppserverIo\Psr\EnterpriseBeans\Description\PositionAwareDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\InjectionTargetDescriptorInterface;
 
 /**
@@ -66,7 +69,7 @@ abstract class AbstractReferenceDescriptor extends AbstractNameAwareDescriptor i
     /**
      * Initializes the reference descriptor with the parent descriptor.
      *
-     * @param \AppserverIo\Description\NameAwareDescriptorInterface $parent The parent descriptor instance
+     * @param \AppserverIo\Psr\EnterpriseBeans\Description\NameAwareDescriptorInterface $parent The parent descriptor instance
      */
     public function __construct(NameAwareDescriptorInterface $parent)
     {

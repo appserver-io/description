@@ -25,6 +25,7 @@ use AppserverIo\Lang\Reflection\MethodInterface;
 use AppserverIo\Lang\Reflection\PropertyInterface;
 use AppserverIo\Description\Configuration\PersistenceUnitRefConfigurationInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
+use AppserverIo\Psr\EnterpriseBeans\Description\NameAwareDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\PersistenceUnitReferenceDescriptorInterface;
 
 /**
@@ -71,7 +72,7 @@ class PersistenceUnitReferenceDescriptor extends AbstractReferenceDescriptor imp
     /**
      * Returns a new descriptor instance.
      *
-     * @param \AppserverIo\Description\NameAwareDescriptorInterface $parent The parent descriptor instance
+     * @param \AppserverIo\Psr\EnterpriseBeans\Description\NameAwareDescriptorInterface $parent The parent descriptor instance
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface The descriptor instance
      */

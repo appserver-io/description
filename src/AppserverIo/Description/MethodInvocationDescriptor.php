@@ -24,6 +24,7 @@ use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
 use AppserverIo\Description\Configuration\ConfigurationInterface;
 use AppserverIo\Description\Configuration\MethodInvocationConfigurationInterface;
+use AppserverIo\Psr\EnterpriseBeans\Description\MethodInvocationDescriptorInterface;
 
 /**
  * Implementation of a method invocation descriptor.
@@ -98,7 +99,7 @@ class MethodInvocationDescriptor extends AbstractNameAwareDescriptor implements 
     /**
      * Returns a new descriptor instance.
      *
-     * @return \AppserverIo\Description\MethodInvocationDescriptorInterface The descriptor instance
+     * @return \AppserverIo\Psr\EnterpriseBeans\Description\MethodInvocationDescriptorInterface The descriptor instance
      */
     public static function newDescriptorInstance()
     {

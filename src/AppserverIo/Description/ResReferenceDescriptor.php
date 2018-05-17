@@ -25,6 +25,7 @@ use AppserverIo\Lang\Reflection\MethodInterface;
 use AppserverIo\Lang\Reflection\PropertyInterface;
 use AppserverIo\Description\Configuration\ResRefConfigurationInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
+use AppserverIo\Psr\EnterpriseBeans\Description\NameAwareDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface;
 
 /**
@@ -100,7 +101,7 @@ class ResReferenceDescriptor extends AbstractReferenceDescriptor implements ResR
     /**
      * Returns a new descriptor instance.
      *
-     * @param \AppserverIo\Description\NameAwareDescriptorInterface $parent The parent descriptor instance
+     * @param \AppserverIo\Psr\EnterpriseBeans\Description\NameAwareDescriptorInterface $parent The parent descriptor instance
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface The descriptor instance
      */
