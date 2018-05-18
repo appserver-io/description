@@ -1,3 +1,13 @@
+# Version 11.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add persistence unit descriptor interfaces + implementations from appserver-io/appserver to this library
+
 # Version 10.0.0
 
 ## Bugfixes

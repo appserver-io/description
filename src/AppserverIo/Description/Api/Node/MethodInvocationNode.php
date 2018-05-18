@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Description\Api\Node\MethodInvocationNode
+ * AppserverIo\Description\Api\Node\MethodInvocationNode
  *
  * NOTICE OF LICENSE
  *
