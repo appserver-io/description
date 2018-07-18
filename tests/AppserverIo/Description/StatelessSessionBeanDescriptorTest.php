@@ -21,7 +21,7 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ReflectionClass;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateless;
+use AppserverIo\Psr\EnterpriseBeans\Annotations as EPB;
 use AppserverIo\Description\Api\Node\SessionNode;
 use AppserverIo\Description\Api\Node\MessageDrivenNode;
 
@@ -34,7 +34,7 @@ use AppserverIo\Description\Api\Node\MessageDrivenNode;
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  *
- * @Stateless
+ * @EPB\Stateless
  */
 class StatelessSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
 {
@@ -78,11 +78,8 @@ class StatelessSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
     public function testFromReflectionClass()
     {
 
-        // initialize the annotation aliases
-        $aliases = array(Stateless::ANNOTATION => Stateless::__getClass());
-
         // create the reflection class
-        $reflectionClass = new ReflectionClass(__CLASS__, array(), $aliases);
+        $reflectionClass = new ReflectionClass(__CLASS__, array(), array());
 
         // check that the descriptor has been initialized
         $this->assertSame($this->descriptor, $this->descriptor->fromReflectionClass($reflectionClass));
@@ -94,7 +91,7 @@ class StatelessSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests that initialization from a reflection class without @Stateless
+     * Tests that initialization from a reflection class without Stateless
      * annotation won't work.
      *
      * @return void
@@ -102,11 +99,8 @@ class StatelessSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
     public function testFromInvalidReflectionClass()
     {
 
-        // initialize the annotation aliases
-        $aliases = array(Stateless::ANNOTATION => Stateless::__getClass());
-
         // create the reflection class
-        $reflectionClass = new ReflectionClass('\stdClass', array(), $aliases);
+        $reflectionClass = new ReflectionClass('\stdClass', array(), array());
 
         // check that the descriptor has not been initialized
         $this->assertNull($this->descriptor->fromReflectionClass($reflectionClass));

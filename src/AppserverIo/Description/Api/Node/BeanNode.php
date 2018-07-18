@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Configuration\BeanConfigurationInterface;
 
 /**
@@ -45,7 +46,7 @@ class BeanNode extends AbstractNode implements BeanConfigurationInterface
      * The bean name information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $name;
 
@@ -53,7 +54,7 @@ class BeanNode extends AbstractNode implements BeanConfigurationInterface
      * The bean class information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="class", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="class", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $class;
 
@@ -61,7 +62,7 @@ class BeanNode extends AbstractNode implements BeanConfigurationInterface
      * The bean factory information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="factory", nodeType="AppserverIo\Description\Api\Node\FactoryNode")
+     * @DI\Mapping(nodeName="factory", nodeType="AppserverIo\Description\Api\Node\FactoryNode")
      */
     protected $factory;
 
@@ -69,7 +70,7 @@ class BeanNode extends AbstractNode implements BeanConfigurationInterface
      * The bean shared information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="shared", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="shared", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $shared;
 
@@ -77,7 +78,7 @@ class BeanNode extends AbstractNode implements BeanConfigurationInterface
      * The enterprise bean method invocation information.
      *
      * @var array
-     * @AS\Mapping(nodeName="method-invocation", nodeType="array", elementType="AppserverIo\Description\Api\Node\MethodInvocationNode")
+     * @DI\Mapping(nodeName="method-invocation", nodeType="array", elementType="AppserverIo\Description\Api\Node\MethodInvocationNode")
      */
     protected $methodInvocations = array();
 

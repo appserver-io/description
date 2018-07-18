@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Configuration\Interfaces\ValueInterface;
 use AppserverIo\Description\Configuration\DirectoryConfigurationInterface;
 
@@ -39,7 +40,7 @@ class DirectoryNode extends AbstractValueNode implements DirectoryConfigurationI
      * The flag to enforce design-by-contract type checking on classes of this directory.
      *
      * @var string
-     * @AS\Mapping(nodeType="boolean")
+     * @DI\Mapping(nodeType="boolean")
      */
     protected $enforced;
 

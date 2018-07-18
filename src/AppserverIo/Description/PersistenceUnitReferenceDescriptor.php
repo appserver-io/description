@@ -105,17 +105,14 @@ class PersistenceUnitReferenceDescriptor extends AbstractReferenceDescriptor imp
     public function fromReflectionProperty(PropertyInterface $reflectionProperty)
     {
 
+        // create a new annotation instance
+        $annotationInstance = $this->getPropertyAnnotation($reflectionProperty, PersistenceUnit::class);
+
         // if we found a @PersistenceUnit annotation, load the annotation instance
-        if ($reflectionProperty->hasAnnotation(PersistenceUnit::ANNOTATION) === false) {
+        if ($annotationInstance === null) {
             // if not, do nothing
             return;
         }
-
-        // initialize the annotation instance
-        $annotation = $reflectionProperty->getAnnotation(PersistenceUnit::ANNOTATION);
-
-        // load the annotation instance
-        $annotationInstance = $annotation->newInstance($annotation->getAnnotationName(), $annotation->getValues());
 
         // load the reference name defined as @PersistenceUnit(name=****)
         if ($name = $annotationInstance->getName()) {
@@ -151,17 +148,14 @@ class PersistenceUnitReferenceDescriptor extends AbstractReferenceDescriptor imp
     public function fromReflectionMethod(MethodInterface $reflectionMethod)
     {
 
+        // load the annotation instance
+        $annotationInstance = $this->getMethodAnnotation($reflectionMethod, PersistenceUnit::class);
+
         // if we found a @PersistenceUnit annotation, load the annotation instance
-        if ($reflectionMethod->hasAnnotation(PersistenceUnit::ANNOTATION) === false) {
+        if ($annotationInstance === null) {
             // if not, do nothing
             return;
         }
-
-        // initialize the annotation instance
-        $annotation = $reflectionMethod->getAnnotation(PersistenceUnit::ANNOTATION);
-
-        // load the annotation instance
-        $annotationInstance = $annotation->newInstance($annotation->getAnnotationName(), $annotation->getValues());
 
         // load the reference name defined as @PersistenceUnit(name=****)
         if ($name = $annotationInstance->getName()) {

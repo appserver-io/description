@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Description\Api\Node\Mapping
+ * \AppserverIo\Description\Annotations\Mapping
  *
  * NOTICE OF LICENSE
  *
@@ -18,68 +18,73 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Description\Api\Node;
+namespace AppserverIo\Description\Annotations;
 
 /**
- * DTO to transfer aliases.
+ * The annotation to parse the configuration nodes.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @Annotation
+ * @Target("PROPERTY")
  */
 class Mapping
 {
 
     /**
-     * The tokens name
+     * The tokens name.
+     *
      * @var string
      */
     protected $name;
 
     /**
-     * The node type
+     * The node type.
+     *
      * @var string
      */
     protected $nodeType;
 
     /**
-     * The node name
+     * The node name.
+     *
      * @var string
      */
     protected $nodeName;
 
     /**
-     * The element type
+     * The element type.
+     *
      * @var string
      */
     protected $elementType;
 
     /**
-     * The attach method
+     * The attach method.
+     *
      * @var string
      */
     protected $attachMethod;
 
     /**
-     * Construct
+     * The constructor the initializes the instance with the
+     * data passed with the token.
      *
-     * @param \stdClass $token A simple token object
+     * @param array $values The annotation values
      */
-    public function __construct(\stdClass $token)
+    public function __construct(array $values = array())
     {
-        $this->name = $token->name;
-
-        $this->attachMethod = "attach{ucfirst($this->name)}";
-
-        foreach ($token->values as $member => $value) {
+        foreach ($values as $member => $value) {
             $this->$member = $value;
         }
     }
 
     /**
-     * Return's the token name
+     * Return's the token name.
      *
      * @return string
      */
@@ -89,7 +94,7 @@ class Mapping
     }
 
     /**
-     * Return's the node type
+     * Return's the node type.
      *
      * @return string
      */
@@ -99,7 +104,7 @@ class Mapping
     }
 
     /**
-     * Return's the node name
+     * Return's the node name.
      *
      * @return string
      */
@@ -109,7 +114,7 @@ class Mapping
     }
 
     /**
-     * Returns the element type
+     * Returns the element type.
      *
      * @return string
      */
@@ -119,7 +124,7 @@ class Mapping
     }
 
     /**
-     * Returns the attach method
+     * Returns the attach method.
      *
      * @return string
      */

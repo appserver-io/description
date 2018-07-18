@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Configuration\InjectionTargetConfigurationInterface;
 
 /**
@@ -38,7 +39,7 @@ class InjectionTargetNode extends AbstractNode implements InjectionTargetConfigu
      * The enterprise bean injection target class information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="injection-target-class", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="injection-target-class", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $injectionTargetClass;
 
@@ -46,7 +47,7 @@ class InjectionTargetNode extends AbstractNode implements InjectionTargetConfigu
      * The enterprise bean injection target method information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="injection-target-method", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="injection-target-method", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $injectionTargetMethod;
 
@@ -54,7 +55,7 @@ class InjectionTargetNode extends AbstractNode implements InjectionTargetConfigu
      * The enterprise bean injection target method parameter name information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="injection-target-method-parameter-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="injection-target-method-parameter-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $injectionTargetMethodParameterName;
 
@@ -62,7 +63,7 @@ class InjectionTargetNode extends AbstractNode implements InjectionTargetConfigu
      * The enterprise bean injection target property information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="injection-target-property", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="injection-target-property", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $injectionTargetProperty;
 

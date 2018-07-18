@@ -41,8 +41,7 @@ class MessageDrivenBeanDescriptor extends EnterpriseBeanDescriptor implements Me
     /**
      * Returns a new descriptor instance.
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\MessageDrivenBeanDescriptorInterface
-     *     The descriptor instance
+     * @return \AppserverIo\Psr\EnterpriseBeans\Description\MessageDrivenBeanDescriptorInterface The descriptor instance
      */
     public static function newDescriptorInstance()
     {
@@ -50,15 +49,13 @@ class MessageDrivenBeanDescriptor extends EnterpriseBeanDescriptor implements Me
     }
 
     /**
-     * Returns a new annotation instance for the passed reflection class.
+     * Return's the annoation class name.
      *
-     * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the bean configuration
-     *
-     * @return \AppserverIo\Lang\Reflection\AnnotationInterface The reflection annotation
+     * @return string The annotation class name
      */
-    protected function newAnnotationInstance(ClassInterface $reflectionClass)
+    protected function getAnnotationClass()
     {
-        return $reflectionClass->getAnnotation(MessageDriven::ANNOTATION);
+        return MessageDriven::class;
     }
 
     /**
@@ -71,8 +68,11 @@ class MessageDrivenBeanDescriptor extends EnterpriseBeanDescriptor implements Me
     public function fromReflectionClass(ClassInterface $reflectionClass)
     {
 
+        // load the annotation instance
+        $annotationInstance = $this->getClassAnnotation($reflectionClass, MessageDriven::class);
+
         // query if we've an enterprise bean with a @MessageDriven annotation
-        if ($reflectionClass->hasAnnotation(MessageDriven::ANNOTATION) === false) {
+        if ($annotationInstance === null) {
             // if not, do nothing
             return;
         }

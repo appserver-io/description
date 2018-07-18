@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Psr\ApplicationServer\Configuration\DatabaseConfigurationInterface;
 
 /**
@@ -38,7 +39,7 @@ class DatabaseNode extends AbstractNode implements DatabaseConfigurationInterfac
      * The database driver information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="driver", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="driver", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $driver;
 
@@ -46,7 +47,7 @@ class DatabaseNode extends AbstractNode implements DatabaseConfigurationInterfac
      * The database user information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="user", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="user", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $user;
 
@@ -54,7 +55,7 @@ class DatabaseNode extends AbstractNode implements DatabaseConfigurationInterfac
      * The database password information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="password", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="password", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $password;
 
@@ -62,7 +63,7 @@ class DatabaseNode extends AbstractNode implements DatabaseConfigurationInterfac
      * The database name information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="databaseName", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="databaseName", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $databaseName;
 
@@ -70,7 +71,7 @@ class DatabaseNode extends AbstractNode implements DatabaseConfigurationInterfac
      * The database path information (when using sqlite for example).
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="path", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="path", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $path;
 
@@ -78,7 +79,7 @@ class DatabaseNode extends AbstractNode implements DatabaseConfigurationInterfac
      * The flag to run Sqlite in memory (mutually exclusive with the path option).
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="memory", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="memory", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $memory;
 
@@ -86,7 +87,7 @@ class DatabaseNode extends AbstractNode implements DatabaseConfigurationInterfac
      * The database host information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="databaseHost", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="databaseHost", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $databaseHost;
 
@@ -94,7 +95,7 @@ class DatabaseNode extends AbstractNode implements DatabaseConfigurationInterfac
      * The database port information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="databasePort", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="databasePort", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $databasePort;
 
@@ -102,7 +103,7 @@ class DatabaseNode extends AbstractNode implements DatabaseConfigurationInterfac
      * The database charset information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="charset", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="charset", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $charset;
 
@@ -110,7 +111,7 @@ class DatabaseNode extends AbstractNode implements DatabaseConfigurationInterfac
      * The database driver options.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="driverOptions", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="driverOptions", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $driverOptions;
 
@@ -118,7 +119,7 @@ class DatabaseNode extends AbstractNode implements DatabaseConfigurationInterfac
      * The name of the socket used to connect to the database.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="unixSocket", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="unixSocket", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $unixSocket;
 
@@ -126,7 +127,7 @@ class DatabaseNode extends AbstractNode implements DatabaseConfigurationInterfac
      * The DB platform.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="platform", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="platform", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $platform;
 
@@ -134,7 +135,7 @@ class DatabaseNode extends AbstractNode implements DatabaseConfigurationInterfac
      * The server version we want to connect to.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="serverVersion", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="serverVersion", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $serverVersion;
 

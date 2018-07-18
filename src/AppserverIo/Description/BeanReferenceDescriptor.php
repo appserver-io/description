@@ -134,17 +134,14 @@ class BeanReferenceDescriptor extends AbstractReferenceDescriptor implements Bea
     public function fromReflectionProperty(PropertyInterface $reflectionProperty)
     {
 
+        // create a new annotation instance
+        $annotationInstance = $this->getPropertyAnnotation($reflectionProperty, Inject::class);
+
         // if we found a @Inject annotation, load the annotation instance
-        if ($reflectionProperty->hasAnnotation(Inject::ANNOTATION) === false) {
+        if ($annotationInstance === null) {
             // if not, do nothing
             return;
         }
-
-        // initialize the annotation instance
-        $annotation = $reflectionProperty->getAnnotation(Inject::ANNOTATION);
-
-        // load the annotation instance
-        $annotationInstance = $annotation->newInstance($annotation->getAnnotationName(), $annotation->getValues());
 
         // load the reference name defined as @Inject(name=****)
         if ($name = $annotationInstance->getName()) {
@@ -188,17 +185,14 @@ class BeanReferenceDescriptor extends AbstractReferenceDescriptor implements Bea
     public function fromReflectionMethod(MethodInterface $reflectionMethod)
     {
 
+        // load the annotation instance
+        $annotationInstance = $this->getMethodAnnotation($reflectionMethod, Inject::class);
+
         // if we found a @Inject annotation, load the annotation instance
-        if ($reflectionMethod->hasAnnotation(Inject::ANNOTATION) === false) {
+        if ($annotationInstance === null) {
             // if not, do nothing
             return;
         }
-
-        // initialize the annotation instance
-        $annotation = $reflectionMethod->getAnnotation(Inject::ANNOTATION);
-
-        // load the annotation instance
-        $annotationInstance = $annotation->newInstance($annotation->getAnnotationName(), $annotation->getValues());
 
         // load the reference name defined as @Inject(name=****)
         if ($name = $annotationInstance->getName()) {

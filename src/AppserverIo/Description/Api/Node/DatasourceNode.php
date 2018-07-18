@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Psr\ApplicationServer\Configuration\DatasourceConfigurationInterface;
 
 /**
@@ -38,7 +39,7 @@ class DatasourceNode extends AbstractNode implements DatasourceConfigurationInte
      * The unique datasource name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $name;
 
@@ -46,7 +47,7 @@ class DatasourceNode extends AbstractNode implements DatasourceConfigurationInte
      * The type of the datasource.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $type;
 
@@ -54,7 +55,7 @@ class DatasourceNode extends AbstractNode implements DatasourceConfigurationInte
      * The database connection information.
      *
      * @var \AppserverIo\Description\Api\Node\DatabaseNode
-     * @AS\Mapping(nodeName="database", nodeType="AppserverIo\Description\Api\Node\DatabaseNode")
+     * @DI\Mapping(nodeName="database", nodeType="AppserverIo\Description\Api\Node\DatabaseNode")
      */
     protected $database;
 
@@ -62,7 +63,7 @@ class DatasourceNode extends AbstractNode implements DatasourceConfigurationInte
      * The container which can use this datasource
      *
      * @var string
-     * @AS\Mapping(nodeName="container", nodeType="string")
+     * @DI\Mapping(nodeName="container", nodeType="string")
      */
     protected $containerName;
 

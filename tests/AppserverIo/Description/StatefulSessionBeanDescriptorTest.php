@@ -21,13 +21,9 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ReflectionClass;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateful;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\PreAttach;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\PostDetach;
+use AppserverIo\Psr\EnterpriseBeans\Annotations as EPB;
 use AppserverIo\Description\Api\Node\SessionNode;
 use AppserverIo\Description\Api\Node\MessageDrivenNode;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\PostActivate;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\PrePassivate;
 
 /**
  * Test implementation for the StatefulSessionBeanDescriptor class implementation.
@@ -38,7 +34,7 @@ use AppserverIo\Psr\EnterpriseBeans\Annotations\PrePassivate;
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  *
- * @Stateful
+ * @EPB\Stateful
  */
 class StatefulSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
 {
@@ -82,17 +78,8 @@ class StatefulSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
     public function testFromReflectionClass()
     {
 
-        // initialize the annotation aliases
-        $aliases = array(
-            Stateful::ANNOTATION => Stateful::__getClass(),
-            PreAttach::ANNOTATION => PreAttach::__getClass(),
-            PostDetach::ANNOTATION => PostDetach::__getClass(),
-            PostActivate::ANNOTATION => PostActivate::__getClass(),
-            PrePassivate::ANNOTATION => PrePassivate::__getClass()
-        );
-
         // create the reflection class
-        $reflectionClass = new ReflectionClass(__CLASS__, array(), $aliases);
+        $reflectionClass = new ReflectionClass(__CLASS__, array(), array());
 
         // check that the descriptor has been initialized
         $this->assertSame($this->descriptor, $this->descriptor->fromReflectionClass($reflectionClass));
@@ -108,7 +95,7 @@ class StatefulSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests that initialization from a reflection class without @Stateful
+     * Tests that initialization from a reflection class without Stateful
      * annotation won't work.
      *
      * @return void
@@ -116,11 +103,8 @@ class StatefulSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
     public function testFromInvalidReflectionClass()
     {
 
-        // initialize the annotation aliases
-        $aliases = array(Stateful::ANNOTATION => Stateful::__getClass());
-
         // create the reflection class
-        $reflectionClass = new ReflectionClass('\stdClass', array(), $aliases);
+        $reflectionClass = new ReflectionClass('\stdClass', array(), array());
 
         // check that the descriptor has not been initialized
         $this->assertNull($this->descriptor->fromReflectionClass($reflectionClass));
@@ -336,7 +320,7 @@ class StatefulSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
      * A dummy implemenatation for pre-attach method.
      *
      * @return void
-     * @PreAttach
+     * @EPB\PreAttach
      */
     public function attach()
     {
@@ -347,7 +331,7 @@ class StatefulSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
      * A dummy implemenatation for post-detach method.
      *
      * @return void
-     * @PostDetach
+     * @EPB\PostDetach
      */
     public function detach()
     {
@@ -358,7 +342,7 @@ class StatefulSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
      * A dummy implemenatation for post-activate method.
      *
      * @return void
-     * @PostActivate
+     * @EPB\PostActivate
      */
     public function activate()
     {
@@ -369,7 +353,7 @@ class StatefulSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
      * A dummy implemenatation for pre-passivate method.
      *
      * @return void
-     * @PrePassivate
+     * @EPB\PrePassivate
      */
     public function passivate()
     {
@@ -380,7 +364,7 @@ class StatefulSessionBeanDescriptorTest extends \PHPUnit_Framework_TestCase
      * A dummy implementation for remove method.
      *
      * @return void
-     * @Remove
+     * @EPB\Remove
      */
     public function logout()
     {

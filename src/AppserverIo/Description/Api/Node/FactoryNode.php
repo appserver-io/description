@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Configuration\FactoryConfigurationInterface;
 
 /**
@@ -38,7 +39,7 @@ class FactoryNode extends AbstractNode implements FactoryConfigurationInterface
      * The factory name information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $name;
 
@@ -46,7 +47,7 @@ class FactoryNode extends AbstractNode implements FactoryConfigurationInterface
      * The factory class information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="class", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="class", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $class;
 
@@ -54,7 +55,7 @@ class FactoryNode extends AbstractNode implements FactoryConfigurationInterface
      * The factory method information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="method", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="method", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $method;
 

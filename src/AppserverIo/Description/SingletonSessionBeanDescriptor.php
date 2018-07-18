@@ -182,15 +182,13 @@ class SingletonSessionBeanDescriptor extends SessionBeanDescriptor implements Si
     }
 
     /**
-     * Returns a new annotation instance for the passed reflection class.
+     * Return's the annoation class name.
      *
-     * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the bean configuration
-     *
-     * @return \AppserverIo\Lang\Reflection\AnnotationInterface The reflection annotation
+     * @return string The annotation class name
      */
-    protected function newAnnotationInstance(ClassInterface $reflectionClass)
+    protected function getAnnotationClass()
     {
-        return $reflectionClass->getAnnotation(Singleton::ANNOTATION);
+        return Singleton::class;
     }
 
     /**
@@ -203,8 +201,11 @@ class SingletonSessionBeanDescriptor extends SessionBeanDescriptor implements Si
     public function fromReflectionClass(ClassInterface $reflectionClass)
     {
 
+        // create a new annotation instance
+        $annotationInstance = $this->getClassAnnotation($reflectionClass, $this->getAnnotationClass());
+
         // query if we've an enterprise bean with a @Singleton annotation
-        if ($reflectionClass->hasAnnotation(Singleton::ANNOTATION) === false) {
+        if ($annotationInstance === null) {
             // if not, do nothing
             return;
         }
@@ -215,12 +216,12 @@ class SingletonSessionBeanDescriptor extends SessionBeanDescriptor implements Si
         // we've to check for a @PostDetach or @PreAttach annotation
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
             // if we found a @PostDetach annotation, invoke the method
-            if ($reflectionMethod->hasAnnotation(PostDetach::ANNOTATION)) {
+            if ($this->getMethodAnnotation($reflectionMethod, PostDetach::class)) {
                 $this->addPostDetachCallback(DescriptorUtil::trim($reflectionMethod->getMethodName()));
             }
 
             // if we found a @PreAttach annotation, invoke the method
-            if ($reflectionMethod->hasAnnotation(PreAttach::ANNOTATION)) {
+            if ($this->getMethodAnnotation($reflectionMethod, PreAttach::class)) {
                 $this->addPreAttachCallback(DescriptorUtil::trim($reflectionMethod->getMethodName()));
             }
         }
@@ -229,7 +230,7 @@ class SingletonSessionBeanDescriptor extends SessionBeanDescriptor implements Si
         parent::fromReflectionClass($reflectionClass);
 
         // if we found a bean with @Singleton + @Startup annotation
-        if ($reflectionClass->hasAnnotation(Startup::ANNOTATION)) {
+        if ($this->getClassAnnotation($reflectionClass, Startup::class)) {
             // instanciate the bean
             $this->setInitOnStartup();
         }

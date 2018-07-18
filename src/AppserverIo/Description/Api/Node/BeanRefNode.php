@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Configuration\BeanRefConfigurationInterface;
 use AppserverIo\Description\Configuration\PositionAwareConfigurationInterface;
 
@@ -46,7 +47,7 @@ class BeanRefNode extends AbstractNode implements BeanRefConfigurationInterface,
      * The bean reference name information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="bean-ref-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="bean-ref-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $beanRefName;
 
@@ -54,7 +55,7 @@ class BeanRefNode extends AbstractNode implements BeanRefConfigurationInterface,
      * The bean link information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="bean-link", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="bean-link", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $beanLink;
 
@@ -62,7 +63,7 @@ class BeanRefNode extends AbstractNode implements BeanRefConfigurationInterface,
      * The bean reference type information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="bean-ref-type", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="bean-ref-type", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $beanRefType;
 
@@ -70,7 +71,7 @@ class BeanRefNode extends AbstractNode implements BeanRefConfigurationInterface,
      * The bean description information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="description", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="description", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $description;
 
@@ -78,7 +79,7 @@ class BeanRefNode extends AbstractNode implements BeanRefConfigurationInterface,
      * The bean injection target information.
      *
      * @var \AppserverIo\Description\Api\Node\InjectionTargetNode
-     * @AS\Mapping(nodeName="injection-target", nodeType="AppserverIo\Description\Api\Node\InjectionTargetNode")
+     * @DI\Mapping(nodeName="injection-target", nodeType="AppserverIo\Description\Api\Node\InjectionTargetNode")
      */
     protected $injectionTarget;
 

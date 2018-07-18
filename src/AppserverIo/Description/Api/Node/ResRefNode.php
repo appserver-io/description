@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Configuration\ResRefConfigurationInterface;
 use AppserverIo\Description\Configuration\PositionAwareConfigurationInterface;
 
@@ -46,7 +47,7 @@ class ResRefNode extends AbstractNode implements ResRefConfigurationInterface, P
      * The resource reference name information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="res-ref-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="res-ref-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $resRefName;
 
@@ -54,7 +55,7 @@ class ResRefNode extends AbstractNode implements ResRefConfigurationInterface, P
      * The resource reference type information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="res-ref-type", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="res-ref-type", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $resRefType;
 
@@ -62,7 +63,7 @@ class ResRefNode extends AbstractNode implements ResRefConfigurationInterface, P
      * The resource description information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="description", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="description", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $description;
 
@@ -70,7 +71,7 @@ class ResRefNode extends AbstractNode implements ResRefConfigurationInterface, P
      * The resource lookup name information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="lookup-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="lookup-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $lookupName;
 
@@ -78,7 +79,7 @@ class ResRefNode extends AbstractNode implements ResRefConfigurationInterface, P
      * The resource injection target information.
      *
      * @var \AppserverIo\Description\Api\Node\InjectionTargetNode
-     * @AS\Mapping(nodeName="injection-target", nodeType="AppserverIo\Description\Api\Node\InjectionTargetNode")
+     * @DI\Mapping(nodeName="injection-target", nodeType="AppserverIo\Description\Api\Node\InjectionTargetNode")
      */
     protected $injectionTarget;
 

@@ -65,15 +65,13 @@ class StatelessSessionBeanDescriptor extends SessionBeanDescriptor implements St
     }
 
     /**
-     * Returns a new annotation instance for the passed reflection class.
+     * Return's the annoation class name.
      *
-     * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the bean configuration
-     *
-     * @return \AppserverIo\Lang\Reflection\AnnotationInterface The reflection annotation
+     * @return string The annotation class name
      */
-    protected function newAnnotationInstance(ClassInterface $reflectionClass)
+    protected function getAnnotationClass()
     {
-        return $reflectionClass->getAnnotation(Stateless::ANNOTATION);
+        return Stateless::class;
     }
 
     /**
@@ -86,8 +84,11 @@ class StatelessSessionBeanDescriptor extends SessionBeanDescriptor implements St
     public function fromReflectionClass(ClassInterface $reflectionClass)
     {
 
+        // create a new annotation instance
+        $annotationInstance = $this->getClassAnnotation($reflectionClass, $this->getAnnotationClass());
+
         // query if we've an enterprise bean with a @Stateless annotation
-        if ($reflectionClass->hasAnnotation(Stateless::ANNOTATION) === false) {
+        if ($annotationInstance === null) {
             // if not, do nothing
             return;
         }

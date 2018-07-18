@@ -200,15 +200,13 @@ class ServletDescriptor extends AbstractNameAwareDescriptor implements ServletDe
     }
 
     /**
-     * Returns a new annotation instance for the passed reflection class.
+     * Return's the annoation class name.
      *
-     * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the bean configuration
-     *
-     * @return \AppserverIo\Lang\Reflection\AnnotationInterface The reflection annotation
+     * @return string The annotation class name
      */
-    protected function newAnnotationInstance(ClassInterface $reflectionClass)
+    protected function getAnnotationClass()
     {
-        return $reflectionClass->getAnnotation(Route::ANNOTATION);
+        return Route::class;
     }
 
     /**
@@ -236,21 +234,12 @@ class ServletDescriptor extends AbstractNameAwareDescriptor implements ServletDe
 
         // set the servlet name, strip the phrase 'Servlet' if appended
         $this->setName(lcfirst(preg_replace('/Servlet$/', '', $reflectionClass->getShortName())));
-
+        
         // set the class name
         $this->setClassName($reflectionClass->getName());
 
-        // query if we've a servlet with a @Route annotation
-        if ($reflectionClass->hasAnnotation(Route::ANNOTATION)) {
-            // create a new annotation instance
-            $reflectionAnnotation = $this->newAnnotationInstance($reflectionClass);
-
-            // initialize the annotation instance
-            $annotationInstance = $reflectionAnnotation->newInstance(
-                $reflectionAnnotation->getAnnotationName(),
-                $reflectionAnnotation->getValues()
-            );
-
+        // if we found a @Route annotation, load the annotation instance
+        if ($annotationInstance = $this->getClassAnnotation($reflectionClass, Route::class)) {
             // load the default name to register in naming directory
             if ($nameAttribute = $annotationInstance->getName()) {
                 $this->setName($nameAttribute);

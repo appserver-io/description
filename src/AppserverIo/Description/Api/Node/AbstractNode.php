@@ -21,9 +21,6 @@
 namespace AppserverIo\Description\Api\Node;
 
 use Rhumsaa\Uuid\Uuid;
-use Herrera\Annotations\Tokens;
-use Herrera\Annotations\Tokenizer;
-use Herrera\Annotations\Convert\ToArray;
 use AppserverIo\Configuration\Configuration;
 use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Configuration\Interfaces\ConfigurationInterface;
@@ -35,7 +32,10 @@ use AppserverIo\Properties\PropertiesUtil;
 use AppserverIo\Properties\PropertiesInterface;
 use AppserverIo\Properties\Filter\PropertyStreamFilterParams;
 use AppserverIo\Configuration\Interfaces\ValueInterface;
+use AppserverIo\Description\Annotations\Mapping;
 use AppserverIo\Description\Configuration\PositionAwareConfigurationInterface;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 
 /**
  * Abstract node class.
@@ -69,6 +69,35 @@ abstract class AbstractNode implements NodeInterface
      * @var string
      */
     private $nodeName;
+
+    /**
+     * The annotation reader instance singleton.
+     *
+     * @var \Doctrine\Common\Annotations\AnnotationReader
+     */
+    private static $annotationReaderInstance;
+
+    /**
+     * Return's the annotation reader instance.
+     *
+     * @return \Doctrine\Common\Annotations\AnnotationReader
+     */
+    protected function getAnnotationReader()
+    {
+
+        // query whether or not an instance already exists
+        if (AbstractNode::$annotationReaderInstance === null) {
+            // initialize the annotation registry
+            $annotationRegistry = new AnnotationRegistry();
+            $annotationRegistry->registerFile(dirname(dirname(__DIR__)) . '/Annotations/Mapping.php');
+
+            // create a new annotation reader
+            AbstractNode::$annotationReaderInstance = new AnnotationReader();
+        }
+
+        // return the annotation reader instance
+        return AbstractNode::$annotationReaderInstance;
+    }
 
     /**
      * Initialise from file
@@ -153,6 +182,11 @@ abstract class AbstractNode implements NodeInterface
 
         // ONLY use PROTECTED properties, NOT PRIVATE, else UUID's will be overwritten!!
         foreach ($reflectionObject->getProperties(\ReflectionProperty::IS_PROTECTED) as $reflectionProperty) {
+            // we do NOT process static properties
+            if ($reflectionProperty->isStatic()) {
+                continue;
+            }
+
             // replace the properties in all string properties
             if (is_string($this->{$reflectionProperty->getName()})) {
                 $this->{$reflectionProperty->getName()} = $propertiesUtil->replacePropertiesInString(
@@ -292,7 +326,7 @@ abstract class AbstractNode implements NodeInterface
      * Returns the configuration node name by given mapping and configuration
      *
      * @param \AppserverIo\Configuration\Interfaces\ConfigurationInterface $configuration The configuration instance
-     * @param \AppserverIo\Description\Api\Node\Mapping                    $mapping       The mapping instance
+     * @param \AppserverIo\Description\Annotations\Mapping                 $mapping       The mapping instance
      *
      * @return string
      */
@@ -587,26 +621,7 @@ abstract class AbstractNode implements NodeInterface
      */
     public function getPropertyTypeFromDocComment(\ReflectionProperty $reflectionProperty)
     {
-
-        // initialize the annotation tokenizer
-        $tokenizer = new Tokenizer();
-
-        // set the aliases
-        $aliases = array('AS' => 'AppserverIo\\Description\\Api\\Node');
-
-        // parse the doc block
-        $parsed = $tokenizer->parse($reflectionProperty->getDocComment(), $aliases);
-
-        // convert tokens and return one
-        $tokens = new Tokens($parsed);
-        $toArray = new ToArray();
-
-        // iterate over the tokens
-        foreach ($toArray->convert($tokens) as $token) {
-            if ($token->name == 'AppserverIo\\Description\\Api\\Node\\Mapping') {
-                return new $token->name($token);
-            }
-        }
+        return $this->getAnnotationReader()->getPropertyAnnotation($reflectionProperty, Mapping::class);
     }
 
     /**

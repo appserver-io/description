@@ -22,9 +22,7 @@ namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Description\Api\Node\SessionNode;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
+use AppserverIo\Psr\EnterpriseBeans\Annotations as EPB;
 
 /**
  * Test implementation for the BeanDescriptor class implementation.
@@ -34,6 +32,8 @@ use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
+ *
+ * @EPB\Stateless(name="SomeName")
  */
 class EnterpriseBeanDescriptorTest extends \PHPUnit_Framework_TestCase
 {
@@ -48,21 +48,21 @@ class EnterpriseBeanDescriptorTest extends \PHPUnit_Framework_TestCase
     /**
      * Dummy bean reference.
      *
-     * @EnterpriseBean(name="SessionBean")
+     * @EPB\EnterpriseBean(name="SessionBean")
      */
     protected $dummyEnterpriseBean;
 
     /**
      * Dummy resource reference.
      *
-     * @Resource(name="Application")
+     * @EPB\Resource(name="Application")
      */
     protected $dummyResource;
 
     /**
      * Dummy resource reference.
      *
-     * @PersistenceUnit(name="PersistenceUnit")
+     * @EPB\PersistenceUnit(name="PersistenceUnit")
      */
     protected $dummyPersistenceUnit;
 
@@ -74,7 +74,15 @@ class EnterpriseBeanDescriptorTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->descriptor = $this->getMockForAbstractClass('AppserverIo\Description\EnterpriseBeanDescriptor');
+
+        // initialize the mock descriptor
+        $descriptor = $this->getMockBuilder('AppserverIo\Description\EnterpriseBeanDescriptor')
+            ->setMethods(array('getAnnotationClass'))
+            ->getMockForAbstractClass();
+        $descriptor->getAnnotationReader()->addGlobalIgnoredName('expectedException');
+
+        // set the mock descriptor
+        $this->descriptor = $descriptor;
     }
 
     /**
@@ -83,7 +91,7 @@ class EnterpriseBeanDescriptorTest extends \PHPUnit_Framework_TestCase
      * @param mixed $dummyEnterpriseBean The dummy bean
      *
      * @return void
-     * @EnterpriseBean(name="SessionBean")
+     * @EPB\EnterpriseBean(name="SessionBean")
      */
     public function injectDummyEnterpriseBean($dummyEnterpriseBean)
     {
@@ -96,7 +104,7 @@ class EnterpriseBeanDescriptorTest extends \PHPUnit_Framework_TestCase
      * @param mixed $dummyResource The dummy resource
      *
      * @return void
-     * @Resource(name="Application")
+     * @EPB\Resource(name="Application")
      */
     public function injectDummyResource($dummyResource)
     {
@@ -109,7 +117,7 @@ class EnterpriseBeanDescriptorTest extends \PHPUnit_Framework_TestCase
      * @param mixed $dummyPersistenceUnit The dummy persistence unit
      *
      * @return void
-     * @PersistenceUnit(name="PersistenceUnit")
+     * @EPB\PersistenceUnit(name="PersistenceUnit")
      */
     public function injectDummyPersistenceUnit($dummyPersistenceUnit)
     {
@@ -158,123 +166,20 @@ class EnterpriseBeanDescriptorTest extends \PHPUnit_Framework_TestCase
     public function testFromReflectionClassWithAnnotationContainingNameAttribute()
     {
 
-        // prepare the annotation values
-        $values = array('name' => 'EnterpriseBeanDescriptorTest');
-
-        // create a mock annotation implementation
-        $beanAnnotation = $this->getMockBuilder('AppserverIo\Psr\EnterpriseBeans\Annotations\AbstractBeanAnnotation')
-                               ->setConstructorArgs(array('Stateless', $values))
-                               ->getMockForAbstractClass();
-
-        // create a mock annotation
-        $annotation = $this->getMockBuilder('AppserverIo\Lang\Reflection\ReflectionAnnotation')
-                           ->setMethods(array('getAnnotationName', 'getValues', 'newInstance'))
-                           ->setConstructorArgs(array('Stateless', $values))
-                           ->getMock();
-
-        // mock the ReflectionAnnotation methods
-        $annotation
-            ->expects($this->once())
-            ->method('getAnnotationName')
-            ->will($this->returnValue('Stateless'));
-        $annotation
-            ->expects($this->once())
-            ->method('getValues')
-            ->will($this->returnValue($values));
-        $annotation
-            ->expects($this->once())
-            ->method('newInstance')
-            ->will($this->returnValue($beanAnnotation));
-
-        // initialize the annotation aliases
-        $aliases = array(
-            Resource::ANNOTATION => Resource::__getClass(),
-            EnterpriseBean::ANNOTATION => EnterpriseBean::__getClass(),
-            PersistenceUnit::ANNOTATION => PersistenceUnit::__getClass()
-        );
-
         // create a reflection class
-        $reflectionClass = new ReflectionClass(__CLASS__, array(), $aliases);
+        $reflectionClass = new ReflectionClass(__CLASS__, array(), array());
 
         // mock the methods
-        $this->descriptor
-            ->expects($this->once())
-            ->method('newAnnotationInstance')
-            ->with($reflectionClass)
-            ->will($this->returnValue($annotation));
+        $this->descriptor->expects($this->once())
+            ->method('getAnnotationClass')
+            ->willReturn('AppserverIo\Psr\EnterpriseBeans\Annotations\Stateless');
 
         // initialize the descriptor instance
         $this->descriptor->fromReflectionClass($reflectionClass);
 
         // check the name parsed from the reflection class
         $this->assertSame(__CLASS__, $this->descriptor->getClassName());
-        $this->assertSame('EnterpriseBeanDescriptorTest', $this->descriptor->getName());
-        $this->assertCount(1, $this->descriptor->getEpbReferences());
-        $this->assertCount(1, $this->descriptor->getResReferences());
-        $this->assertCount(1, $this->descriptor->getPersistenceUnitReferences());
-        $this->assertCount(3, $this->descriptor->getReferences());
-    }
-
-    /**
-     * Tests if the deployment initialization from a reflection class with a bean annotation
-     * without the name attribute works as expected.
-     *
-     * @return void
-     */
-    public function testFromReflectionClassWithAnnotationWithoutNameAttribute()
-    {
-
-        // prepare the annotation values
-        $values = array();
-
-        // create a mock annotation implementation
-        $beanAnnotation = $this->getMockBuilder('AppserverIo\Psr\EnterpriseBeans\Annotations\AbstractBeanAnnotation')
-                               ->setConstructorArgs(array('Stateless', $values))
-                               ->getMockForAbstractClass();
-
-        // create a mock annotation
-        $annotation = $this->getMockBuilder('AppserverIo\Lang\Reflection\ReflectionAnnotation')
-                           ->setMethods(array('getAnnotationName', 'getValues', 'newInstance'))
-                           ->setConstructorArgs(array('Stateless', $values))
-                           ->getMock();
-
-        // mock the ReflectionAnnotation methods
-        $annotation
-            ->expects($this->once())
-            ->method('getAnnotationName')
-            ->will($this->returnValue('Stateless'));
-        $annotation
-            ->expects($this->once())
-            ->method('getValues')
-            ->will($this->returnValue($values));
-        $annotation
-            ->expects($this->once())
-            ->method('newInstance')
-            ->will($this->returnValue($beanAnnotation));
-
-        // initialize the annotation aliases
-        $aliases = array(
-            Resource::ANNOTATION => Resource::__getClass(),
-            EnterpriseBean::ANNOTATION => EnterpriseBean::__getClass(),
-            PersistenceUnit::ANNOTATION => PersistenceUnit::__getClass()
-        );
-
-        // create a reflection class
-        $reflectionClass = new ReflectionClass(__CLASS__, array(), $aliases);
-
-        // mock the methods
-        $this->descriptor
-            ->expects($this->once())
-            ->method('newAnnotationInstance')
-            ->with($reflectionClass)
-            ->will($this->returnValue($annotation));
-
-        // initialize the descriptor instance
-        $this->descriptor->fromReflectionClass($reflectionClass);
-
-        // check the name parsed from the reflection class
-        $this->assertSame(__CLASS__, $this->descriptor->getClassName());
-        $this->assertSame('EnterpriseBeanDescriptorTest', $this->descriptor->getName());
+        $this->assertSame('SomeName', $this->descriptor->getName());
         $this->assertCount(1, $this->descriptor->getEpbReferences());
         $this->assertCount(1, $this->descriptor->getResReferences());
         $this->assertCount(1, $this->descriptor->getPersistenceUnitReferences());

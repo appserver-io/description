@@ -21,6 +21,10 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Psr\Deployment\DescriptorInterface;
+use Doctrine\Common\Annotations\AnnotationReader;
+use AppserverIo\Lang\Reflection\ClassInterface;
+use AppserverIo\Lang\Reflection\MethodInterface;
+use AppserverIo\Lang\Reflection\PropertyInterface;
 
 /**
  * The most basic descriptor implementation.
@@ -40,6 +44,69 @@ abstract class AbstractDescriptor implements DescriptorInterface
      * @var string
      */
     protected $description;
+
+    /**
+     * The annotation reader instance singleton.
+     *
+     * @var \Doctrine\Common\Annotations\AnnotationReader
+     */
+    protected static $annotationReaderInstance;
+
+    /**
+     * Return's the annotation reader instance.
+     *
+     * @return \Doctrine\Common\Annotations\AnnotationReader
+     */
+    public function getAnnotationReader()
+    {
+
+        // query whether or not an instance already exists
+        if (AbstractDescriptor::$annotationReaderInstance === null) {
+            AbstractDescriptor::$annotationReaderInstance = new AnnotationReader();
+        }
+
+        // return the instance
+        return AbstractDescriptor::$annotationReaderInstance;
+    }
+
+    /**
+     * Return's the class annotation with the passed name, if available.
+     *
+     * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class to return the annotation for
+     * @param string                                      $annotationName  The name of the annotation to return
+     *
+     * @return object|null The class annotation, or NULL if not available
+     */
+    protected function getClassAnnotation(ClassInterface $reflectionClass, $annotationName)
+    {
+        return $this->getAnnotationReader()->getClassAnnotation($reflectionClass->toPhpReflectionClass(), $annotationName);
+    }
+
+    /**
+     * Return's the method annotation with the passed name, if available.
+     *
+     * @param \AppserverIo\Lang\Reflection\MethodInterface $reflectionMethod The reflection method to return the annotation for
+     * @param string                                       $annotationName   The name of the annotation to return
+     *
+     * @return object|null The method annotation, or NULL if not available
+     */
+    protected function getMethodAnnotation(MethodInterface $reflectionMethod, $annotationName)
+    {
+        return $this->getAnnotationReader()->getMethodAnnotation($reflectionMethod->toPhpReflectionMethod(), $annotationName);
+    }
+
+    /**
+     * Return's the property annotation with the passed name, if available.
+     *
+     * @param \AppserverIo\Lang\Reflection\MethodInterface $reflectionProperty The property method to return the annotation for
+     * @param string                                       $annotationName     The name of the annotation to return
+     *
+     * @return object|null The property annotation, or NULL if not available
+     */
+    protected function getPropertyAnnotation(PropertyInterface $reflectionProperty, $annotationName)
+    {
+        return $this->getAnnotationReader()->getPropertyAnnotation($reflectionProperty->toPhpReflectionProperty(), $annotationName);
+    }
 
     /**
      * Sets the reference description.
