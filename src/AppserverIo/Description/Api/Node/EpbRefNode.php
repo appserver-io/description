@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Configuration\EpbRefConfigurationInterface;
 use AppserverIo\Description\Configuration\PositionAwareConfigurationInterface;
 
@@ -46,7 +47,7 @@ class EpbRefNode extends AbstractNode implements EpbRefConfigurationInterface, P
      * The enterprise bean reference name information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="epb-ref-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="epb-ref-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $epbRefName;
 
@@ -54,7 +55,7 @@ class EpbRefNode extends AbstractNode implements EpbRefConfigurationInterface, P
      * The enterprise bean description information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="description", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="description", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $description;
 
@@ -62,7 +63,7 @@ class EpbRefNode extends AbstractNode implements EpbRefConfigurationInterface, P
      * The enterprise bean link information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="epb-link", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="epb-link", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $epbLink;
 
@@ -70,7 +71,7 @@ class EpbRefNode extends AbstractNode implements EpbRefConfigurationInterface, P
      * The enterprise bean lookup name information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="lookup-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="lookup-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $lookupName;
 
@@ -78,7 +79,7 @@ class EpbRefNode extends AbstractNode implements EpbRefConfigurationInterface, P
      * The enterprise bean remote interface information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="remote", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="remote", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $remote;
 
@@ -86,7 +87,7 @@ class EpbRefNode extends AbstractNode implements EpbRefConfigurationInterface, P
      * The enterprise bean local interface information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="local", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="local", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $local;
 
@@ -94,7 +95,7 @@ class EpbRefNode extends AbstractNode implements EpbRefConfigurationInterface, P
      * The enterprise bean injection target information.
      *
      * @var \AppserverIo\Description\Api\Node\InjectionTargetNode
-     * @AS\Mapping(nodeName="injection-target", nodeType="AppserverIo\Description\Api\Node\InjectionTargetNode")
+     * @DI\Mapping(nodeName="injection-target", nodeType="AppserverIo\Description\Api\Node\InjectionTargetNode")
      */
     protected $injectionTarget;
 

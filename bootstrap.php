@@ -20,5 +20,16 @@
  * @link      http://www.appserver.io
  */
 
+use Doctrine\Common\Annotations\AnnotationRegistry;
+
+// configure the autoloader
 $loader = require 'vendor/autoload.php';
 $loader->add('AppserverIo\\Description', 'src');
+
+// load the annotation registries for the annotation reader
+AnnotationRegistry::registerAutoloadNamespaces(
+    array(
+        'AppserverIo\Psr\Servlet\Annotations' => __DIR__ . '/vendor/appserver-io-psr/servlet/src',
+        'AppserverIo\Psr\EnterpriseBeans\Annotations' => __DIR__ . '/vendor/appserver-io-psr/epb/src'
+    )
+);

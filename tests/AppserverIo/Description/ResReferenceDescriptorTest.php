@@ -44,16 +44,9 @@ class ResReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
     protected $descriptor;
 
     /**
-     * Dummy bean reference.
-     *
-     * @EnterpriseBean(name="SessionBean")
-     */
-    protected $dummyEnterpriseBean;
-
-    /**
      * Dummy resource reference.
      *
-     * @Resource(name="Application")
+     * @Resource(type="TimerServiceContextInterface", description="Reference to a timer service", lookup="php:global/example/TimerServiceContextInterface")
      */
     protected $dummyResource;
 
@@ -81,16 +74,16 @@ class ResReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Injects the dummy bean instance.
+     * Injects the dummy resource instance.
      *
-     * @param mixed $dummyEnterpriseBean The dummy bean
+     * @param mixed $dummyResource The dummy resource
      *
      * @return void
-     * @EnterpriseBean(name="SessionBean")
+     * @Resource
      */
-    public function injectDummyEnterpriseBean($dummyEnterpriseBean)
+    public function injectDummyResource($dummyResource)
     {
-        $this->dummyEnterpriseBean = $dummyEnterpriseBean;
+        $this->dummyResource = $dummyResource;
     }
 
     /**
@@ -99,9 +92,9 @@ class ResReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
      * @param mixed $dummyResource The dummy resource
      *
      * @return void
-     * @Resource(name="Application")
+     * @Resource(type="TimerServiceContextInterface", description="Reference to a timer service", lookup="php:global/example/TimerServiceContextInterface")
      */
-    public function injectDummyResource($dummyResource)
+    public function injectDummyResourceWithAttributes($dummyResource)
     {
         $this->dummyResource = $dummyResource;
     }
@@ -139,71 +132,19 @@ class ResReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
     public function testFromReflectionPropertyAndAnnotationWithAttributes()
     {
 
-        // prepare the empty annotation values
-        $values = array(
-            'type' => 'AppserverIo\Psr\Timer\TimerServiceContextInterface',
-            'lookup' => 'php:global/example/TimerServiceContextInterface',
-            'description' => 'Reference to a timer service'
-        );
-
-        // create a mock annotation implementation
-        $beanAnnotation = $this->getMockBuilder('AppserverIo\Psr\EnterpriseBeans\Annotations\Resource')
-            ->setConstructorArgs(array('Resource', $values))
-            ->getMockForAbstractClass();
-
-        // create a mock annotation
-        $annotation = $this->getMockBuilder('AppserverIo\Lang\Reflection\ReflectionAnnotation')
-            ->setMethods(array('getAnnotationName', 'getValues', 'newInstance'))
-            ->setConstructorArgs(array('Resource', $values))
-            ->getMock();
-
-        // mock the ReflectionAnnotation methods
-        $annotation
-            ->expects($this->once())
-            ->method('getAnnotationName')
-            ->will($this->returnValue('EnterpriseBean'));
-        $annotation
-            ->expects($this->once())
-            ->method('getValues')
-            ->will($this->returnValue($values));
-        $annotation
-            ->expects($this->once())
-            ->method('newInstance')
-            ->will($this->returnValue($beanAnnotation));
-
-        // initialize the annotation aliases
-        $aliases = array(Resource::ANNOTATION => Resource::__getClass());
-
         // initialize the reflection property
         $reflectionProperty = $this->getMockBuilder('AppserverIo\Lang\Reflection\ReflectionProperty')
-                                   ->setConstructorArgs(array(__CLASS__, array(), $aliases))
-                                   ->setMethods(
-                                       array(
-                                           'hasAnnotation',
-                                           'getAnnotation',
-                                           'getClassName',
-                                           'getPropertyName'
-                                       )
-                                   )
+                                   ->setConstructorArgs(array(__CLASS__, array(), array()))
+                                   ->setMethods( array('getClassName', 'getPropertyName'))
                                    ->getMock();
 
         // mock the methods
         $reflectionProperty
-            ->expects($this->once())
-            ->method('hasAnnotation')
-            ->with(Resource::ANNOTATION)
-            ->will($this->returnValue(true));
-        $reflectionProperty
-            ->expects($this->once())
-            ->method('getAnnotation')
-            ->with(Resource::ANNOTATION)
-            ->will($this->returnValue($annotation));
-        $reflectionProperty
-            ->expects($this->exactly(1))
+            ->expects($this->exactly(2))
             ->method('getClassName')
             ->will($this->returnValue(__CLASS__));
         $reflectionProperty
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(3))
             ->method('getPropertyName')
             ->will($this->returnValue('dummyResource'));
 
@@ -215,7 +156,7 @@ class ResReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('env/SomeBean/DummyResource', $this->descriptor->getRefName());
         $this->assertSame('Reference to a timer service', $this->descriptor->getDescription());
         $this->assertSame('php:global/example/TimerServiceContextInterface', $this->descriptor->getLookup());
-        $this->assertSame('AppserverIo\Psr\Timer\TimerServiceContextInterface', $this->descriptor->getType());
+        $this->assertSame('TimerServiceContextInterface', $this->descriptor->getType());
     }
 
     /**
@@ -227,67 +168,19 @@ class ResReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
     public function testFromReflectionMethodAndAnnotationWithoutAttributes()
     {
 
-        // prepare the empty annotation values
-        $values = array();
-
-        // create a mock annotation implementation
-        $beanAnnotation = $this->getMockBuilder('AppserverIo\Psr\EnterpriseBeans\Annotations\Resource')
-            ->setConstructorArgs(array('Resource', $values))
-            ->getMockForAbstractClass();
-
-        // create a mock annotation
-        $annotation = $this->getMockBuilder('AppserverIo\Lang\Reflection\ReflectionAnnotation')
-            ->setMethods(array('getAnnotationName', 'getValues', 'newInstance'))
-            ->setConstructorArgs(array('Resource', $values))
-            ->getMock();
-
-        // mock the ReflectionAnnotation methods
-        $annotation
-            ->expects($this->once())
-            ->method('getAnnotationName')
-            ->will($this->returnValue('EnterpriseBean'));
-        $annotation
-            ->expects($this->once())
-            ->method('getValues')
-            ->will($this->returnValue($values));
-        $annotation
-            ->expects($this->once())
-            ->method('newInstance')
-            ->will($this->returnValue($beanAnnotation));
-
-        // initialize the annotation aliases
-        $aliases = array(Resource::ANNOTATION => Resource::__getClass());
-
         // initialize the reflection method
         $reflectionMethod = $this->getMockBuilder('AppserverIo\Lang\Reflection\ReflectionMethod')
-                                 ->setConstructorArgs(array(__CLASS__, array(), $aliases))
-                                 ->setMethods(
-                                     array(
-                                         'hasAnnotation',
-                                         'getAnnotation',
-                                         'getClassName',
-                                         'getMethodName'
-                                     )
-                                 )
+                                 ->setConstructorArgs(array(__CLASS__, array(), array()))
+                                 ->setMethods(array('getClassName', 'getMethodName'))
                                  ->getMock();
 
         // mock the methods
         $reflectionMethod
-            ->expects($this->once())
-            ->method('hasAnnotation')
-            ->with(Resource::ANNOTATION)
-            ->will($this->returnValue(true));
-        $reflectionMethod
-            ->expects($this->once())
-            ->method('getAnnotation')
-            ->with(Resource::ANNOTATION)
-            ->will($this->returnValue($annotation));
-        $reflectionMethod
-            ->expects($this->exactly(3))
+            ->expects($this->exactly(4))
             ->method('getClassName')
             ->will($this->returnValue(__CLASS__));
         $reflectionMethod
-            ->expects($this->exactly(3))
+            ->expects($this->exactly(4))
             ->method('getMethodName')
             ->will($this->returnValue('injectDummyResource'));
 
@@ -310,73 +203,21 @@ class ResReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
     public function testFromReflectionMethodAndAnnotationWithAttributes()
     {
 
-        // prepare the empty annotation values
-        $values = array(
-            'type' => 'AppserverIo\Psr\Timer\TimerServiceContextInterface',
-            'lookup' => 'php:global/example/TimerServiceContextInterface',
-            'description' => 'Reference to a timer service'
-        );
-
-        // create a mock annotation implementation
-        $beanAnnotation = $this->getMockBuilder('AppserverIo\Psr\EnterpriseBeans\Annotations\Resource')
-            ->setConstructorArgs(array('Resource', $values))
-            ->getMockForAbstractClass();
-
-        // create a mock annotation
-        $annotation = $this->getMockBuilder('AppserverIo\Lang\Reflection\ReflectionAnnotation')
-            ->setMethods(array('getAnnotationName', 'getValues', 'newInstance'))
-            ->setConstructorArgs(array('Resource', $values))
-            ->getMock();
-
-        // mock the ReflectionAnnotation methods
-        $annotation
-            ->expects($this->once())
-            ->method('getAnnotationName')
-            ->will($this->returnValue('EnterpriseBean'));
-        $annotation
-            ->expects($this->once())
-            ->method('getValues')
-            ->will($this->returnValue($values));
-        $annotation
-            ->expects($this->once())
-            ->method('newInstance')
-            ->will($this->returnValue($beanAnnotation));
-
-        // initialize the annotation aliases
-        $aliases = array(Resource::ANNOTATION => Resource::__getClass());
-
         // initialize the reflection method
         $reflectionMethod = $this->getMockBuilder('AppserverIo\Lang\Reflection\ReflectionMethod')
-                                 ->setConstructorArgs(array(__CLASS__, array(), $aliases))
-                                 ->setMethods(
-                                     array(
-                                         'hasAnnotation',
-                                         'getAnnotation',
-                                         'getClassName',
-                                         'getMethodName'
-                                     )
-                                 )
+                                 ->setConstructorArgs(array(__CLASS__, array(), array()))
+                                 ->setMethods(array('getClassName', 'getMethodName'))
                                  ->getMock();
 
         // mock the methods
         $reflectionMethod
-            ->expects($this->once())
-            ->method('hasAnnotation')
-            ->with(Resource::ANNOTATION)
-            ->will($this->returnValue(true));
-        $reflectionMethod
-            ->expects($this->once())
-            ->method('getAnnotation')
-            ->with(Resource::ANNOTATION)
-            ->will($this->returnValue($annotation));
-        $reflectionMethod
-            ->expects($this->exactly(3))
+            ->expects($this->exactly(4))
             ->method('getClassName')
             ->will($this->returnValue(__CLASS__));
         $reflectionMethod
-            ->expects($this->exactly(3))
+            ->expects($this->exactly(4))
             ->method('getMethodName')
-            ->will($this->returnValue('injectDummyResource'));
+            ->will($this->returnValue('injectDummyResourceWithAttributes'));
 
         // initialize the descriptor from the reflection method
         $this->descriptor->fromReflectionMethod($reflectionMethod);
@@ -386,7 +227,7 @@ class ResReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('env/SomeBean/DummyResource', $this->descriptor->getRefName());
         $this->assertSame('Reference to a timer service', $this->descriptor->getDescription());
         $this->assertSame('php:global/example/TimerServiceContextInterface', $this->descriptor->getLookup());
-        $this->assertSame('AppserverIo\Psr\Timer\TimerServiceContextInterface', $this->descriptor->getType());
+        $this->assertSame('TimerServiceContextInterface', $this->descriptor->getType());
     }
 
     /**

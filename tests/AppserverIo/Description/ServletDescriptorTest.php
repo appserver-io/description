@@ -21,14 +21,14 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ReflectionClass;
-use AppserverIo\Psr\Servlet\Annotations\Route;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
-use AppserverIo\Lang\Reflection\ReflectionProperty;
-use AppserverIo\Lang\Reflection\ReflectionMethod;
+use AppserverIo\Psr\Servlet\Annotations as SLT;
+use AppserverIo\Psr\EnterpriseBeans\Annotations as EPB;
 use AppserverIo\Description\Api\Node\ServletNode;
 use AppserverIo\Description\Api\Node\MessageDrivenNode;
+use AppserverIo\Psr\Servlet\ServletConfigInterface;
+use AppserverIo\Psr\Servlet\ServletInterface;
+use AppserverIo\Psr\Servlet\ServletRequestInterface;
+use AppserverIo\Psr\Servlet\ServletResponseInterface;
 
 /**
  * Test implementation for the ServletDescriptor class implementation.
@@ -38,8 +38,15 @@ use AppserverIo\Description\Api\Node\MessageDrivenNode;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
+ *
+ * @SLT\Route(
+ *     displayName="Test Servlet",
+ *     description="A test servlet implementation",
+ *     urlPattern={ "/annotated.do", "/annotated.do*" },
+ *     initParams={ "testParam", "testValue" }
+ * )
  */
-class ServletDescriptorTest extends \PHPUnit_Framework_TestCase
+class ServletDescriptorTest extends \PHPUnit_Framework_TestCase implements ServletInterface
 {
 
     /**
@@ -52,21 +59,21 @@ class ServletDescriptorTest extends \PHPUnit_Framework_TestCase
     /**
      * Dummy bean reference.
      *
-     * @EnterpriseBean(name="SessionBean")
+     * @EPB\EnterpriseBean(name="SessionBean")
      */
     protected $dummyEnterpriseBean;
 
     /**
      * Dummy resource reference.
      *
-     * @Resource(name="Application")
+     * @EPB\Resource(name="Application")
      */
     protected $dummyResource;
 
     /**
      * Dummy persistence unit reference.
      *
-     * @PersistenceUnit(name="PersistenceUnit")
+     * @EPB\PersistenceUnit(name="PersistenceUnit")
      */
     protected $dummyPersistenceUnit;
 
@@ -78,7 +85,13 @@ class ServletDescriptorTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->descriptor = $this->getMockForAbstractClass('AppserverIo\Description\ServletDescriptor');
+
+        // initialize the mock descriptor
+        $descriptor = $this->getMockForAbstractClass('AppserverIo\Description\ServletDescriptor');
+        $descriptor->getAnnotationReader()->addGlobalIgnoredName('expectedException');
+
+        // set the mock descriptor
+        $this->descriptor = $descriptor;
     }
 
     /**
@@ -87,7 +100,7 @@ class ServletDescriptorTest extends \PHPUnit_Framework_TestCase
      * @param mixed $dummyEnterpriseBean The dummy bean
      *
      * @return void
-     * @EnterpriseBean(name="SessionBean")
+     * @EPB\EnterpriseBean(name="SessionBean")
      */
     public function injectDummyEnterpriseBean($dummyEnterpriseBean)
     {
@@ -100,7 +113,7 @@ class ServletDescriptorTest extends \PHPUnit_Framework_TestCase
      * @param mixed $dummyResource The dummy resource
      *
      * @return void
-     * @Resource(name="Application")
+     * @EPB\Resource(name="Application")
      */
     public function injectDummyResource($dummyResource)
     {
@@ -113,7 +126,7 @@ class ServletDescriptorTest extends \PHPUnit_Framework_TestCase
      * @param mixed $dummyPersistenceUnit The dummy persistence unit
      *
      * @return void
-     * @PersistenceUnit(name="PersistenceUnit")
+     * @EPB\PersistenceUnit(name="PersistenceUnit")
      */
     public function injectDummyPersistenceUnit($dummyPersistenceUnit)
     {
@@ -197,144 +210,15 @@ class ServletDescriptorTest extends \PHPUnit_Framework_TestCase
     public function testFromReflectionClassWithAnnotationContainingNameAttribute()
     {
 
-        // prepare the annotation values
-        $values = array(
-            'name' => 'testServlet',
-            'displayName' => 'Test Servlet',
-            'description' => 'A test servlet implementation',
-            'urlPattern' => array('/annotated.do', '/annotated.do*'),
-            'initParams' => array('testParam' => 'testValue')
-        );
-
-        // create a mock annotation implementation
-        $beanAnnotation = $this->getMockBuilder('AppserverIo\Psr\Servlet\Annotations\Route')
-                               ->setConstructorArgs(array('Route', $values))
-                               ->getMockForAbstractClass();
-
-        // create a mock annotation
-        $annotation = $this->getMockBuilder('AppserverIo\Lang\Reflection\ReflectionAnnotation')
-                           ->setMethods(array('getAnnotationName', 'getValues', 'newInstance'))
-                           ->setConstructorArgs(array('Route', $values))
-                           ->getMock();
-
-        // mock the ReflectionAnnotation methods
-        $annotation
-            ->expects($this->once())
-            ->method('getAnnotationName')
-            ->will($this->returnValue('Route'));
-        $annotation
-            ->expects($this->once())
-            ->method('getValues')
-            ->will($this->returnValue($values));
-        $annotation
-            ->expects($this->once())
-            ->method('newInstance')
-            ->will($this->returnValue($beanAnnotation));
-
-        // initialize the annotation aliases
-        $aliases = array(
-            Route::ANNOTATION => Route::__getClass(),
-            Resource::ANNOTATION => Resource::__getClass(),
-            EnterpriseBean::ANNOTATION => EnterpriseBean::__getClass(),
-            PersistenceUnit::ANNOTATION => PersistenceUnit::__getClass()
-        );
-
-        // create a servlet instance
-        $servlet = $this->getMockBuilder('AppserverIo\Psr\Servlet\ServletInterface')
-                        ->setMethods(get_class_methods('AppserverIo\Psr\Servlet\ServletInterface'))
-                        ->getMock();
-
-        // create a PHP \ReflectionClass instance
-        $phpReflectionClass = $this->getMockBuilder('\ReflectionClass')
-                                   ->setMethods(
-                                       array(
-                                           'isAbstract',
-                                           'isInterface'
-                                       )
-                                   )
-                                   ->disableOriginalConstructor()
-                                   ->getMock();
-
-        // mock the methods
-        $phpReflectionClass
-            ->expects($this->once())
-            ->method('isAbstract')
-            ->will($this->returnValue(false));
-        $phpReflectionClass
-            ->expects($this->once())
-            ->method('isInterface')
-            ->will($this->returnValue(false));
-
         // create a ReflectionClass instance
-        $reflectionClass = $this->getMockBuilder('AppserverIo\Lang\Reflection\ReflectionClass')
-                                ->setMethods(
-                                    array(
-                                        'toPhpReflectionClass',
-                                        'implementsInterface',
-                                        'hasAnnotation',
-                                        'getAnnotation',
-                                        'getProperties',
-                                        'getMethods'
-                                    )
-                                )
-                                ->setConstructorArgs(array($servlet, array(), $aliases))
-                                ->getMock();
-
-        // initialize the mock ReflectionProperty instances
-        $properties = array(
-            new ReflectionProperty(__CLASS__, 'dummyResource', array(), $aliases),
-            new ReflectionProperty(__CLASS__, 'dummyEnterpriseBean', array(), $aliases),
-            new ReflectionProperty(__CLASS__, 'dummyPersistenceUnit', array(), $aliases)
-        );
-
-        // initialize the mock ReflectionMethod instances
-        $methods = array(
-            new ReflectionMethod(__CLASS__, 'injectDummyResource', array(), $aliases),
-            new ReflectionMethod(__CLASS__, 'injectDummyEnterpriseBean', array(), $aliases),
-            new ReflectionMethod(__CLASS__, 'injectDummyPersistenceUnit', array(), $aliases)
-        );
-
-        // mock the methods
-        $reflectionClass
-            ->expects($this->any())
-            ->method('toPhpReflectionClass')
-            ->will($this->returnValue($phpReflectionClass));
-        $reflectionClass
-            ->expects($this->once())
-            ->method('implementsInterface')
-            ->will($this->returnValue(true));
-        $reflectionClass
-            ->expects($this->any())
-            ->method('hasAnnotation')
-            ->with(Route::ANNOTATION)
-            ->will($this->returnValue(true));
-        $reflectionClass
-            ->expects($this->any())
-            ->method('getAnnotation')
-            ->with(Route::ANNOTATION)
-            ->will($this->returnValue($annotation));
-        $reflectionClass
-            ->expects($this->once())
-            ->method('getProperties')
-            ->will($this->returnValue($properties));
-        $reflectionClass
-            ->expects($this->once())
-            ->method('getMethods')
-            ->will($this->returnValue($methods));
-
-        // mock the methods
-        $this->descriptor
-            ->expects($this->any())
-            ->method('newAnnotationInstance')
-            ->with($reflectionClass)
-            ->will($this->returnValue($annotation));
+        $reflectionClass = new ReflectionClass(__CLASS__);
 
         // initialize the descriptor instance
         $this->descriptor->fromReflectionClass($reflectionClass);
 
         // check the name parsed from the reflection class
-        $this->assertSame($phpReflectionClass->getName(), $this->descriptor->getClassName());
-        $this->assertSame('testServlet', $this->descriptor->getName());
+        $this->assertSame($reflectionClass->getName(), $this->descriptor->getClassName());
+        $this->assertSame('servletDescriptorTest', $this->descriptor->getName());
         $this->assertSame('A test servlet implementation', $this->descriptor->getDescription());
         $this->assertSame('Test Servlet', $this->descriptor->getDisplayName());
         $this->assertCount(1, $this->descriptor->getEpbReferences());
@@ -569,4 +453,23 @@ class ServletDescriptorTest extends \PHPUnit_Framework_TestCase
         // merge the descriptors
         $this->descriptor->merge($descriptorToMerge);
     }
+
+    public function init(ServletConfigInterface $servletConfig)
+    {}
+
+    public function getServletConfig()
+    {}
+
+    public function getServletContext()
+    {}
+
+    public function service(ServletRequestInterface $servletRequest, ServletResponseInterface $servletResponse)
+    {}
+
+    public function destroy()
+    {}
+
+    public function getServletInfo()
+    {}
+
 }

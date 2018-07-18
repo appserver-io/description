@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Configuration\ServletConfigurationInterface;
 
 /**
@@ -45,7 +46,7 @@ class ServletNode extends AbstractNode implements ServletConfigurationInterface
      * The description of the servlet.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="description", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="description", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $description;
 
@@ -53,7 +54,7 @@ class ServletNode extends AbstractNode implements ServletConfigurationInterface
      * The display name information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="display-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="display-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $displayName;
 
@@ -61,7 +62,7 @@ class ServletNode extends AbstractNode implements ServletConfigurationInterface
      * The servlet name information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="servlet-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="servlet-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $servletName;
 
@@ -69,7 +70,7 @@ class ServletNode extends AbstractNode implements ServletConfigurationInterface
      * The servlet class information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="servlet-class", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="servlet-class", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $servletClass;
 
@@ -77,7 +78,7 @@ class ServletNode extends AbstractNode implements ServletConfigurationInterface
      * The initialization parameter of the servlet.
      *
      * @var array
-     * @AS\Mapping(nodeName="init-param", nodeType="array", elementType="AppserverIo\Description\Api\Node\InitParamNode")
+     * @DI\Mapping(nodeName="init-param", nodeType="array", elementType="AppserverIo\Description\Api\Node\InitParamNode")
      */
     protected $initParams = array();
 

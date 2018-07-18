@@ -111,18 +111,6 @@ class PersistenceUnitDescriptor extends AbstractNameAwareDescriptor implements P
     }
 
     /**
-     * Returns a new annotation instance for the passed reflection class.
-     *
-     * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the bean configuration
-     *
-     * @return \AppserverIo\Lang\Reflection\AnnotationInterface The reflection annotation
-     */
-    protected function newAnnotationInstance(ClassInterface $reflectionClass)
-    {
-        return $reflectionClass->getAnnotation(PersistenceUnit::ANNOTATION);
-    }
-
-    /**
      * Initializes a bean configuration instance from the passed configuration node.
      *
      * @param \AppserverIo\Description\Configuration\ConfigurationInterface $configuration The bean configuration

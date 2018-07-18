@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Configuration\PositionAwareConfigurationInterface;
 use AppserverIo\Description\Configuration\PersistenceUnitRefConfigurationInterface;
 
@@ -46,7 +47,7 @@ class PersistenceUnitRefNode extends AbstractNode implements PersistenceUnitRefC
      * The persistence unit reference name information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="persistence-unit-ref-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="persistence-unit-ref-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $persistenceUnitRefName;
 
@@ -54,7 +55,7 @@ class PersistenceUnitRefNode extends AbstractNode implements PersistenceUnitRefC
      * The persistence unit name information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="persistence-unit-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="persistence-unit-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $persistenceUnitName;
 
@@ -62,7 +63,7 @@ class PersistenceUnitRefNode extends AbstractNode implements PersistenceUnitRefC
      * The persistence unit description information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="description", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="description", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $description;
 
@@ -70,7 +71,7 @@ class PersistenceUnitRefNode extends AbstractNode implements PersistenceUnitRefC
      * The persistence unit injection target information.
      *
      * @var \AppserverIo\Description\Api\Node\InjectionTargetNode
-     * @AS\Mapping(nodeName="injection-target", nodeType="AppserverIo\Description\Api\Node\InjectionTargetNode")
+     * @DI\Mapping(nodeName="injection-target", nodeType="AppserverIo\Description\Api\Node\InjectionTargetNode")
      */
     protected $injectionTarget;
 

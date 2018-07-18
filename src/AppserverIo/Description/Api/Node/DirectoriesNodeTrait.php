@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * Trait that serves nodes having a directories/directory child.
  *
@@ -36,7 +38,7 @@ trait DirectoriesNodeTrait
      * The directories.
      *
      * @var array
-     * @AS\Mapping(nodeName="directories/directory", nodeType="array", elementType="AppserverIo\Description\Api\Node\DirectoryNode")
+     * @DI\Mapping(nodeName="directories/directory", nodeType="array", elementType="AppserverIo\Description\Api\Node\DirectoryNode")
      */
     protected $directories = array();
 

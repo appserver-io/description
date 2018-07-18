@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Configuration\PostConstructConfigurationInterface;
 
 /**
@@ -38,7 +39,7 @@ class PostConstructNode extends AbstractNode implements PostConstructConfigurati
      * The lifecycle callback methods information.
      *
      * @var array
-     * @AS\Mapping(nodeName="lifecycle-callback-method", nodeType="array", elementType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="lifecycle-callback-method", nodeType="array", elementType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $lifecycleCallbackMethods;
 

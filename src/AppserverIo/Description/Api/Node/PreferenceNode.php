@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Configuration\PreferenceConfigurationInterface;
 
 /**
@@ -38,7 +39,7 @@ class PreferenceNode extends AbstractNode implements PreferenceConfigurationInte
      * The preference interface information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="interface", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="interface", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $interface;
 
@@ -46,7 +47,7 @@ class PreferenceNode extends AbstractNode implements PreferenceConfigurationInte
      * The preference class information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="class", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="class", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $class;
 

@@ -22,6 +22,7 @@ namespace AppserverIo\Description\Api\Node;
 
 use AppserverIo\Lang\String;
 use AppserverIo\Lang\Boolean;
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Configuration\Interfaces\ValueInterface;
 
 /**
@@ -61,7 +62,7 @@ class ParamNode extends AbstractValueNode
      * The paramss name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $name;
 
@@ -69,7 +70,7 @@ class ParamNode extends AbstractValueNode
      * The params data type.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $type;
 
@@ -77,7 +78,7 @@ class ParamNode extends AbstractValueNode
      * TRUE if the value is a constant.
      *
      * @var string
-     * @AS\Mapping(nodeType="boolean")
+     * @DI\Mapping(nodeType="boolean")
      */
     protected $constant;
 
@@ -85,7 +86,7 @@ class ParamNode extends AbstractValueNode
      * TRUE if the value is an environment variable.
      *
      * @var string
-     * @AS\Mapping(nodeType="boolean")
+     * @DI\Mapping(nodeType="boolean")
      */
     protected $env;
 

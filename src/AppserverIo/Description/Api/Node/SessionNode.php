@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Configuration\SessionConfigurationInterface;
 
 /**
@@ -45,7 +46,7 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
      * The session bean type information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="session-type", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="session-type", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $sessionType;
 
@@ -53,7 +54,7 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
      * The enterprise bean name information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="epb-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="epb-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $epbName;
 
@@ -61,7 +62,7 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
      * The enterprise bean class information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="epb-class", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="epb-class", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $epbClass;
 
@@ -69,7 +70,7 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
      * The init on startup information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="init-on-startup", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="init-on-startup", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $initOnStartup;
 
@@ -77,7 +78,7 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
      * The post construct information.
      *
      * @var \AppserverIo\Description\Api\Node\PostConstructNode
-     * @AS\Mapping(nodeName="post-construct", nodeType="AppserverIo\Description\Api\Node\PostConstructNode")
+     * @DI\Mapping(nodeName="post-construct", nodeType="AppserverIo\Description\Api\Node\PostConstructNode")
      */
     protected $postConstruct;
 
@@ -85,7 +86,7 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
      * The pre destroy information.
      *
      * @var \AppserverIo\Description\Api\Node\PreDestroyNode
-     * @AS\Mapping(nodeName="pre-destroy", nodeType="AppserverIo\Description\Api\Node\PreDestroyNode")
+     * @DI\Mapping(nodeName="pre-destroy", nodeType="AppserverIo\Description\Api\Node\PreDestroyNode")
      */
     protected $preDestroy;
 
@@ -93,7 +94,7 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
      * The post detach information.
      *
      * @var \AppserverIo\Description\Api\Node\PostDetachNode
-     * @AS\Mapping(nodeName="post-detach", nodeType="AppserverIo\Description\Api\Node\PostDetachNode")
+     * @DI\Mapping(nodeName="post-detach", nodeType="AppserverIo\Description\Api\Node\PostDetachNode")
      */
     protected $postDetach;
 
@@ -101,7 +102,7 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
      * The pre destroy information.
      *
      * @var \AppserverIo\Description\Api\Node\PreAttachNode
-     * @AS\Mapping(nodeName="pre-attach", nodeType="AppserverIo\Description\Api\Node\PreAttachNode")
+     * @DI\Mapping(nodeName="pre-attach", nodeType="AppserverIo\Description\Api\Node\PreAttachNode")
      */
     protected $preAttach;
 
@@ -109,7 +110,7 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
      * The post activate information.
      *
      * @var \AppserverIo\Description\Api\Node\PostActivateNode
-     * @AS\Mapping(nodeName="post-activate", nodeType="AppserverIo\Description\Api\Node\PostActivateNode")
+     * @DI\Mapping(nodeName="post-activate", nodeType="AppserverIo\Description\Api\Node\PostActivateNode")
      */
     protected $postActivate;
 
@@ -117,7 +118,7 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
      * The pre passivate information.
      *
      * @var \AppserverIo\Description\Api\Node\PrePassivateNode
-     * @AS\Mapping(nodeName="pre-passivate", nodeType="AppserverIo\Description\Api\Node\PrePassivateNode")
+     * @DI\Mapping(nodeName="pre-passivate", nodeType="AppserverIo\Description\Api\Node\PrePassivateNode")
      */
     protected $prePassivate;
 
@@ -125,7 +126,7 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
      * The remove method information.
      *
      * @var \AppserverIo\Description\Api\Node\PreAttachNode
-     * @AS\Mapping(nodeName="remove-method", nodeType="AppserverIo\Description\Api\Node\RemoveMethodNode")
+     * @DI\Mapping(nodeName="remove-method", nodeType="AppserverIo\Description\Api\Node\RemoveMethodNode")
      */
     protected $removeMethod;
 
@@ -133,7 +134,7 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
      * The enterprise bean remote interface information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="remote", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="remote", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $remote;
 
@@ -141,7 +142,7 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
      * The enterprise bean local interface information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="local", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="local", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $local;
 
@@ -149,7 +150,7 @@ class SessionNode extends AbstractNode implements SessionConfigurationInterface
      * The bean shared information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="shared", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="shared", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $shared;
 

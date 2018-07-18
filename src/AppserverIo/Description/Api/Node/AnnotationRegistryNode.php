@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Configuration\AnnotationRegistryConfigurationInterface;
 
 /**
@@ -45,7 +46,7 @@ class AnnotationRegistryNode extends AbstractNode implements AnnotationRegistryC
      * The annotation registry's type.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $type;
 
@@ -53,7 +54,7 @@ class AnnotationRegistryNode extends AbstractNode implements AnnotationRegistryC
      * The annotation registry's file.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $file;
 
@@ -61,7 +62,7 @@ class AnnotationRegistryNode extends AbstractNode implements AnnotationRegistryC
      * The annotation registry's namespace.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $namespace;
 

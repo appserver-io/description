@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Configuration\Interfaces\ValueInterface;
 use AppserverIo\Configuration\Interfaces\NodeValueInterface;
 
@@ -38,7 +39,7 @@ abstract class AbstractValueNode extends AbstractNode implements NodeValueInterf
     /**
      * The node value.
      *
-     * @var string @AS\Mapping(nodeType="AppserverIo\Description\Api\Node\NodeValue")
+     * @var string @DI\Mapping(nodeType="AppserverIo\Description\Api\Node\NodeValue")
      */
     protected $nodeValue;
 

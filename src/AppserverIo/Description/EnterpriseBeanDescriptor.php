@@ -76,13 +76,11 @@ abstract class EnterpriseBeanDescriptor extends AbstractNameAwareDescriptor impl
     }
 
     /**
-     * Returns a new annotation instance for the passed reflection class.
+     * Return's the annoation class name.
      *
-     * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the bean configuration
-     *
-     * @return \AppserverIo\Lang\Reflection\AnnotationInterface The reflection annotation
+     * @return string The annotation class name
      */
-    abstract protected function newAnnotationInstance(ClassInterface $reflectionClass);
+    abstract protected function getAnnotationClass();
 
     /**
      * Initializes the bean configuration instance from the passed reflection class instance.
@@ -94,17 +92,11 @@ abstract class EnterpriseBeanDescriptor extends AbstractNameAwareDescriptor impl
     public function fromReflectionClass(ClassInterface $reflectionClass)
     {
 
-        // create a new annotation instance
-        $reflectionAnnotation = $this->newAnnotationInstance($reflectionClass);
-
         // load class name
         $this->setClassName($reflectionClass->getName());
 
-        // initialize the annotation instance
-        $annotationInstance = $reflectionAnnotation->newInstance(
-            $reflectionAnnotation->getAnnotationName(),
-            $reflectionAnnotation->getValues()
-        );
+        // create a new annotation instance
+        $annotationInstance = $this->getClassAnnotation($reflectionClass, $this->getAnnotationClass());
 
         // load the default name to register in naming directory
         if ($nameAttribute = $annotationInstance->getName()) {

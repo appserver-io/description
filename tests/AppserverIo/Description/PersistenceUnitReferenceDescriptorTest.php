@@ -22,7 +22,7 @@ namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Description\Api\Node\PersistenceUnitRefNode;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
+use AppserverIo\Psr\EnterpriseBeans\Annotations as EPB;
 
 /**
  * Test implementation for the ResReferenceDescriptorTest class implementation.
@@ -44,18 +44,18 @@ class PersistenceUnitReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
     protected $descriptor;
 
     /**
-     * Dummy bean reference.
+     * Dummy persistence unit.
      *
-     * @EnterpriseBean(name="SessionBean")
+     * @EPB\PersistenceUnit(name="ReferenceToMyPersistenceUnit", unitName="MyPersistenceUnit")
      */
-    protected $dummyEnterpriseBean;
+    protected $dummyPersistenceUnit;
 
     /**
-     * Dummy persistence unit reference.
+     * Dummy persistence unit without attributes.
      *
-     * @PersistenceUnit(name="MyPersistenceUnit")
+     * @EPB\PersistenceUnit
      */
-    protected $dummyResource;
+    protected $dummyPersistenceUnitWithoutAttributes;
 
     /**
      * Initializes the descriptor instance we want to test.
@@ -81,16 +81,16 @@ class PersistenceUnitReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Injects the dummy bean instance.
+     * Injects the dummy persistence unit instance without attributes.
      *
-     * @param mixed $dummyEnterpriseBean The dummy bean
+     * @param mixed $dummyPersistenceUnit The dummy persistence unit
      *
      * @return void
-     * @EnterpriseBean(name="SessionBean")
+     * @EPB\PersistenceUnit
      */
-    public function injectDummyEnterpriseBean($dummyEnterpriseBean)
+    public function injectDummyPersistenceUnitWithoutAttributes($dummyPersistenceUnitWithoutAttributes)
     {
-        $this->dummyEnterpriseBean = $dummyEnterpriseBean;
+        $this->dummyPersistenceUnitWithoutAttributes = $dummyPersistenceUnitWithoutAttributes;
     }
 
     /**
@@ -99,7 +99,7 @@ class PersistenceUnitReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
      * @param mixed $dummyPersistenceUnit The dummy persistence unit
      *
      * @return void
-     * @PersistenceUnit(name="MyPersistenceUnit")
+     * @EPB\PersistenceUnit(name="ReferenceToMyPersistenceUnit", unitName="MyPersistenceUnit")
      */
     public function injectDummyPersistenceUnit($dummyPersistenceUnit)
     {
@@ -139,70 +139,19 @@ class PersistenceUnitReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
     public function testFromReflectionPropertyAndAnnotationWithAttributes()
     {
 
-        // prepare the empty annotation values
-        $values = array(
-            'name' => 'ReferenceToMyPersistenceUnit',
-            'unitName' => 'MyPersistenceUnit'
-        );
-
-        // create a mock annotation implementation
-        $beanAnnotation = $this->getMockBuilder('AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit')
-            ->setConstructorArgs(array('Resource', $values))
-            ->getMockForAbstractClass();
-
-        // create a mock annotation
-        $annotation = $this->getMockBuilder('AppserverIo\Lang\Reflection\ReflectionAnnotation')
-            ->setMethods(array('getAnnotationName', 'getValues', 'newInstance'))
-            ->setConstructorArgs(array('PersistenceUnit', $values))
-            ->getMock();
-
-        // mock the ReflectionAnnotation methods
-        $annotation
-            ->expects($this->once())
-            ->method('getAnnotationName')
-            ->will($this->returnValue('PersistenceUnit'));
-        $annotation
-            ->expects($this->once())
-            ->method('getValues')
-            ->will($this->returnValue($values));
-        $annotation
-            ->expects($this->once())
-            ->method('newInstance')
-            ->will($this->returnValue($beanAnnotation));
-
-        // initialize the annotation aliases
-        $aliases = array(PersistenceUnit::ANNOTATION => PersistenceUnit::__getClass());
-
         // initialize the reflection property
         $reflectionProperty = $this->getMockBuilder('AppserverIo\Lang\Reflection\ReflectionProperty')
-                                   ->setConstructorArgs(array(__CLASS__, array(), $aliases))
-                                   ->setMethods(
-                                       array(
-                                           'hasAnnotation',
-                                           'getAnnotation',
-                                           'getClassName',
-                                           'getPropertyName'
-                                       )
-                                   )
+                                   ->setConstructorArgs(array(__CLASS__, array(), array()))
+                                   ->setMethods(array('getClassName', 'getPropertyName'))
                                    ->getMock();
 
         // mock the methods
         $reflectionProperty
-            ->expects($this->once())
-            ->method('hasAnnotation')
-            ->with(PersistenceUnit::ANNOTATION)
-            ->will($this->returnValue(true));
-        $reflectionProperty
-            ->expects($this->once())
-            ->method('getAnnotation')
-            ->with(PersistenceUnit::ANNOTATION)
-            ->will($this->returnValue($annotation));
-        $reflectionProperty
-            ->expects($this->once())
+            ->expects($this->exactly(2))
             ->method('getClassName')
             ->will($this->returnValue(__CLASS__));
         $reflectionProperty
-            ->expects($this->once())
+            ->expects($this->exactly(2))
             ->method('getPropertyName')
             ->will($this->returnValue('dummyPersistenceUnit'));
 
@@ -224,77 +173,29 @@ class PersistenceUnitReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
     public function testFromReflectionPropertyAndAnnotationWithoutAttributes()
     {
 
-        // prepare the empty annotation values
-        $values = array();
-
-        // create a mock annotation implementation
-        $beanAnnotation = $this->getMockBuilder('AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit')
-            ->setConstructorArgs(array('Resource', $values))
-            ->getMockForAbstractClass();
-
-        // create a mock annotation
-        $annotation = $this->getMockBuilder('AppserverIo\Lang\Reflection\ReflectionAnnotation')
-            ->setMethods(array('getAnnotationName', 'getValues', 'newInstance'))
-            ->setConstructorArgs(array('PersistenceUnit', $values))
-            ->getMock();
-
-        // mock the ReflectionAnnotation methods
-        $annotation
-            ->expects($this->once())
-            ->method('getAnnotationName')
-            ->will($this->returnValue('PersistenceUnit'));
-        $annotation
-            ->expects($this->once())
-            ->method('getValues')
-            ->will($this->returnValue($values));
-        $annotation
-            ->expects($this->once())
-            ->method('newInstance')
-            ->will($this->returnValue($beanAnnotation));
-
-        // initialize the annotation aliases
-        $aliases = array(PersistenceUnit::ANNOTATION => PersistenceUnit::__getClass());
-
         // initialize the reflection property
         $reflectionProperty = $this->getMockBuilder('AppserverIo\Lang\Reflection\ReflectionProperty')
-                                   ->setConstructorArgs(array(__CLASS__, array(), $aliases))
-                                   ->setMethods(
-                                       array(
-                                           'hasAnnotation',
-                                           'getAnnotation',
-                                           'getClassName',
-                                           'getPropertyName'
-                                       )
-                                   )
+                                   ->setConstructorArgs(array(__CLASS__, array(), array()))
+                                   ->setMethods(array('getClassName', 'getPropertyName'))
                                    ->getMock();
 
         // mock the methods
         $reflectionProperty
-            ->expects($this->once())
-            ->method('hasAnnotation')
-            ->with(PersistenceUnit::ANNOTATION)
-            ->will($this->returnValue(true));
-        $reflectionProperty
-            ->expects($this->once())
-            ->method('getAnnotation')
-            ->with(PersistenceUnit::ANNOTATION)
-            ->will($this->returnValue($annotation));
-        $reflectionProperty
-            ->expects($this->once())
+            ->expects($this->exactly(2))
             ->method('getClassName')
             ->will($this->returnValue(__CLASS__));
         $reflectionProperty
-            ->expects($this->exactly(3))
+            ->expects($this->exactly(4))
             ->method('getPropertyName')
-            ->will($this->returnValue('dummyPersistenceUnit'));
+            ->will($this->returnValue('dummyPersistenceUnitWithoutAttributes'));
 
         // initialize the descriptor from the reflection property
         $this->descriptor->fromReflectionProperty($reflectionProperty);
 
         // check that the descriptor has been initialized successfully
-        $this->assertSame('DummyPersistenceUnit', $this->descriptor->getName());
-        $this->assertSame('env/SomeBean/DummyPersistenceUnit', $this->descriptor->getRefName());
-        $this->assertSame('DummyPersistenceUnit', $this->descriptor->getUnitName());
+        $this->assertSame('DummyPersistenceUnitWithoutAttributes', $this->descriptor->getName());
+        $this->assertSame('env/SomeBean/DummyPersistenceUnitWithoutAttributes', $this->descriptor->getRefName());
+        $this->assertSame('DummyPersistenceUnitWithoutAttributes', $this->descriptor->getUnitName());
     }
 
     /**
@@ -306,77 +207,29 @@ class PersistenceUnitReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
     public function testFromReflectionMethodAndAnnotationWithoutAttributes()
     {
 
-        // prepare the empty annotation values
-        $values = array();
-
-        // create a mock annotation implementation
-        $beanAnnotation = $this->getMockBuilder('AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit')
-            ->setConstructorArgs(array('Resource', $values))
-            ->getMockForAbstractClass();
-
-        // create a mock annotation
-        $annotation = $this->getMockBuilder('AppserverIo\Lang\Reflection\ReflectionAnnotation')
-            ->setMethods(array('getAnnotationName', 'getValues', 'newInstance'))
-            ->setConstructorArgs(array('PersistenceUnit', $values))
-            ->getMock();
-
-        // mock the ReflectionAnnotation methods
-        $annotation
-            ->expects($this->once())
-            ->method('getAnnotationName')
-            ->will($this->returnValue('PersistenceUnit'));
-        $annotation
-            ->expects($this->once())
-            ->method('getValues')
-            ->will($this->returnValue($values));
-        $annotation
-            ->expects($this->once())
-            ->method('newInstance')
-            ->will($this->returnValue($beanAnnotation));
-
-        // initialize the annotation aliases
-        $aliases = array(PersistenceUnit::ANNOTATION => PersistenceUnit::__getClass());
-
         // initialize the reflection method
         $reflectionMethod = $this->getMockBuilder('AppserverIo\Lang\Reflection\ReflectionMethod')
-                                 ->setConstructorArgs(array(__CLASS__, array(), $aliases))
-                                 ->setMethods(
-                                     array(
-                                         'hasAnnotation',
-                                         'getAnnotation',
-                                         'getClassName',
-                                         'getMethodName'
-                                     )
-                                 )
+                                 ->setConstructorArgs(array(__CLASS__, array(), array()))
+                                 ->setMethods(array('getClassName', 'getMethodName'))
                                  ->getMock();
 
         // mock the methods
         $reflectionMethod
-            ->expects($this->once())
-            ->method('hasAnnotation')
-            ->with(PersistenceUnit::ANNOTATION)
-            ->will($this->returnValue(true));
-        $reflectionMethod
-            ->expects($this->once())
-            ->method('getAnnotation')
-            ->with(PersistenceUnit::ANNOTATION)
-            ->will($this->returnValue($annotation));
-        $reflectionMethod
-            ->expects($this->exactly(3))
+            ->expects($this->exactly(4))
             ->method('getClassName')
             ->will($this->returnValue(__CLASS__));
         $reflectionMethod
-            ->expects($this->exactly(3))
+            ->expects($this->exactly(4))
             ->method('getMethodName')
-            ->will($this->returnValue('injectDummyPersistenceUnit'));
+            ->will($this->returnValue('injectDummyPersistenceUnitWithoutAttributes'));
 
         // initialize the descriptor from the reflection method
         $this->descriptor->fromReflectionMethod($reflectionMethod);
 
         // check that the descriptor has been initialized successfully
-        $this->assertSame('DummyPersistenceUnit', $this->descriptor->getName());
-        $this->assertSame('env/SomeBean/DummyPersistenceUnit', $this->descriptor->getRefName());
-        $this->assertSame('DummyPersistenceUnit', $this->descriptor->getUnitName());
+        $this->assertSame('DummyPersistenceUnitWithoutAttributes', $this->descriptor->getName());
+        $this->assertSame('env/SomeBean/DummyPersistenceUnitWithoutAttributes', $this->descriptor->getRefName());
+        $this->assertSame('DummyPersistenceUnitWithoutAttributes', $this->descriptor->getUnitName());
     }
 
     /**
@@ -388,70 +241,19 @@ class PersistenceUnitReferenceDescriptorTest extends \PHPUnit_Framework_TestCase
     public function testFromReflectionMethodAndAnnotationWithAttributes()
     {
 
-        // prepare the empty annotation values
-        $values = array(
-            'name' => 'ReferenceToMyPersistenceUnit',
-            'unitName' => 'MyPersistenceUnit'
-        );
-
-        // create a mock annotation implementation
-        $beanAnnotation = $this->getMockBuilder('AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit')
-            ->setConstructorArgs(array('PersistenceUnit', $values))
-            ->getMockForAbstractClass();
-
-        // create a mock annotation
-        $annotation = $this->getMockBuilder('AppserverIo\Lang\Reflection\ReflectionAnnotation')
-            ->setMethods(array('getAnnotationName', 'getValues', 'newInstance'))
-            ->setConstructorArgs(array('PersistenceUnit', $values))
-            ->getMock();
-
-        // mock the ReflectionAnnotation methods
-        $annotation
-            ->expects($this->once())
-            ->method('getAnnotationName')
-            ->will($this->returnValue('PersistenceUnit'));
-        $annotation
-            ->expects($this->once())
-            ->method('getValues')
-            ->will($this->returnValue($values));
-        $annotation
-            ->expects($this->once())
-            ->method('newInstance')
-            ->will($this->returnValue($beanAnnotation));
-
-        // initialize the annotation aliases
-        $aliases = array(PersistenceUnit::ANNOTATION => PersistenceUnit::__getClass());
-
         // initialize the reflection method
         $reflectionMethod = $this->getMockBuilder('AppserverIo\Lang\Reflection\ReflectionMethod')
-                                 ->setConstructorArgs(array(__CLASS__, array(), $aliases))
-                                 ->setMethods(
-                                     array(
-                                         'hasAnnotation',
-                                         'getAnnotation',
-                                         'getClassName',
-                                         'getMethodName'
-                                     )
-                                 )
+                                 ->setConstructorArgs(array(__CLASS__, array(), array()))
+                                 ->setMethods(array('getClassName', 'getMethodName'))
                                  ->getMock();
 
         // mock the methods
         $reflectionMethod
-            ->expects($this->once())
-            ->method('hasAnnotation')
-            ->with(PersistenceUnit::ANNOTATION)
-            ->will($this->returnValue(true));
-        $reflectionMethod
-            ->expects($this->once())
-            ->method('getAnnotation')
-            ->with(PersistenceUnit::ANNOTATION)
-            ->will($this->returnValue($annotation));
-        $reflectionMethod
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(3))
             ->method('getClassName')
             ->will($this->returnValue(__CLASS__));
         $reflectionMethod
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(3))
             ->method('getMethodName')
             ->will($this->returnValue('injectDummyPersistenceUnit'));
 

@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * Abstract node that serves nodes having a params/param child.
  *
@@ -37,7 +39,7 @@ trait ParamsNodeTrait
      * The handler params to use.
      *
      * @var array
-     * @AS\Mapping(nodeName="params/param", nodeType="array", elementType="AppserverIo\Description\Api\Node\ParamNode")
+     * @DI\Mapping(nodeName="params/param", nodeType="array", elementType="AppserverIo\Description\Api\Node\ParamNode")
      */
     protected $params = array();
 

@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * DTO to transfer an entity manager's metadata configuration.
  *
@@ -50,7 +52,7 @@ class MetadataConfigurationNode extends AbstractNode
      * The class name for the metadata configuration driver.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $type;
 
@@ -58,7 +60,7 @@ class MetadataConfigurationNode extends AbstractNode
      * The factory class name for the metadata configuration driver.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $factory;
 

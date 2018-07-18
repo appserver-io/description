@@ -106,15 +106,13 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
     }
 
     /**
-     * Returns a new annotation instance for the passed reflection class.
+     * Return's the annoation class name.
      *
-     * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the bean configuration
-     *
-     * @return \AppserverIo\Lang\Reflection\AnnotationInterface The reflection annotation
+     * @return string The annotation class name
      */
-    protected function newAnnotationInstance(ClassInterface $reflectionClass)
+    protected function getAnnotationClass()
     {
-        return $reflectionClass->getAnnotation(Stateful::ANNOTATION);
+        return Stateful::class;
     }
 
     /**
@@ -297,8 +295,11 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
     public function fromReflectionClass(ClassInterface $reflectionClass)
     {
 
+        // create a new annotation instance
+        $annotationInstance = $this->getClassAnnotation($reflectionClass, $this->getAnnotationClass());
+
         // query if we've an enterprise bean with a @Stateful annotation
-        if ($reflectionClass->hasAnnotation(Stateful::ANNOTATION) === false) {
+        if ($annotationInstance === null) {
             // if not, do nothing
             return;
         }
@@ -309,27 +310,27 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
         // we've to check for a @PostDetach or @PreAttach annotation
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
             // if we found a @PostDetach annotation, invoke the method
-            if ($reflectionMethod->hasAnnotation(PostDetach::ANNOTATION)) {
+            if ($this->getMethodAnnotation($reflectionMethod, PostDetach::class)) {
                 $this->addPostDetachCallback(DescriptorUtil::trim($reflectionMethod->getMethodName()));
             }
 
             // if we found a @PreAttach annotation, invoke the method
-            if ($reflectionMethod->hasAnnotation(PreAttach::ANNOTATION)) {
+            if ($this->getMethodAnnotation($reflectionMethod, PreAttach::class)) {
                 $this->addPreAttachCallback(DescriptorUtil::trim($reflectionMethod->getMethodName()));
             }
 
             // if we found a @PostActivate annotation, invoke the method
-            if ($reflectionMethod->hasAnnotation(PostActivate::ANNOTATION)) {
+            if ($this->getMethodAnnotation($reflectionMethod, PostActivate::class)) {
                 $this->addPostActivateCallback(DescriptorUtil::trim($reflectionMethod->getMethodName()));
             }
 
             // if we found a @PrePassivate annotation, invoke the method
-            if ($reflectionMethod->hasAnnotation(PrePassivate::ANNOTATION)) {
+            if ($this->getMethodAnnotation($reflectionMethod, PrePassivate::class)) {
                 $this->addPrePassivateCallback(DescriptorUtil::trim($reflectionMethod->getMethodName()));
             }
 
             // if we found a @Remove annotation, invoke the method
-            if ($reflectionMethod->hasAnnotation(Remove::ANNOTATION)) {
+            if ($this->getMethodAnnotation($reflectionMethod, Remove::class)) {
                 $this->addRemoveMethod(DescriptorUtil::trim($reflectionMethod->getMethodName()));
             }
         }

@@ -21,7 +21,7 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ReflectionClass;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\MessageDriven;
+use AppserverIo\Psr\EnterpriseBeans\Annotations as EPB;
 use AppserverIo\Description\Api\Node\MessageDrivenNode;
 use AppserverIo\Description\Api\Node\SessionNode;
 
@@ -34,7 +34,7 @@ use AppserverIo\Description\Api\Node\SessionNode;
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  *
- * @MessageDriven
+ * @EPB\MessageDriven
  */
 class MessageDrivenBeanDescriptorTest extends \PHPUnit_Framework_TestCase
 {
@@ -78,11 +78,8 @@ class MessageDrivenBeanDescriptorTest extends \PHPUnit_Framework_TestCase
     public function testFromReflectionClass()
     {
 
-        // initialize the annotation aliases
-        $aliases = array(MessageDriven::ANNOTATION => MessageDriven::__getClass());
-
         // create the reflection class
-        $reflectionClass = new ReflectionClass(__CLASS__, array(), $aliases);
+        $reflectionClass = new ReflectionClass(__CLASS__, array(), array());
 
         // check that the descriptor has been initialized
         $this->assertSame($this->descriptor, $this->descriptor->fromReflectionClass($reflectionClass));
@@ -94,7 +91,7 @@ class MessageDrivenBeanDescriptorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests that initialization from a reflection class without @MessageDriven
+     * Tests that initialization from a reflection class without MessageDriven
      * annotation won't work.
      *
      * @return void
@@ -102,11 +99,8 @@ class MessageDrivenBeanDescriptorTest extends \PHPUnit_Framework_TestCase
     public function testFromInvalidReflectionClass()
     {
 
-        // initialize the annotation aliases
-        $aliases = array(MessageDriven::ANNOTATION => MessageDriven::__getClass());
-
         // create the reflection class
-        $reflectionClass = new ReflectionClass('\stdClass', array(), $aliases);
+        $reflectionClass = new ReflectionClass('\stdClass', array(), array());
 
         // check that the descriptor has not been initialized
         $this->assertNull($this->descriptor->fromReflectionClass($reflectionClass));

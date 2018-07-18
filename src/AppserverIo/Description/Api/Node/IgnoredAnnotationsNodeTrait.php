@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * Abstract node that serves nodes having a ignoredAnnotations/ignoredAnnotation child.
  *
@@ -36,7 +38,7 @@ trait IgnoredAnnotationsNodeTrait
      * The directories.
      *
      * @var array
-     * @AS\Mapping(nodeName="ignoredAnnotations/ignoredAnnotation", nodeType="array", elementType="AppserverIo\Description\Api\Node\IgnoredAnnotationNode")
+     * @DI\Mapping(nodeName="ignoredAnnotations/ignoredAnnotation", nodeType="array", elementType="AppserverIo\Description\Api\Node\IgnoredAnnotationNode")
      */
     protected $ignoredAnnotations = array();
 

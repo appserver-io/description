@@ -21,6 +21,8 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ClassInterface;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\Local;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\Remote;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PreDestroy;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PostConstruct;
 use AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface;
@@ -225,15 +227,15 @@ abstract class SessionBeanDescriptor extends EnterpriseBeanDescriptor implements
         parent::fromReflectionClass($reflectionClass);
 
         // query whether we've a @Local annotation
-        if ($reflectionClass->hasAnnotation('Local')) {
-            throw new \Exception('@Local annotation not implemented');
+        if ($localAnnotationInstance = $this->getClassAnnotation($reflectionClass, Local::class)) {
+            $this->setLocal($localAnnotationInstance->getName());
         } else {
             $this->setLocal(sprintf('%sLocal', $this->getName()));
         }
 
         // query whether we've a @Remote annotation
-        if ($reflectionClass->hasAnnotation('Remote')) {
-            throw new \Exception('@Remote annotation not implemented');
+        if ($remoteAnnotationInstance = $this->getClassAnnotation($reflectionClass, Remote::class)) {
+            $this->setRemote($remoteAnnotationInstance->getName());
         } else {
             $this->setRemote(sprintf('%sRemote', $this->getName()));
         }
@@ -241,12 +243,12 @@ abstract class SessionBeanDescriptor extends EnterpriseBeanDescriptor implements
         // we've to check for a @PostConstruct or @PreDestroy annotation
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
             // if we found a @PostConstruct annotation, invoke the method
-            if ($reflectionMethod->hasAnnotation(PostConstruct::ANNOTATION)) {
+            if ($this->getMethodAnnotation($reflectionMethod, PostConstruct::class)) {
                 $this->addPostConstructCallback(DescriptorUtil::trim($reflectionMethod->getMethodName()));
             }
 
             // if we found a @PreDestroy annotation, invoke the method
-            if ($reflectionMethod->hasAnnotation(PreDestroy::ANNOTATION)) {
+            if ($this->getMethodAnnotation($reflectionMethod, PreDestroy::class)) {
                 $this->addPreDestroyCallback(DescriptorUtil::trim($reflectionMethod->getMethodName()));
             }
         }

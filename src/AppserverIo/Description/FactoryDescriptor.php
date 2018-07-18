@@ -116,18 +116,6 @@ class FactoryDescriptor extends AbstractNameAwareDescriptor implements FactoryDe
     }
 
     /**
-     * Returns a new annotation instance for the passed reflection class.
-     *
-     * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the bean configuration
-     *
-     * @return \AppserverIo\Lang\Reflection\AnnotationInterface The reflection annotation
-     */
-    protected function newAnnotationInstance(ClassInterface $reflectionClass)
-    {
-        return $reflectionClass->getAnnotation(Inject::ANNOTATION);
-    }
-
-    /**
      * Initializes the bean descriptor instance from the passed reflection class instance.
      *
      * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the servlet description
@@ -137,21 +125,14 @@ class FactoryDescriptor extends AbstractNameAwareDescriptor implements FactoryDe
     public function fromReflectionClass(ClassInterface $reflectionClass)
     {
 
+        // create a new annotation instance
+        $annotationInstance = $this->getClassAnnotation($reflectionClass, Inject::class);
+
         // query if we've an enterprise bean with a @Factory annotation
-        if ($reflectionClass->hasAnnotation(Inject::ANNOTATION) === false) {
+        if ($annotationInstance === null) {
             // if not, do nothing
             return;
         }
-
-        // create a new annotation instance
-        $reflectionAnnotation = $this->newAnnotationInstance($reflectionClass);
-
-        // initialize the annotation instance
-        /** @var \AppserverIo\Psr\EnterpriseBeans\Annotations\Factory $annotationInstance */
-        $annotationInstance = $reflectionAnnotation->newInstance(
-            $reflectionAnnotation->getAnnotationName(),
-            $reflectionAnnotation->getValues()
-        );
 
         // load the factory name to register in naming directory
         if ($name = $annotationInstance->getFactory()) {

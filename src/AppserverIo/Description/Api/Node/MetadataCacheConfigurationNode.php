@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Configuration\CacheConfigurationInterface;
 
 /**
@@ -45,7 +46,7 @@ class MetadataCacheConfigurationNode extends AbstractNode implements CacheConfig
      * The Doctrine query cache factory class name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $factory;
 

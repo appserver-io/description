@@ -165,17 +165,14 @@ class EpbReferenceDescriptor extends AbstractReferenceDescriptor implements EpbR
     public function fromReflectionProperty(PropertyInterface $reflectionProperty)
     {
 
+        // create a new annotation instance
+        $annotationInstance = $this->getPropertyAnnotation($reflectionProperty, EnterpriseBean::class);
+
         // if we found a @EnterpriseBean annotation, load the annotation instance
-        if ($reflectionProperty->hasAnnotation(EnterpriseBean::ANNOTATION) === false) {
+        if ($annotationInstance === null) {
             // if not, do nothing
             return;
         }
-
-        // initialize the annotation instance
-        $annotation = $reflectionProperty->getAnnotation(EnterpriseBean::ANNOTATION);
-
-        // load the annotation instance
-        $annotationInstance = $annotation->newInstance($annotation->getAnnotationName(), $annotation->getValues());
 
         // load the reference name defined as @EnterpriseBean(name=****)
         if ($name = $annotationInstance->getName()) {
@@ -228,17 +225,14 @@ class EpbReferenceDescriptor extends AbstractReferenceDescriptor implements EpbR
     public function fromReflectionMethod(MethodInterface $reflectionMethod)
     {
 
+        // load the annotation instance
+        $annotationInstance = $this->getMethodAnnotation($reflectionMethod, EnterpriseBean::class);
+
         // if we found a @EnterpriseBean annotation, load the annotation instance
-        if ($reflectionMethod->hasAnnotation(EnterpriseBean::ANNOTATION) === false) {
+        if ($annotationInstance === null) {
             // if not, do nothing
             return;
         }
-
-        // initialize the annotation instance
-        $annotation = $reflectionMethod->getAnnotation(EnterpriseBean::ANNOTATION);
-
-        // load the annotation instance
-        $annotationInstance = $annotation->newInstance($annotation->getAnnotationName(), $annotation->getValues());
 
         // load the reference name defined as @EnterpriseBean(name=****)
         if ($name = $annotationInstance->getName()) {

@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Configuration\RemoveMethodConfigurationInterface;
 
 /**
@@ -38,7 +39,7 @@ class RemoveMethodNode extends AbstractNode implements RemoveMethodConfiguration
      * The remove methods information.
      *
      * @var array
-     * @AS\Mapping(nodeName="method-name", nodeType="array", elementType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="method-name", nodeType="array", elementType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $methodNames;
 

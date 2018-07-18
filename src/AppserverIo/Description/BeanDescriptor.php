@@ -152,25 +152,13 @@ class BeanDescriptor extends AbstractNameAwareDescriptor implements BeanDescript
     }
 
     /**
-     * Returns the annotation the bean uses.
+     * Return's the annoation class name.
      *
-     * @return string The annotation name
+     * @return string The annotation class name
      */
-    protected function getAnnotationName()
+    protected function getAnnotationClass()
     {
-        return Inject::ANNOTATION;
-    }
-
-    /**
-     * Returns a new annotation instance for the passed reflection class.
-     *
-     * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the bean configuration
-     *
-     * @return \AppserverIo\Lang\Reflection\AnnotationInterface The reflection annotation
-     */
-    protected function newAnnotationInstance(ClassInterface $reflectionClass)
-    {
-        return $reflectionClass->getAnnotation($this->getAnnotationName());
+        return Inject::class;
     }
 
     /**
@@ -183,23 +171,14 @@ class BeanDescriptor extends AbstractNameAwareDescriptor implements BeanDescript
     public function fromReflectionClass(ClassInterface $reflectionClass)
     {
 
-        // query if we've an enterprise bean with a @Inject annotation
-        if ($reflectionClass->hasAnnotation($this->getAnnotationName()) === false) {
+        // create a new annotation instance
+        $annotationInstance = $this->getClassAnnotation($reflectionClass, $this->getAnnotationClass());
+
+        // query if we've an enterprise bean with the requested annotation
+        if ($annotationInstance === null) {
             // if not, do nothing
             return;
         }
-
-        // create a new annotation instance
-        $reflectionAnnotation = $this->newAnnotationInstance($reflectionClass);
-
-        // load class name
-        $this->setClassName($reflectionClass->getName());
-
-        // initialize the annotation instance
-        $annotationInstance = $reflectionAnnotation->newInstance(
-            $reflectionAnnotation->getAnnotationName(),
-            $reflectionAnnotation->getValues()
-        );
 
         // load the default name to register in naming directory
         if ($name = $annotationInstance->getName()) {
@@ -208,6 +187,9 @@ class BeanDescriptor extends AbstractNameAwareDescriptor implements BeanDescript
             // if @Annotation(name=****) is NOT set, we use the short class name by default
             $this->setName($reflectionClass->getShortName());
         }
+
+        // load class name
+        $this->setClassName($reflectionClass->getName());
 
         // initialize the shared flag @Inject(shared=true)
         $this->setShared($annotationInstance->getShared());

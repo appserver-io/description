@@ -21,6 +21,8 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * Abstract node that a entity managers annotation registry nodes.
  *
@@ -38,7 +40,7 @@ trait AnnotationRegistriesNodeTrait
      * The entity managers annotation registries configuration.
      *
      * @var array
-     * @AS\Mapping(nodeName="annotationRegistries/annotationRegistry", nodeType="array", elementType="AppserverIo\Description\Api\Node\AnnotationRegistryNode")
+     * @DI\Mapping(nodeName="annotationRegistries/annotationRegistry", nodeType="array", elementType="AppserverIo\Description\Api\Node\AnnotationRegistryNode")
      */
     protected $annotationRegistries = array();
 

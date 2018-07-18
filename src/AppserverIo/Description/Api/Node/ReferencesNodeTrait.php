@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * DTO to transfer the reference configuration.
  *
@@ -36,7 +38,7 @@ trait ReferencesNodeTrait
      * The enterprise bean reference information.
      *
      * @var array
-     * @AS\Mapping(nodeName="epb-ref", nodeType="array", elementType="AppserverIo\Description\Api\Node\EpbRefNode")
+     * @DI\Mapping(nodeName="epb-ref", nodeType="array", elementType="AppserverIo\Description\Api\Node\EpbRefNode")
      */
     protected $epbRefs = array();
 
@@ -44,7 +46,7 @@ trait ReferencesNodeTrait
      * The resource reference information.
      *
      * @var array
-     * @AS\Mapping(nodeName="res-ref", nodeType="array", elementType="AppserverIo\Description\Api\Node\ResRefNode")
+     * @DI\Mapping(nodeName="res-ref", nodeType="array", elementType="AppserverIo\Description\Api\Node\ResRefNode")
      */
     protected $resRefs = array();
 
@@ -52,7 +54,7 @@ trait ReferencesNodeTrait
      * The resource reference information.
      *
      * @var array
-     * @AS\Mapping(nodeName="bean-ref", nodeType="array", elementType="AppserverIo\Description\Api\Node\BeanRefNode")
+     * @DI\Mapping(nodeName="bean-ref", nodeType="array", elementType="AppserverIo\Description\Api\Node\BeanRefNode")
      */
     protected $beanRefs = array();
 
@@ -60,7 +62,7 @@ trait ReferencesNodeTrait
      * The persistence unit reference information.
      *
      * @var array
-     * @AS\Mapping(nodeName="persistence-unit-ref", nodeType="array", elementType="AppserverIo\Description\Api\Node\PersistenceUnitRefNode")
+     * @DI\Mapping(nodeName="persistence-unit-ref", nodeType="array", elementType="AppserverIo\Description\Api\Node\PersistenceUnitRefNode")
      */
     protected $persistenceUnitRefs = array();
 

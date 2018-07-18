@@ -22,10 +22,7 @@ namespace AppserverIo\Description;
 
 use AppserverIo\Description\Api\Node\BeanNode;
 use AppserverIo\Lang\Reflection\ReflectionClass;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Inject;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
+use AppserverIo\Psr\EnterpriseBeans\Annotations as EPB;
 
 /**
  * Test implementation for the BeanDescriptor class implementation.
@@ -36,7 +33,7 @@ use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
  * @link      https://github.com/appserver-io/description
  * @link      http://www.appserver.io
  *
- * @Inject
+ * @EPB\Inject
  */
 class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
 {
@@ -51,21 +48,21 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
     /**
      * Dummy bean reference.
      *
-     * @EnterpriseBean(name="SessionBean")
+     * @EPB\EnterpriseBean(name="SessionBean")
      */
     protected $dummyEnterpriseBean;
 
     /**
      * Dummy resource reference.
      *
-     * @Resource(name="Application")
+     * @EPB\Resource(name="Application")
      */
     protected $dummyResource;
 
     /**
      * Dummy resource reference.
      *
-     * @PersistenceUnit(name="PersistenceUnit")
+     * @EPB\PersistenceUnit(name="PersistenceUnit")
      */
     protected $dummyPersistenceUnit;
 
@@ -77,7 +74,13 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->descriptor = new BeanDescriptor();
+
+        // initialize the descriptor
+        $descriptor = new BeanDescriptor();
+        $descriptor->getAnnotationReader()->addGlobalIgnoredName('expectedException');
+
+        // set the descriptor
+        $this->descriptor = $descriptor;
     }
 
     /**
@@ -86,7 +89,7 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
      * @param mixed $dummyEnterpriseBean The dummy bean
      *
      * @return void
-     * @EnterpriseBean(name="SessionBean")
+     * @EPB\EnterpriseBean(name="SessionBean")
      */
     public function injectDummyEnterpriseBean($dummyEnterpriseBean)
     {
@@ -99,7 +102,7 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
      * @param mixed $dummyResource The dummy resource
      *
      * @return void
-     * @Resource(name="Application")
+     * @EPB\Resource(name="Application")
      */
     public function injectDummyResource($dummyResource)
     {
@@ -112,7 +115,7 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
      * @param mixed $dummyPersistenceUnit The dummy persistence unit
      *
      * @return void
-     * @PersistenceUnit(name="PersistenceUnit")
+     * @EPB\PersistenceUnit(name="PersistenceUnit")
      */
     public function injectDummyPersistenceUnit($dummyPersistenceUnit)
     {
@@ -161,16 +164,8 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
     public function testFromReflectionClassWithAnnotationContainingNameAttribute()
     {
 
-        // initialize the annotation aliases
-        $aliases = array(
-            Inject::ANNOTATION => Inject::__getClass(),
-            Resource::ANNOTATION => Resource::__getClass(),
-            EnterpriseBean::ANNOTATION => EnterpriseBean::__getClass(),
-            PersistenceUnit::ANNOTATION => PersistenceUnit::__getClass()
-        );
-
         // create a reflection class
-        $reflectionClass = new ReflectionClass(__CLASS__, array(), $aliases);
+        $reflectionClass = new ReflectionClass(__CLASS__, array(), array());
 
         // initialize the descriptor instance
         $this->descriptor->fromReflectionClass($reflectionClass);
@@ -193,16 +188,8 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
     public function testFromReflectionClassWithAnnotationWithoutNameAttribute()
     {
 
-        // initialize the annotation aliases
-        $aliases = array(
-            Inject::ANNOTATION => Inject::__getClass(),
-            Resource::ANNOTATION => Resource::__getClass(),
-            EnterpriseBean::ANNOTATION => EnterpriseBean::__getClass(),
-            PersistenceUnit::ANNOTATION => PersistenceUnit::__getClass()
-        );
-
         // create a reflection class
-        $reflectionClass = new ReflectionClass(__CLASS__, array(), $aliases);
+        $reflectionClass = new ReflectionClass(__CLASS__, array(), array());
 
         // initialize the descriptor instance
         $this->descriptor->fromReflectionClass($reflectionClass);

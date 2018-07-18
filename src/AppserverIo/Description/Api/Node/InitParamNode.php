@@ -21,6 +21,7 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Configuration\InitParamConfigurationInterface;
 
 /**
@@ -40,7 +41,7 @@ class InitParamNode extends AbstractNode implements InitParamConfigurationInterf
      * The parameter name information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="param-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="param-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $paramName;
 
@@ -48,7 +49,7 @@ class InitParamNode extends AbstractNode implements InitParamConfigurationInterf
      * The parameter value information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="param-value", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="param-value", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $paramValue;
 

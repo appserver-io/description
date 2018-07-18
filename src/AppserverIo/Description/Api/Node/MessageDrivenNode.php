@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Configuration\MessageDrivenConfigurationInterface;
 
 /**
@@ -45,7 +46,7 @@ class MessageDrivenNode extends AbstractNode implements MessageDrivenConfigurati
      * The enterprise bean name information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="epb-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="epb-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $epbName;
 
@@ -53,7 +54,7 @@ class MessageDrivenNode extends AbstractNode implements MessageDrivenConfigurati
      * The enterprise bean class information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="epb-class", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="epb-class", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $epbClass;
 
@@ -61,7 +62,7 @@ class MessageDrivenNode extends AbstractNode implements MessageDrivenConfigurati
      * The bean shared information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="shared", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="shared", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $shared;
 

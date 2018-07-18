@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Configuration\MethodInvocationConfigurationInterface;
 
 /**
@@ -45,7 +46,7 @@ class MethodInvocationNode extends AbstractNode implements MethodInvocationConfi
      * The method name information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="method-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="method-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $methodName;
 
@@ -53,7 +54,7 @@ class MethodInvocationNode extends AbstractNode implements MethodInvocationConfi
      * The method arguments.
      *
      * @var array
-     * @AS\Mapping(nodeName="argument", nodeType="array", elementType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="argument", nodeType="array", elementType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $arguments;
 

@@ -20,7 +20,6 @@
 
 namespace AppserverIo\Description;
 
-use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Migration;
 use AppserverIo\Psr\EnterpriseBeans\Description\MigrationDescriptorInterface;
 
@@ -46,29 +45,12 @@ class MigrationDescriptor extends BeanDescriptor implements MigrationDescriptorI
     }
 
     /**
-     * Returns the annotation the bean uses.
+     * Return's the annoation class name.
      *
-     * @return string The annotation name
+     * @return string The annotation class name
      */
-    protected function getAnnotationName()
+    protected function getAnnotationClass()
     {
-        return Migration::ANNOTATION;
-    }
-
-    /**
-     * Initializes the bean descriptor instance from the passed reflection class instance.
-     *
-     * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the servlet description
-     *
-     * @return \AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface|null The initialized descriptor instance
-     */
-    public function fromReflectionClass(ClassInterface $reflectionClass)
-    {
-
-        // add the annotation alias to the reflection class
-        $reflectionClass->addAnnotationAlias(Migration::ANNOTATION, Migration::__getClass());
-
-        // invoke the parent method
-        return parent::fromReflectionClass($reflectionClass);
+        return Migration::class;
     }
 }

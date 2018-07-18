@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Description\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Configuration\PersistenceUnitConfigurationInterface;
 
 /**
@@ -66,7 +67,7 @@ class PersistenceUnitNode extends AbstractNode implements PersistenceUnitConfigu
      * The interface name the class loader has.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $interface;
 
@@ -74,7 +75,7 @@ class PersistenceUnitNode extends AbstractNode implements PersistenceUnitConfigu
      * The unique class loader name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $name;
 
@@ -82,7 +83,7 @@ class PersistenceUnitNode extends AbstractNode implements PersistenceUnitConfigu
      * The class loaders class name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $type;
 
@@ -90,7 +91,7 @@ class PersistenceUnitNode extends AbstractNode implements PersistenceUnitConfigu
      * The class loaders factory class name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $factory;
 
@@ -98,7 +99,7 @@ class PersistenceUnitNode extends AbstractNode implements PersistenceUnitConfigu
      * The node containing datasource information.
      *
      * @var \AppserverIo\Psr\ApplicationServer\Configuration\DatasourceConfigurationInterface
-     * @AS\Mapping(nodeName="datasource", nodeType="AppserverIo\Description\Api\Node\DatasourceNode")
+     * @DI\Mapping(nodeName="datasource", nodeType="AppserverIo\Description\Api\Node\DatasourceNode")
      */
     protected $datasource;
 
@@ -106,7 +107,7 @@ class PersistenceUnitNode extends AbstractNode implements PersistenceUnitConfigu
      * The bean shared information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="shared", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="shared", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $shared;
 
@@ -114,7 +115,7 @@ class PersistenceUnitNode extends AbstractNode implements PersistenceUnitConfigu
      * The node containing the metadata configuration information.
      *
      * @var \AppserverIo\Description\Configuration\MetadataConfigurationInterface
-     * @AS\Mapping(nodeName="metadataConfiguration", nodeType="AppserverIo\Description\Api\Node\MetadataConfigurationNode")
+     * @DI\Mapping(nodeName="metadataConfiguration", nodeType="AppserverIo\Description\Api\Node\MetadataConfigurationNode")
      */
     protected $metadataConfiguration;
 
@@ -122,7 +123,7 @@ class PersistenceUnitNode extends AbstractNode implements PersistenceUnitConfigu
      * The node containing the query cache configuration information.
      *
      * @var \AppserverIo\Description\Configuration\CacheConfigurationInterface
-     * @AS\Mapping(nodeName="queryCacheConfiguration", nodeType="AppserverIo\Description\Api\Node\QueryCacheConfigurationNode")
+     * @DI\Mapping(nodeName="queryCacheConfiguration", nodeType="AppserverIo\Description\Api\Node\QueryCacheConfigurationNode")
      */
     protected $queryCacheConfiguration;
 
@@ -130,7 +131,7 @@ class PersistenceUnitNode extends AbstractNode implements PersistenceUnitConfigu
      * The node containing the result cache configuration information.
      *
      * @var \AppserverIo\Description\Configuration\CacheConfigurationInterface
-     * @AS\Mapping(nodeName="resultCacheConfiguration", nodeType="AppserverIo\Description\Api\Node\ResultCacheConfigurationNode")
+     * @DI\Mapping(nodeName="resultCacheConfiguration", nodeType="AppserverIo\Description\Api\Node\ResultCacheConfigurationNode")
      */
     protected $resultCacheConfiguration;
 
@@ -138,7 +139,7 @@ class PersistenceUnitNode extends AbstractNode implements PersistenceUnitConfigu
      * The node containing the metadata cache configuration information.
      *
      * @var \AppserverIo\Description\Configuration\CacheConfigurationInterface
-     * @AS\Mapping(nodeName="metadataCacheConfiguration", nodeType="AppserverIo\Description\Api\Node\MetadataCacheConfigurationNode")
+     * @DI\Mapping(nodeName="metadataCacheConfiguration", nodeType="AppserverIo\Description\Api\Node\MetadataCacheConfigurationNode")
      */
     protected $metadataCacheConfiguration;
 
