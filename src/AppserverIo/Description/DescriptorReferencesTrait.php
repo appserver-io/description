@@ -27,6 +27,7 @@ use AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\BeanReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\PersistenceUnitReferenceDescriptorInterface;
 use AppserverIo\Description\Configuration\ReferencesConfigurationInterface;
+use Rhumsaa\Uuid\Uuid;
 
 /**
  * Trait with functionality to handle bean, resource and persistence unit references.
@@ -77,7 +78,7 @@ trait DescriptorReferencesTrait
      */
     public function addEpbReference(EpbReferenceDescriptorInterface $epbReference)
     {
-        $this->epbReferences[$epbReference->getName()] = $epbReference;
+        $this->epbReferences[] = $epbReference;
     }
 
     /**
@@ -111,7 +112,7 @@ trait DescriptorReferencesTrait
      */
     public function addResReference(ResReferenceDescriptorInterface $resReference)
     {
-        $this->resReferences[$resReference->getName()] = $resReference;
+        $this->resReferences[] = $resReference;
     }
 
     /**
@@ -145,7 +146,7 @@ trait DescriptorReferencesTrait
      */
     public function addBeanReference(BeanReferenceDescriptorInterface $beanReference)
     {
-        $this->beanReferences[$beanReference->getName()] = $beanReference;
+        $this->beanReferences[] = $beanReference;
     }
 
     /**
@@ -179,7 +180,7 @@ trait DescriptorReferencesTrait
      */
     public function addPersistenceUnitReference(PersistenceUnitReferenceDescriptorInterface $persistenceUnitReference)
     {
-        $this->persistenceUnitReferences[$persistenceUnitReference->getName()] = $persistenceUnitReference;
+        $this->persistenceUnitReferences[] = $persistenceUnitReference;
     }
 
     /**
