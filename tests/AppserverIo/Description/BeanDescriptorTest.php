@@ -173,10 +173,11 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
         // check the name parsed from the reflection class
         $this->assertSame(__CLASS__, $this->descriptor->getClassName());
         $this->assertSame('BeanDescriptorTest', $this->descriptor->getName());
-        $this->assertCount(1, $this->descriptor->getEpbReferences());
-        $this->assertCount(1, $this->descriptor->getResReferences());
-        $this->assertCount(1, $this->descriptor->getPersistenceUnitReferences());
-        $this->assertCount(3, $this->descriptor->getReferences());
+
+        $this->assertCount(2, $this->descriptor->getEpbReferences());
+        $this->assertCount(2, $this->descriptor->getResReferences());
+        $this->assertCount(2, $this->descriptor->getPersistenceUnitReferences());
+        $this->assertCount(6, $this->descriptor->getReferences());
     }
 
     /**
@@ -197,10 +198,10 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
         // check the name parsed from the reflection class
         $this->assertSame(__CLASS__, $this->descriptor->getClassName());
         $this->assertSame('BeanDescriptorTest', $this->descriptor->getName());
-        $this->assertCount(1, $this->descriptor->getEpbReferences());
-        $this->assertCount(1, $this->descriptor->getResReferences());
-        $this->assertCount(1, $this->descriptor->getPersistenceUnitReferences());
-        $this->assertCount(3, $this->descriptor->getReferences());
+        $this->assertCount(2, $this->descriptor->getEpbReferences());
+        $this->assertCount(2, $this->descriptor->getResReferences());
+        $this->assertCount(2, $this->descriptor->getPersistenceUnitReferences());
+        $this->assertCount(6, $this->descriptor->getReferences());
     }
 
     /**
