@@ -420,9 +420,9 @@ class ServletDescriptorTest extends \PHPUnit_Framework_TestCase implements Servl
         $this->assertCount(1, $this->descriptor->getUrlPatterns());
         $this->assertCount(1, $this->descriptor->getInitParams());
         $this->assertCount(2, $this->descriptor->getEpbReferences());
-        $this->assertCount(2, $this->descriptor->getResReferences());
+        $this->assertCount(1, $this->descriptor->getResReferences());
         $this->assertCount(2, $this->descriptor->getPersistenceUnitReferences());
-        $this->assertCount(6, $this->descriptor->getReferences());
+        $this->assertCount(5, $this->descriptor->getReferences());
     }
 
     /**

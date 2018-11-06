@@ -1,12 +1,22 @@
+# Version 12.0.2
+
+## Bugfixes
+
+* Make sure overriding an references from a deployment descriptors will be taken into account
+
+## Features
+
+* None
+
 # Version 12.0.1
 
 ## Bugfixes
 
-* None
+* Fixing descriptor reference handling
 
 ## Features
 
-* Switch to Doctrine Annotations
+* None
 
 # Version 12.0.0
 
