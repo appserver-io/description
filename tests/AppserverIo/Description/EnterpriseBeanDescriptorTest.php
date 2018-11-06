@@ -240,10 +240,10 @@ class EnterpriseBeanDescriptorTest extends \PHPUnit_Framework_TestCase
         // check if all values have been merged
         $this->assertSame('SampleProcessor', $this->descriptor->getName());
         $this->assertSame('AppserverIo\Apps\Example\Services\SampleProcessor', $this->descriptor->getClassName());
-        $this->assertCount(3, $this->descriptor->getEpbReferences());
+        $this->assertCount(2, $this->descriptor->getEpbReferences());
         $this->assertCount(3, $this->descriptor->getResReferences());
         $this->assertCount(2, $this->descriptor->getPersistenceUnitReferences());
-        $this->assertCount(8, $this->descriptor->getReferences());
+        $this->assertCount(7, $this->descriptor->getReferences());
     }
 
     /**
