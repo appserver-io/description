@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bean>
+    <name>Randomizer</name>
+    <class>AppserverIo\Apps\Example\Services\Randomizer</class>
+    <bean-ref>
+        <bean-ref-name>LoaderOne</bean-ref-name>
+        <bean-link>LocalHotelPriceLoader</bean-link>
+    </bean-ref>
+    <bean-ref>
+        <bean-ref-name>LoaderTwo</bean-ref-name>
+        <bean-link>LocalHotelPriceLoader</bean-link>
+    </bean-ref>
+    <bean-ref>
+        <bean-ref-name>LoaderThree</bean-ref-name>
+        <bean-link>LocalHotelPriceLoader</bean-link>
+    </bean-ref>
+</bean>

@@ -1,3 +1,13 @@
+# Version 12.0.3
+
+## Bugfixes
+
+* Reset to version 12.0.0 and add PHPUnit test for constructor injection with three arguements with the same type
+
+## Features
+
+* None
+
 # Version 12.0.2
 
 ## Bugfixes

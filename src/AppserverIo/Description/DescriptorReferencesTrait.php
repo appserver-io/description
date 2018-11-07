@@ -21,13 +21,12 @@
 namespace AppserverIo\Description;
 
 use AppserverIo\Lang\Reflection\ClassInterface;
-use AppserverIo\Description\Configuration\ReferencesConfigurationInterface;
 use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\BeanReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\PersistenceUnitReferenceDescriptorInterface;
-use AppserverIo\Psr\EnterpriseBeans\Description\ReferenceDescriptorInterface;
+use AppserverIo\Description\Configuration\ReferencesConfigurationInterface;
 
 /**
  * Trait with functionality to handle bean, resource and persistence unit references.
@@ -70,27 +69,6 @@ trait DescriptorReferencesTrait
     protected $persistenceUnitReferences = array();
 
     /**
-     * Returns a unique identifier to add descriptors references that make sure that,
-     * overriding a injection from a deployment descriptor will be taken into account.
-     *
-     * @param \AppserverIo\Psr\EnterpriseBeans\Description\ReferenceDescriptorInterface $reference The reference to return the unique identifier for
-     *
-     * @return string The unique identifier
-     */
-    private function getUniqueRefIdentifier(ReferenceDescriptorInterface $reference)
-    {
-
-        // load the injection target itself
-        $injectionTarget = $reference->getInjectionTarget();
-
-        // load the property or the method name
-        $target = $injectionTarget->getTargetProperty() ? $injectionTarget->getTargetProperty() : sprintf('%s()', $injectionTarget->getTargetMethod());
-
-        // concatenate the descriptor name with the refernce signature to create a unique identifier
-        return sprintf('%s::%s->%s', $reference->getName(), $injectionTarget->getTargetClass(), $target);
-    }
-
-    /**
      * Adds a EPB reference configuration.
      *
      * @param \AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface $epbReference The EPB reference configuration
@@ -99,7 +77,7 @@ trait DescriptorReferencesTrait
      */
     public function addEpbReference(EpbReferenceDescriptorInterface $epbReference)
     {
-        $this->epbReferences[$this->getUniqueRefIdentifier($epbReference)] = $epbReference;
+        $this->epbReferences[$epbReference->getName()] = $epbReference;
     }
 
     /**
@@ -133,7 +111,7 @@ trait DescriptorReferencesTrait
      */
     public function addResReference(ResReferenceDescriptorInterface $resReference)
     {
-        $this->resReferences[$this->getUniqueRefIdentifier($resReference)] = $resReference;
+        $this->resReferences[$resReference->getName()] = $resReference;
     }
 
     /**
@@ -167,7 +145,7 @@ trait DescriptorReferencesTrait
      */
     public function addBeanReference(BeanReferenceDescriptorInterface $beanReference)
     {
-        $this->beanReferences[$this->getUniqueRefIdentifier($beanReference)] = $beanReference;
+        $this->beanReferences[$beanReference->getName()] = $beanReference;
     }
 
     /**
@@ -201,7 +179,7 @@ trait DescriptorReferencesTrait
      */
     public function addPersistenceUnitReference(PersistenceUnitReferenceDescriptorInterface $persistenceUnitReference)
     {
-        $this->persistenceUnitReferences[$this->getUniqueRefIdentifier($persistenceUnitReference)] = $persistenceUnitReference;
+        $this->persistenceUnitReferences[$persistenceUnitReference->getName()] = $persistenceUnitReference;
     }
 
     /**
@@ -236,10 +214,10 @@ trait DescriptorReferencesTrait
 
         // initialize the references
         $references = array_merge(
-            array_values($this->epbReferences),
-            array_values($this->resReferences),
-            array_values($this->beanReferences),
-            array_values($this->persistenceUnitReferences)
+            $this->epbReferences,
+            $this->resReferences,
+            $this->beanReferences,
+            $this->persistenceUnitReferences
         );
 
         // sort the references
