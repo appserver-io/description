@@ -173,11 +173,10 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
         // check the name parsed from the reflection class
         $this->assertSame(__CLASS__, $this->descriptor->getClassName());
         $this->assertSame('BeanDescriptorTest', $this->descriptor->getName());
-
-        $this->assertCount(2, $this->descriptor->getEpbReferences());
-        $this->assertCount(2, $this->descriptor->getResReferences());
-        $this->assertCount(2, $this->descriptor->getPersistenceUnitReferences());
-        $this->assertCount(6, $this->descriptor->getReferences());
+        $this->assertCount(1, $this->descriptor->getEpbReferences());
+        $this->assertCount(1, $this->descriptor->getResReferences());
+        $this->assertCount(1, $this->descriptor->getPersistenceUnitReferences());
+        $this->assertCount(3, $this->descriptor->getReferences());
     }
 
     /**
@@ -198,10 +197,10 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
         // check the name parsed from the reflection class
         $this->assertSame(__CLASS__, $this->descriptor->getClassName());
         $this->assertSame('BeanDescriptorTest', $this->descriptor->getName());
-        $this->assertCount(2, $this->descriptor->getEpbReferences());
-        $this->assertCount(2, $this->descriptor->getResReferences());
-        $this->assertCount(2, $this->descriptor->getPersistenceUnitReferences());
-        $this->assertCount(6, $this->descriptor->getReferences());
+        $this->assertCount(1, $this->descriptor->getEpbReferences());
+        $this->assertCount(1, $this->descriptor->getResReferences());
+        $this->assertCount(1, $this->descriptor->getPersistenceUnitReferences());
+        $this->assertCount(3, $this->descriptor->getReferences());
     }
 
     /**
@@ -283,5 +282,28 @@ class BeanDescriptorTest extends \PHPUnit_Framework_TestCase
 
         // merge the descriptors
         $this->descriptor->merge($descriptorToMerge);
+    }
+
+    /**
+     * Tests constructor injection from a deployment descriptor with three
+     * arguments of the same type.
+     *
+     * @return void
+     */
+    public function testConstructorFromConfigurationWithSameNames()
+    {
+
+        // initialize the configuration
+        $node = new BeanNode();
+        $node->initFromFile(__DIR__ . '/_files/dd-bean-constructor-with-same-name.xml');
+
+        // initialize the descriptor from the nodes data
+        $this->descriptor->fromConfiguration($node);
+
+        // check the name parsed from the reflection class
+        $this->assertSame('AppserverIo\Apps\Example\Services\Randomizer', $this->descriptor->getClassName());
+        $this->assertSame('Randomizer', $this->descriptor->getName());
+        $this->assertCount(3, $this->descriptor->getBeanReferences());
+        $this->assertCount(3, $this->descriptor->getReferences());
     }
 }
