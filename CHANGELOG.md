@@ -1,3 +1,13 @@
+# Version 12.0.4
+
+## Bugfixes
+
+* Return value of NodeValue::__toString() will now be casted to string value
+
+## Features
+
+* None
+
 # Version 12.0.3
 
 ## Bugfixes
