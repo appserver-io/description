@@ -138,6 +138,14 @@ class DatabaseNode extends AbstractNode implements DatabaseConfigurationInterfac
      * @DI\Mapping(nodeName="serverVersion", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $serverVersion;
+    
+    /**
+     * The encryption information.
+     *
+     * @var \AppserverIo\Description\Api\Node\ValueNode
+     * @DI\Mapping(nodeName="encryption", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     */
+    protected $encryption;
 
     /**
      * Returns the database driver information.
@@ -267,5 +275,15 @@ class DatabaseNode extends AbstractNode implements DatabaseConfigurationInterfac
     public function getPlatform()
     {
         return $this->platform;
+    }
+    
+    /**
+     * Returns the encryption information.
+     *
+     * @return \AppserverIo\Description\Api\Node\ValueNode The encryptioninformation
+     */
+    public function getEncryption()
+    {
+        return $this->encryption;
     }
 }
