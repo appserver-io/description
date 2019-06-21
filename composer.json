@@ -12,7 +12,7 @@
         "appserver-io-psr/epb": "~7.0",
         "appserver-io-psr/servlet": "~4.0",
         "appserver-io-psr/deployment": "~2.0",
-        "appserver-io-psr/application-server": "1.0.*"
+        "appserver-io-psr/application-server": "2.0.*"
     },
     "require-dev": {
         "appserver-io/build": "~1.0"

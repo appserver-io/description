@@ -219,7 +219,8 @@ class InjectionTargetDescriptor extends AbstractDescriptor implements InjectionT
         if (($numberOfParameters = $phpReflectionMethod->getNumberOfParameters()) !== 1) {
             throw new \Exception(
                 sprintf(
-                    'Setter method MUST have exactly ONE parameter, but method "%s" has exactly "%d"',
+                    'Setter method MUST have exactly ONE parameter, but method "%s::%s" has exactly "%d"',
+                    $reflectionMethod->getClassName(),
                     $reflectionMethod->getMethodName(),
                     $numberOfParameters
                 )
