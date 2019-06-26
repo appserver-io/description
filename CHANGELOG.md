@@ -1,3 +1,13 @@
+# Version 13.0.1
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Make $factory parameter for cache configurations optional
+
 # Version 13.0.0
 
 ## Bugfixes

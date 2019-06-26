@@ -53,9 +53,9 @@ class ResultCacheConfigurationNode extends AbstractNode implements CacheConfigur
     /**
      * Initialize the node with the passed factory class name.
      *
-     * @param string $factory The factory class name to use
+     * @param string|null $factory The factory class name to use
      */
-    public function __construct($factory)
+    public function __construct($factory = null)
     {
         $this->factory = $factory;
     }
