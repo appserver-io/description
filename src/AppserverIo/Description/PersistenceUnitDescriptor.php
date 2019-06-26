@@ -22,12 +22,10 @@ namespace AppserverIo\Description;
 
 use AppserverIo\Lang\String;
 use AppserverIo\Lang\Boolean;
-use AppserverIo\Lang\Reflection\ClassInterface;
-use AppserverIo\Description\Configuration\ConfigurationInterface;
 use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
 use AppserverIo\Psr\EnterpriseBeans\Description\FactoryDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\PersistenceUnitDescriptorInterface;
+use AppserverIo\Description\Configuration\ConfigurationInterface;
 use AppserverIo\Description\Configuration\PersistenceUnitConfigurationInterface;
 
 /**
